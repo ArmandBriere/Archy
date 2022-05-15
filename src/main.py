@@ -33,7 +33,7 @@ async def hello(ctx: context_type):
     r = requests.post(
         "https://us-central1-archy-f06ed.cloudfunctions.net/archy_py",
         headers={"Authorization": f"Bearer {GOOGLE_AUTH_TOKEN}", "Content-Type": "application/json"},
-        data=json.dumps({"name": str(ctx.author)}),
+        data=json.dumps({"name": str(ctx.author.id)}),
     )
     await ctx.send(r.content.decode("utf-8"))
 
