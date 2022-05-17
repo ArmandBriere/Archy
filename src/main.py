@@ -27,22 +27,34 @@ request = google.auth.transport.requests.Request()
 FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 
 
-@bot.command()
-async def hello(ctx: context_type):
-    function_path = f"{FUNCTION_BASE_RUL}hello"
-    google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
-    r = requests.post(
-        function_path,
-        headers={"Authorization": f"Bearer {google_auth_token}", "Content-Type": "application/json"},
-        data=json.dumps({"name": str(ctx.author.id)}),
-    )
-    await ctx.send(r.content.decode("utf-8"))
-
-
 @bot.event
 async def on_message(message: message_type):
     logger.warning("Message from %s is: %s", message.author, message.content)
-    await bot.process_commands(message)
+
+    ctx = await bot.get_context(message)
+    print(f"invoked with {ctx.invoked_with}")
+
+    if ctx.invoked_with:
+        function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
+        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+        r = requests.post(
+            function_path,
+            headers={"Authorization": f"Bearer {google_auth_token}", "Content-Type": "application/json"},
+            data=json.dumps({"name": str(ctx.author.id)}),
+        )
+
+        if r.status_code == 200:
+            await ctx.send(r.content.decode("utf-8"))
+
+    elif not message.author.bot:
+        function_path = f"{FUNCTION_BASE_RUL}exp"
+        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+        r = requests.post(
+            function_path,
+            headers={"Authorization": f"Bearer {google_auth_token}", "Content-Type": "application/json"},
+            data=json.dumps({"name": str(ctx.author.id)}),
+        )
+        await ctx.send(r.content.decode("utf-8"))
 
 
 @bot.event

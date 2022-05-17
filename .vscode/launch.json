@@ -9,8 +9,9 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "python": "env/archy/bin/python",
+            "python": "${workspaceFolder}/src/env/archy/bin/python",
             "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src/",
             "justMyCode": true
         }
     ]
