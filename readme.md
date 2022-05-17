@@ -16,10 +16,25 @@ The code is deployed as [functions](https://cloud.google.com/sdk/gcloud/referenc
 
 [Functions Framework for Python](https://github.com/GoogleCloudPlatform/functions-framework-python)
 
+### Test local functions
+
+```bash 
+# pwd = functions/exp
+functions-framework --target exp
+```
+
+Then you can POST to the correct URL
+
+```bash
+curl -m 70 -X POST localhost:8080/exp -H "Authorization:bearer $(gcloud auth print-identity-token)" \
+-H "Content-Type:application/json" \
+-d '{"name": "tmp"}'
+```
+
 ### Deploy
 
 ```bash
-gcloud functions deploy my_function --runtime=python37
+gcloud functions deploy FUNCTION_NAME --runtime=python38 --entry-point=hello --trigger-http
 ```
 
 ### Call
@@ -37,7 +52,7 @@ This doc explains how we can create a simple [vm instance](https://cloud.google.
 - SSH command
 
 ```bash
-gcloud compute ssh --zone "us-central1-a" "instance-1"  --project "archy-f06ed"
+gcloud compute ssh --zone "us-central1-a" "e2-micro-archy"  --project "archy-f06ed"
 ```
 
 ## Enable container registry
@@ -54,5 +69,5 @@ To authenticate your request, follow the steps in: https://cloud.google.com/cont
 ```bash
 docker build -t us.gcr.io/archy-f06ed/archy .
 docker push us.gcr.io/archy-f06ed/archy
-gcloud compute instances update-container instance-1
+gcloud compute instances update-container e2-micro-archy
 ```
