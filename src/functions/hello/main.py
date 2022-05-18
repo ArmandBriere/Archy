@@ -1,4 +1,3 @@
-from flask import escape
 import functions_framework
 
 
@@ -10,4 +9,4 @@ def hello(request):
     if request_json:
         name = request_json.get("name", "... wait, WHO ARE YOU?")
 
-    return "Hello <@{}>!".format(escape(name))
+    return f"Hello <@{name}>!"

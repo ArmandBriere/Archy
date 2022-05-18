@@ -1,8 +1,9 @@
-import os
 import json
-import requests
-import google.oauth2.id_token
+import os
+
 import google.auth.transport.requests
+import google.oauth2.id_token
+import requests
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./key.json"
 request = google.auth.transport.requests.Request()
