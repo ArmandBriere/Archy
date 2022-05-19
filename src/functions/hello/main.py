@@ -5,8 +5,8 @@ import functions_framework
 def hello(request):
     """HTTP Cloud Function."""
     request_json = request.get_json(silent=True)
-    name = ""
     if request_json:
-        name = request_json.get("name", "... wait, WHO ARE YOU?")
-
-    return f"Hello <@{name}>!"
+        name = request_json.get("name", None)
+        if name:
+            return f"Hello @<{name}>!"
+    return "Hello !"
