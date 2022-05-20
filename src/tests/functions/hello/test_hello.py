@@ -2,8 +2,6 @@ from unittest.mock import MagicMock
 
 from functions.hello.main import hello
 
-MODULE_PATH = "functions.hello.main"
-
 
 def test_hello():
     body = {"name": "Hello, World!"}
