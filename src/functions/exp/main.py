@@ -17,15 +17,11 @@ def exp(request):
     request_json = request.get_json(silent=True)
     if request_json:
         name = request_json.get("name", None)
-        databse = firestore.client(app)
-        doc_ref = databse.collection("users").document(name)
+        database = firestore.client(app)
+        doc_ref = database.collection("users").document(name)
         doc = doc_ref.get()
         if doc.exists:
             doc_ref.update({"exp": firestore.Increment(1)})  # pylint: disable=E1101
         else:
             doc_ref.set({"exp": 1})
     return f"Congratz <@{name}>! You have more exp now!"
-
-
-if __name__ == "__main__":
-    print(exp({"name": "tmp"}))
