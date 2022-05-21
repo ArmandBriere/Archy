@@ -11,7 +11,7 @@ def test_hello():
 
     result = hello(request_mock)
 
-    assert f"Hello @<{body['name']}>!" == result
+    assert f"Hello <@{body['name']}>!" == result
 
 
 def test_hello_empty_name():

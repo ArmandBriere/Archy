@@ -9,6 +9,8 @@ from discord.ext import commands
 from discord.message import Message as message_type
 from dotenv import load_dotenv
 
+from discord.ext.commands import Context
+
 load_dotenv()
 
 logger = logging.getLogger(__name__)
@@ -27,8 +29,7 @@ FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 async def on_message(message: message_type):
     logger.warning("Message from %s is: %s", message.author, message.content)
 
-    ctx = await bot.get_context(message)
-    print(f"invoked with {ctx.invoked_with}")
+    ctx: Context = await bot.get_context(message)
 
     if ctx.invoked_with:
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
@@ -36,7 +37,7 @@ async def on_message(message: message_type):
         response = requests.post(
             function_path,
             headers={"Authorization": f"Bearer {google_auth_token}", "Content-Type": "application/json"},
-            data=json.dumps({"name": str(ctx.author.id)}),
+            data=json.dumps({"name": str(ctx.author.id), "mentions": ctx.message.raw_mentions}),
         )
 
         if response.status_code == 200:

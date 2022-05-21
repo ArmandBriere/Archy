@@ -8,5 +8,5 @@ def hello(request):
     if request_json:
         name = request_json.get("name", None)
         if name:
-            return f"Hello @<{name}>!"
+            return f"Hello <@{name}>!"
     return "Hello !"
