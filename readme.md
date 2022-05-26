@@ -8,6 +8,13 @@
 
 Install the [Google Cloud Cli](https://cloud.google.com/sdk/docs/install)
 
+For Arch based os:
+
+```bash
+yay -S google-cloud-sdk
+pacman -S libxcrypt-compat
+```
+
 ## Functions
 
 The code is deployed as [functions](https://cloud.google.com/sdk/gcloud/reference/functions) on Google Cloud
