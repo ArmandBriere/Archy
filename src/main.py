@@ -30,14 +30,23 @@ async def on_message(message: message_type):
     logger.warning("Message from %s is: %s", message.author, message.content)
 
     ctx: Context = await bot.get_context(message)
-
     if ctx.invoked_with:
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
         response = requests.post(
             function_path,
-            headers={"Authorization": f"Bearer {google_auth_token}", "Content-Type": "application/json"},
-            data=json.dumps({"name": str(ctx.author.id), "mentions": ctx.message.raw_mentions}),
+            headers={
+                "Authorization": f"Bearer {google_auth_token}",
+                "Content-Type": "application/json",
+            },
+            data=json.dumps(
+                {
+                    "name": str(ctx.author.id),
+                    "channel_id": str(message.channel.id),
+                    "message_id": str(message.id),
+                    "mentions": ctx.message.raw_mentions,
+                }
+            ),
         )
 
         if response.status_code == 200:
@@ -48,7 +57,10 @@ async def on_message(message: message_type):
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
         response = requests.post(
             function_path,
-            headers={"Authorization": f"Bearer {google_auth_token}", "Content-Type": "application/json"},
+            headers={
+                "Authorization": f"Bearer {google_auth_token}",
+                "Content-Type": "application/json",
+            },
             data=json.dumps({"name": str(ctx.author.id)}),
         )
 
