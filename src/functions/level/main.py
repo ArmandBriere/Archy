@@ -18,12 +18,15 @@ def level(request):
     if request_json:
         name = request_json.get("name", None)
         database = firestore.client(app)
+        if not name:
+            return ":|"
+
         doc_ref = database.collection("users").document(name)
         doc = doc_ref.get()
 
         if doc.exists:
             total_exp = doc.get("exp")
-            return f"Sorry we are still working on level, <@{name}> has {total_exp} exp!"
+            return f"You have {total_exp} exp! <@{name}>"
         return f"... Wait a minute, Who are you <@{name}>"
 
     return ":|"
