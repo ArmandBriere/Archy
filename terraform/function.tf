@@ -6,7 +6,7 @@ data "archive_file" "source" {
     type        = "zip"
     source_dir  = "../src/functions/${each.key}"
     output_path = "/tmp/${each.key}.zip"
-    excludes    = [ "node_modules" ]
+    excludes    = [ "node_modules", "__pycache__" ]
 }
 
 # Add source code zip to the Cloud Function's bucket
@@ -18,7 +18,7 @@ resource "google_storage_bucket_object" "zip" {
 
     # Append to the MD5 checksum of the files's content
     # to force the zip to be updated as soon as a change occurs
-    name         = "src-${data.archive_file.source[each.key].output_md5}.zip"
+    name         = "src-${data.archive_file.source[each.key].output_sha}.zip"
     bucket       = google_storage_bucket.function_bucket.name
 }
 
