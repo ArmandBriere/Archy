@@ -23,5 +23,6 @@ exports.js = (req, res) => {
     });
 
     // Login to Discord with your client's token
-    client.login("DISCORD_TOKEN");
+    client.login(process.env.DISCORD_TOKEN);
+
 };

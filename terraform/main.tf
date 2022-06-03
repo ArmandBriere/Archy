@@ -8,7 +8,15 @@ variable "region" {
 }
 
 variable "service_account_email" {
-    default = "archy-f06ed@appspot.gserviceaccount.com"
+    default = "archyapi@archy-f06ed.iam.gserviceaccount.com"
+}
+
+variable "secrets" {
+  type = list
+  default = [
+    "DISCORD_TOKEN",
+    "GOOGLE_APPLICATION_CREDENTIALS"
+  ]
 }
 
 variable "python_functions" {
@@ -19,8 +27,23 @@ variable "python_functions" {
       runtime = "python39"
       timeout = 15
     },
+    exp: {
+      description = "Increase the experience of a user"
+      runtime = "python39"
+      timeout = 15
+    },
     hello: {
       description = "Simple hello"
+      runtime = "python39"
+      timeout = 15
+    },
+    js: {
+      description = "Template of a function in javascript"
+      runtime = "nodejs16"
+      timeout = 15
+    },
+    level: {
+      description = "Return the level of a user"
       runtime = "python39"
       timeout = 15
     }

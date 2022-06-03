@@ -6,6 +6,7 @@ data "archive_file" "source" {
     type        = "zip"
     source_dir  = "../src/functions/${each.key}"
     output_path = "/tmp/${each.key}.zip"
+    excludes    = [ "node_modules" ]
 }
 
 # Add source code zip to the Cloud Function's bucket
@@ -48,10 +49,13 @@ resource "google_cloudfunctions_function" "function" {
     max_instances = 5
 
     # Secrets
-    secret_environment_variables {
-      key = "GOOGLE_APPLICATION_CREDENTIALS"
-      secret = "GOOGLE_APPLICATION_CREDENTIALS"
-      version = "latest"
+    dynamic secret_environment_variables {
+        for_each = var.secrets
+        content {
+            key = "${secret_environment_variables.value}"
+            secret = "${secret_environment_variables.value}"
+            version = "latest"
+        }
     }
 
     # Service account
