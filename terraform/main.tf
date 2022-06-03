@@ -11,6 +11,22 @@ variable "service_account_email" {
     default = "archy-f06ed@appspot.gserviceaccount.com"
 }
 
+variable "python_functions" {
+  type = map
+  default = {
+    describe: {
+      description = "Describe a user"
+      runtime = "python39"
+      timeout = 15
+    },
+    hello: {
+      description = "Simple hello"
+      runtime = "python39"
+      timeout = 15
+    }
+  }
+}
+
 # Provider to connect to Google
 provider "google" {
     project = var.project_id
