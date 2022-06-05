@@ -26,26 +26,37 @@ variable "python_functions" {
       description = "Describe a user"
       runtime = "python39"
       timeout = 15
+      memory = 256
     },
     exp: {
       description = "Increase the experience of a user"
       runtime = "python39"
       timeout = 15
+      memory = 256
     },
     hello: {
       description = "Simple hello"
       runtime = "python39"
       timeout = 15
+      memory = 256
     },
     js: {
       description = "Template of a function in javascript"
       runtime = "nodejs16"
       timeout = 15
+      memory = 256
     },
     level: {
       description = "Return the level of a user"
       runtime = "python39"
       timeout = 15
+      memory = 256
+    }
+    froge: {
+      description = "Return a random froge from the server"
+      runtime = "nodejs16"
+      timeout = 15
+      memory = 512
     }
   }
 }

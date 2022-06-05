@@ -40,6 +40,9 @@ resource "google_cloudfunctions_function" "function" {
 
     # Timeout
     timeout = "${each.value.timeout}"
+
+    # Memory
+    available_memory_mb = "${each.value.memory}"
     
     # Trigger
     trigger_http = true
