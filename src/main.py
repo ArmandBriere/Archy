@@ -6,10 +6,9 @@ import google.auth.transport.requests
 import google.oauth2.id_token
 import requests
 from discord.ext import commands
+from discord.ext.commands import Context
 from discord.message import Message as message_type
 from dotenv import load_dotenv
-
-from discord.ext.commands import Context
 
 load_dotenv()
 
@@ -61,7 +60,12 @@ async def on_message(message: message_type):
                 "Authorization": f"Bearer {google_auth_token}",
                 "Content-Type": "application/json",
             },
-            data=json.dumps({"name": str(ctx.author.id)}),
+            data=json.dumps(
+                {
+                    "name": str(ctx.author.id),
+                    "created_at": str(message.created_at.timestamp()),
+                }
+            ),
         )
 
 
@@ -70,11 +74,5 @@ async def on_message_edit(before: message_type, after: message_type):
     logger.warning(before)
     logger.warning(after)
 
-
-cog_files = ["functions.test"]
-
-for cog_file in cog_files:
-    bot.load_extension(cog_file)
-    print(f"{cog_file} has loaded.")
 
 bot.run(DISCORD_API_TOKEN)

@@ -17,16 +17,20 @@ def level(request):
     request_json = request.get_json(silent=True)
     if request_json:
         name = request_json.get("name", None)
-        database = firestore.client(app)
+        mentions = request_json.get("mentions", None)
+        if mentions and mentions[0]:
+            name = str(mentions[0])
         if not name:
             return ":|"
 
+        database = firestore.client(app)
         doc_ref = database.collection("users").document(name)
         doc = doc_ref.get()
 
         if doc.exists:
-            total_exp = doc.get("exp")
-            return f"You have {total_exp} exp! <@{name}>"
-        return f"... Wait a minute, Who are you <@{name}>"
+            current_level = doc.get("level")
+            return f"<@{name}> is level {current_level}!"
+
+        return f"... Wait a minute, Who is <@{name}>"
 
     return ":|"

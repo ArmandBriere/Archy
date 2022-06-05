@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import time
 
 import firebase_admin
@@ -21,7 +22,21 @@ def exp(request):
         doc_ref = database.collection("users").document(name)
         doc = doc_ref.get()
         if doc.exists:
-            doc_ref.update({"exp": firestore.Increment(1)})  # pylint: disable=E1101
+            exp_toward_next_level = doc.get("exp_toward_next_level")
+            level = doc.get("level")
+
+            exp_needed_to_level_up = 5 * (level**2) + (50 * level) + 100 - exp_toward_next_level
+
+            added_exp = random.randint(45, 75)
+
+            if added_exp >= exp_needed_to_level_up:
+                doc_ref.update({"level": firestore.Increment(1)})  # pylint: disable=E1101
+                doc_ref.update({"exp_toward_next_level": added_exp - exp_needed_to_level_up})  # pylint: disable=E1101
+            else:
+                doc_ref.update({"exp_toward_next_level": firestore.Increment(added_exp)})  # pylint: disable=E1101
+            doc_ref.update({"total_exp": firestore.Increment(added_exp)})  # pylint: disable=E1101
+
         else:
-            doc_ref.set({"exp": 1})
+            doc_ref.set({"total_exp": 0, "exp_toward_next_level": 0, "level": 0})
+
     return f"Congratz <@{name}>! You have more exp now!"
