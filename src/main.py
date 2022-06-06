@@ -44,7 +44,7 @@ async def on_message(message: message_type):
                     "channel_id": str(message.channel.id),
                     "message_id": str(message.id),
                     "mentions": ctx.message.raw_mentions,
-                    "params": message.content.split(ctx.command)[-1:]
+                    "params": message.content.split(ctx.command)[1:],
                 }
             ),
         )

@@ -13,6 +13,18 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}/src/",
             "justMyCode": true
+        },
+        {
+            "name": "Function - Hello",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/functions/hello",
+            "module": "functions_framework",
+            "args": [
+                "--target",
+                "hello",
+                "--debug"
+            ]
         }
     ]
 }
