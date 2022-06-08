@@ -1,19 +1,11 @@
 import functions_framework
 
 liste_gif = {
-    "doubt": """https://images-ext-2.discordapp.net/external/
-            bZOS_Lss71I5JmMKH0I7yupkLVXrU4lWcxTJ2w2ONRM/
-            https/media.tenor.com/0KEvxoQb5a4AAAPo/
-            doubt-press-x.mp4""",
-    "confused": """https://images-ext-2.discordapp.net/
-            external/WZJBGDxw62KT6tHXgbZpvr6NmBP91h10uurhfl6GPPI/
-            https/media.tenor.com/JLwgRWNpmYYAAAPo/
-            confusion-chicken.mp4"""
+    "doubt": "https://tenor.com/view/doubt-press-x-la-noire-meme-x-button-gif-19259237",
+    "confused": "https://tenor.com/view/confusion-chicken-gif-11299790",
 }
 
-gif_base = """https://images-ext-1.discordapp.net/
-        external/xeuVGypBTU5pis9a37wCSxjmAvbwqzUrj-1y4p0eUBg/
-        https/media.tenor.com/VAgfPZcM340AAAPo/bof-i-dont-mind.mp4"""
+gif_base = "https://tenor.com/view/confusion-chicken-gif-11299790"
 
 
 @functions_framework.http
