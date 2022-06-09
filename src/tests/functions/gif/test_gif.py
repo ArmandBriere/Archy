@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from functions.gif.main import gif, gifs, unknown_gif, default_gif
+from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, gif, gifs
 
 
 def test_gif_doubt():
@@ -33,7 +33,7 @@ def test_gif_error():
 
     result = gif(request_mock)
 
-    assert result == unknown_gif
+    assert result == UNKNOWN_GIF
 
 
 def test_gif_no_params():
@@ -44,4 +44,4 @@ def test_gif_no_params():
 
     result = gif(request_mock)
 
-    assert result == default_gif
+    assert result == DEFAULT_GIF

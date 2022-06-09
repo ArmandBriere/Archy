@@ -1,4 +1,5 @@
 import random
+
 import functions_framework
 
 encouragements = [
@@ -8,7 +9,7 @@ encouragements = [
     "T'es le/la/lo plus vraiment meilleur(e) du monde",
     "Les froges sont avec toi",
     "Tu mets du soleil dans nos coeurs",
-    ]
+]
 
 
 @functions_framework.http
