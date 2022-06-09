@@ -1,7 +1,7 @@
 import os
 from unittest.mock import MagicMock, patch
 
-from functions.exp.main import exp
+from functions.exp.main import exp, update_user_ranks
 
 
 def get_db_value(param):  # pragma: no cover
@@ -49,12 +49,13 @@ def test_exp_level_up(random_mock, database_mock):
         get_db_value
     )
     random_mock.return_value = 500
+    database_mock.return_value.batch.return_value = MagicMock()
 
     result = exp(request_mock)
-    update_call_count = database_mock.return_value.collection.return_value.document.return_value.update.call_count
 
     assert f"Congratz <@{body['name']}>! You have more exp now!" == result
-    assert update_call_count == 3
+    assert database_mock.return_value.batch.call_count == 1
+    assert len(database_mock.return_value.batch.mock_calls) == 5
 
 
 @patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
@@ -69,9 +70,24 @@ def test_exp_new_user(database_mock):
     request_mock.get_json.return_value = body
 
     database_mock.return_value.collection.return_value.document.return_value.get.return_value.exists = False
+    database_mock.return_value.batch.return_value = MagicMock()
 
     result = exp(request_mock)
 
-    set_value = database_mock.return_value.collection.return_value.document.return_value.set.call_args[0][0]
+    set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
     assert f"Congratz <@{body['name']}>! You have more exp now!" == result
     assert set_value == expected_set_value
+
+
+@patch("firebase_admin.firestore.client")
+def test_update_user_ranks(database_mock):
+    mock_users = [
+        MagicMock(),
+        MagicMock(),
+    ]
+    database_mock.collection.return_value.order_by.return_value.stream.return_value = mock_users
+
+    update_user_ranks(database_mock)
+
+    assert database_mock.batch.return_value.commit.call_count == 1
+    assert database_mock.batch.return_value.update.call_count == len(mock_users)
