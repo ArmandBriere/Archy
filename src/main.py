@@ -1,10 +1,12 @@
 import json
 import logging
 import os
+import re
 
 import google.auth.transport.requests
 import google.oauth2.id_token
 import requests
+from discord import Embed
 from discord.ext import commands
 from discord.ext.commands import Context
 from discord.message import Message as message_type
@@ -50,7 +52,14 @@ async def on_message(message: message_type):
         )
 
         if response.status_code == 200 and response.content:
-            await ctx.send(response.content.decode("utf-8"))
+            if re.search("https://*", response.content.decode("utf-8")):
+                await ctx.send(response.content.decode("utf-8"))
+            else:
+                embed = Embed(
+                    description=response.content.decode("utf-8"),
+                    color=0x04AA6D,
+                )
+                await ctx.send(embed=embed)
 
     elif not message.author.bot:
         function_path = f"{FUNCTION_BASE_RUL}exp"

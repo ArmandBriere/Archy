@@ -29,7 +29,9 @@ def level(request):
 
         if doc.exists:
             current_level = doc.get("level")
-            return f"<@{name}> is level {current_level}!"
+            rank = doc.get("rank")
+            user_count = len(list(database.collection("users").get()))
+            return f"<@{name}> is level {current_level}! Rank {rank}/{user_count}"
 
         return f"... Wait a minute, Who is <@{name}>"
 
