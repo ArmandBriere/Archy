@@ -58,6 +58,12 @@ variable "python_functions" {
       timeout = 15
       memory = 512
     }
+    gif: {
+      description = "Return the requested gif"
+      runtime = "python39"
+      timeout = 15
+      memory = 256
+    }
   }
 }
 
