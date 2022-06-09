@@ -31,7 +31,7 @@ def exp(request):
 
             if added_exp >= exp_needed_to_level_up:
                 doc_ref.update({"level": firestore.Increment(1)})  # pylint: disable=E1101
-                doc_ref.update({"exp_toward_next_level": added_exp - exp_needed_to_level_up})  # pylint: disable=E1101
+                doc_ref.update({"exp_toward_next_level": added_exp - exp_needed_to_level_up})
             else:
                 doc_ref.update({"exp_toward_next_level": firestore.Increment(added_exp)})  # pylint: disable=E1101
             doc_ref.update({"total_exp": firestore.Increment(added_exp)})  # pylint: disable=E1101

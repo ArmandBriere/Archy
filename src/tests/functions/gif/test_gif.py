@@ -1,28 +1,24 @@
 from unittest.mock import MagicMock
 
+import pytest
+
 from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, gif, gifs
 
 
-def test_gif_doubt():
-    body = {"params": ["doubt"]}
-
+@pytest.mark.parametrize(
+    ("body"),
+    [
+        {"params": ["doubt"]},
+        {"params": ["confused"]},
+    ],
+)
+def test_gif_with_param(body):
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
     result = gif(request_mock)
 
-    assert result == gifs["doubt"]
-
-
-def test_gif_confusion():
-    body = {"params": ["confused"]}
-
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = body
-
-    result = gif(request_mock)
-
-    assert result == gifs["confused"]
+    assert result == gifs[body["params"][0]]
 
 
 def test_gif_error():
@@ -36,8 +32,19 @@ def test_gif_error():
     assert result == UNKNOWN_GIF
 
 
-def test_gif_no_params():
+def test_gif_no_body():
     body = {}
+
+    request_mock = MagicMock()
+    request_mock.get_json.return_value = body
+
+    result = gif(request_mock)
+
+    assert result == DEFAULT_GIF
+
+
+def test_gif_empty_params():
+    body = {"params": []}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
