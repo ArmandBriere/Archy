@@ -68,6 +68,8 @@ async def on_message(message: message_type):
                 }
             ),
         )
+    if bot.user.mentioned_in(message):
+        await ctx.send("> Who Dares Summon Me?")
 
 
 @bot.event
