@@ -1,0 +1,36 @@
+<mat-sidenav-container class="sidenav-container">
+
+    <mat-sidenav #drawer class="sidenav" fixedInViewport color="primary"
+        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+        [opened]="false">
+        <mat-toolbar>Menu</mat-toolbar>
+        <mat-nav-list>
+            <a mat-list-item routerLink="" (click)="drawer.close()">Home</a>
+            <a mat-list-item routerLink="/leaderboard" (click)="drawer.close()">🏆 Leaderboard</a>
+        </mat-nav-list>
+
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar>
+            <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+                *ngIf="isHandset$ | async">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+
+            <span class="logo" color="primary" routerLink="/" routerLinkActive="active">
+                <img class="logo-image" src="https://cdn.discordapp.com/avatars/964693548396068916/8ad3e58a027f73a71edfe9330883fc9c.webp?size=96"
+                    alt="">
+                Archy
+            </span>
+
+            <span class="fill-space"></span>
+
+            <div *ngIf="(isHandset$ | async) === false">
+                <a mat-raised-button color="primary" routerLink="/leaderboard">🏆 Leaderboard</a>
+            </div>
+
+        </mat-toolbar>
+        <ng-content></ng-content>
+
+    </mat-sidenav-content>
+</mat-sidenav-container>

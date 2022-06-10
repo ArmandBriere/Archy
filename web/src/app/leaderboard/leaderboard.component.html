@@ -1,0 +1,33 @@
+<mat-card class="outer-card">
+    <mat-card-header>
+        <ng-content></ng-content>
+        <mat-card-title>
+            Leaderboard
+        </mat-card-title>
+        <mat-card-subtitle>
+            Don't forget to drink water
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="inner-card" cdkDrag *ngFor="let user of users; let i = index">
+            <div class="left-side">
+                <div class="name"> {{ i+1 }} - <div class="profile-picture"></div> {{ user.name }} </div>
+            </div>
+            <div class="right-side">
+                <div class="message_count" *ngIf="user.message_count">
+                    <div class="column_name">Messages</div>
+                    {{ user.message_count }}
+                </div>
+                <div class="exp">
+                    <div class="column_name">Exp</div>
+                    {{ user.total_exp }}
+                </div>
+                <div class="level">
+                    <div class="column_name">Level</div>
+                    {{ user.level }}
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
