@@ -29,9 +29,7 @@ def gif(request):
             return DEFAULT_GIF
         if params[0].lower() in gifs:
             return gifs[params[0]]
-        api_request = requests.get(
-            "https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (params[0].lower(), api_key, 1)
-        )
+        api_request = requests.get(f"https://g.tenor.com/v1/search?q={params[0].lower()}&key={api_key}&limit=1")
         if api_request.status_code == 200:
             top_1gifs = json.loads(api_request.content)
             url_gif = top_1gifs["results"][0]["media"][0]["gif"]["url"]
