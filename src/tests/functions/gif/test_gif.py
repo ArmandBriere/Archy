@@ -21,7 +21,7 @@ def test_gif_with_param(body):
     assert result == gifs[body["params"][0]]
 
 
-def test_gif_recherche():
+def test_gif_search():
     body = {"params": ["JamesDoe"]}
 
     request_mock = MagicMock()
