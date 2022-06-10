@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, gif, gifs
+from functions.gif.main import DEFAULT_GIF, gif, gifs
 
 
 @pytest.mark.parametrize(
@@ -21,15 +21,16 @@ def test_gif_with_param(body):
     assert result == gifs[body["params"][0]]
 
 
-def test_gif_error():
+def test_gif_recherche():
     body = {"params": ["JamesDoe"]}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
     result = gif(request_mock)
+    url_part = "https://media.tenor.com/"
 
-    assert result == UNKNOWN_GIF
+    assert url_part in result
 
 
 def test_gif_no_body():
