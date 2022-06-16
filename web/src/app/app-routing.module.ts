@@ -5,7 +5,7 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
-  { path: 'leaderboard', component: LeaderboardComponent },
+  { path: 'leaderboard/:id', component: LeaderboardComponent },
 ];
 
 @NgModule({

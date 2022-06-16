@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { LeaderboardService } from './leaderboard.service';
 import { User } from './user.interface';
 
@@ -10,16 +11,20 @@ import { User } from './user.interface';
 export class LeaderboardComponent implements OnInit {
 
   users: User[] | undefined;
-  
-  constructor(private leaderboardService: LeaderboardService) { }
+  serverId: string | null | undefined;
+
+  constructor(private leaderboardService: LeaderboardService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    let data = this.leaderboardService.getUsers().subscribe(data => {
-      if (data) {
-        this.users = data;
-      }
-      console.log(data);
-    });
+    this.serverId = this.route.snapshot.paramMap.get('id');
+
+    if (this.serverId) {
+      this.leaderboardService.getUsers(this.serverId).subscribe(data => {
+        if (data) {
+          this.users = data;
+        }
+      });
+    }
   }
 
 }

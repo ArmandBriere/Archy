@@ -6,7 +6,7 @@
         <mat-toolbar>Menu</mat-toolbar>
         <mat-nav-list>
             <a mat-list-item routerLink="" (click)="drawer.close()">Home</a>
-            <a mat-list-item routerLink="/leaderboard" (click)="drawer.close()">🏆 Leaderboard</a>
+            <a mat-list-item routerLink="/leaderboard/964701887540645908" (click)="drawer.close()">🏆 Leaderboard</a>
         </mat-nav-list>
 
     </mat-sidenav>
@@ -26,7 +26,7 @@
             <span class="fill-space"></span>
 
             <div *ngIf="(isHandset$ | async) === false">
-                <a mat-raised-button color="primary" routerLink="/leaderboard">🏆 Leaderboard</a>
+                <a mat-raised-button color="primary" routerLink="/leaderboard/964701887540645908">🏆 Leaderboard</a>
             </div>
 
         </mat-toolbar>

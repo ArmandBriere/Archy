@@ -12,7 +12,7 @@ export class LeaderboardService {
   /**
    * Get all boards owned by current user
    */
-  getUsers() {
-    return this.db.collection<User>('users', ref => ref.orderBy('total_exp', "desc")).valueChanges();
+  getUsers(serverId: string) {
+    return this.db.collection('servers').doc(serverId).collection<User>('users', ref => ref.orderBy('total_exp', "desc")).valueChanges();
   }
 }

@@ -12,7 +12,7 @@
     <mat-card-content>
         <div class="inner-card" cdkDrag *ngFor="let user of users; let i = index">
             <div class="left-side">
-                <div class="name"> {{ i+1 }} - <div class="profile-picture"></div> {{ user.name }} </div>
+                <div class="name"> {{ i+1 }} - <img class="profile-picture" [src]=user.avatar_url> {{ user.username }} </div>
             </div>
             <div class="right-side">
                 <div class="message_count" *ngIf="user.message_count">
