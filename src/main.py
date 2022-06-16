@@ -74,14 +74,14 @@ async def on_message(message: message_type):
             },
             data=json.dumps(
                 {
+                    "server_id": str(ctx.guild.id),
                     "name": str(ctx.author.id),
-                    "created_at": str(message.created_at.timestamp()),
                 }
             ),
         )
 
     # Simple interaction when a user send "@bot_name"
-    if bot.user.mentioned_in(message) and len(bot.user) == len(message):
+    if message.content == f"<@{bot.user.id}>":
         await ctx.send("> Who Dares Summon Me?")
 
 
