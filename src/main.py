@@ -75,7 +75,9 @@ async def on_message(message: message_type):
             data=json.dumps(
                 {
                     "server_id": str(ctx.guild.id),
-                    "name": str(ctx.author.id),
+                    "user_id": str(ctx.author.id),
+                    "username": str(ctx.author.name),
+                    "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",
                 }
             ),
         )

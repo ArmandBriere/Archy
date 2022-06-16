@@ -24,7 +24,7 @@ def get_db_value(param):  # pragma: no cover
 @patch("firebase_admin.firestore.client")
 @patch("random.randint")
 def test_exp(random_mock, database_mock):
-    body = {"name": "Hello, World!"}
+    body = {"user_id": "Hello, World!"}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -36,7 +36,7 @@ def test_exp(random_mock, database_mock):
 
     result = exp(request_mock)
 
-    assert f"Congratz <@{body['name']}>! You have more exp now!" == result
+    assert f"Congratz <@{body['user_id']}>! You have more exp now!" == result
 
 
 @patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
@@ -45,7 +45,7 @@ def test_exp(random_mock, database_mock):
 @patch("firebase_admin.firestore.client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
-    body = {"name": "Hello, World!"}
+    body = {"user_id": "Hello, World!"}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -58,7 +58,7 @@ def test_exp_level_up(random_mock, database_mock):
 
     result = exp(request_mock)
 
-    assert f"Congratz <@{body['name']}>! You have more exp now!" == result
+    assert f"Congratz <@{body['user_id']}>! You have more exp now!" == result
     assert database_mock.return_value.batch.call_count == 1
     assert len(database_mock.return_value.batch.mock_calls) == 5
 
@@ -68,13 +68,15 @@ def test_exp_level_up(random_mock, database_mock):
 @patch("firebase_admin.initialize_app", MagicMock())
 @patch("firebase_admin.firestore.client")
 def test_exp_new_user(database_mock):
-    body = {"name": "Joe"}
+    body = {"user_id": "123", "username": "Joe", "avatar_url": "url"}
     expected_set_value = {
         "total_exp": 0,
         "exp_toward_next_level": 0,
         "level": 0,
         "rank": 1,
         "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
+        "username": body["username"],
+        "avatar_url": body["avatar_url"],
     }
 
     request_mock = MagicMock()
@@ -88,7 +90,7 @@ def test_exp_new_user(database_mock):
     result = exp(request_mock)
 
     set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
-    assert f"Congratz <@{body['name']}>! You have more exp now!" == result
+    assert f"Congratz <@{body['user_id']}>! You have more exp now!" == result
     assert set_value == expected_set_value
 
 

@@ -22,12 +22,14 @@ def exp(request):
 
     request_json = request.get_json(silent=True)
     if request_json:
-        name = request_json.get("name", None)
+        user_id = request_json.get("user_id", None)
+        username = request_json.get("username", None)
+        avatar_url = request_json.get("avatar_url", None)
         server_id = request_json.get("server_id", None)
         database = firestore.client(app)
 
         collection = database.collection("servers").document(server_id).collection("users")
-        doc_ref = collection.document(name)
+        doc_ref = collection.document(user_id)
         doc = doc_ref.get()
 
         # Start a batch to write all changes at once
@@ -82,12 +84,14 @@ def exp(request):
                     "level": 0,
                     "rank": len(collection.get()) + 1,
                     "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
+                    "username": username,
+                    "avatar_url": avatar_url,
                 },
             )
 
         batch.commit()
 
-    return f"Congratz <@{name}>! You have more exp now!"
+    return f"Congratz <@{user_id}>! You have more exp now!"
 
 
 def update_user_ranks(database, batch):
