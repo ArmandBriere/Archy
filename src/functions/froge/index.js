@@ -15,7 +15,7 @@ exports.froge = (req, res) => {
     client.login(process.env.DISCORD_TOKEN);
 
     // When the client is ready, run this code (only once)
-    client.once("ready", () => {
+    return client.once("ready", () => {
         console.log("Ready!");
         reqChannelId = req.body.channel_id
         client.channels.fetch(reqChannelId).then(async (channel) => {
@@ -32,6 +32,7 @@ exports.froge = (req, res) => {
 
             // Kill the client
             client.destroy();
+            res.end();
             return;
         });
     });
