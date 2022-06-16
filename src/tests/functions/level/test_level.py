@@ -1,3 +1,6 @@
+# pylint: disable=line-too-long
+
+
 import os
 from unittest.mock import MagicMock, patch
 
@@ -26,10 +29,12 @@ def test_exp(database_mock):
     current_rank = get_db_value("rank")
     number_of_users = 1
 
-    database_mock.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_db_value
     )
-    database_mock.return_value.collection.return_value.get.return_value = ["One element"] * number_of_users
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.get.return_value = [
+        "One element"
+    ] * number_of_users
 
     result = level(request_mock)
 
@@ -49,11 +54,12 @@ def test_exp_mentions(database_mock):
     current_rank = get_db_value("rank")
     number_of_users = 1
 
-    database_mock.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_db_value
     )
-    database_mock.return_value.collection.return_value.get.return_value = ["One element"] * number_of_users
-
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.get.return_value = [
+        "One element"
+    ] * number_of_users
     result = level(request_mock)
 
     assert f"<@{body['mentions'][0]}> is level {current_level}! Rank {current_rank}/{number_of_users}" == result
@@ -69,8 +75,9 @@ def test_exp_no_level(database_mock):
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
-    database_mock.return_value.collection.return_value.document.return_value.get.return_value.exists = False
-
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
+        False
+    )
     result = level(request_mock)
 
     assert f"... Wait a minute, Who is <@{body['name']}>" == result

@@ -1,8 +1,8 @@
-import datetime
 import json
 import os
 import random
 import time
+from datetime import datetime
 
 import firebase_admin
 import functions_framework
@@ -29,6 +29,7 @@ def exp(request):
         collection = database.collection("servers").document(server_id).collection("users")
         doc_ref = collection.document(name)
         doc = doc_ref.get()
+
         # Start a batch to write all changes at once
         batch = database.batch()
 
@@ -37,10 +38,8 @@ def exp(request):
             last_message_timestamp = doc.get("last_message_timestamp")
 
             time_diff_in_sec = (
-                datetime.datetime.now() - datetime.datetime.strptime(last_message_timestamp, DATETIME_FORMAT)
+                datetime.now() - datetime.strptime(last_message_timestamp, DATETIME_FORMAT)
             ).total_seconds()
-
-            print(time_diff_in_sec)
 
             # Only get exp once per minute
             if time_diff_in_sec < 60:
@@ -68,7 +67,7 @@ def exp(request):
                 (
                     {
                         "total_exp": firestore.Increment(added_exp),  # pylint: disable=E1101
-                        "last_message_timestamp": datetime.datetime.now().strftime(DATETIME_FORMAT),
+                        "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                     }
                 ),
             )
@@ -82,7 +81,7 @@ def exp(request):
                     "exp_toward_next_level": 0,
                     "level": 0,
                     "rank": len(collection.get()) + 1,
-                    "last_message_timestamp": datetime.datetime.now().strftime(DATETIME_FORMAT),
+                    "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                 },
             )
 

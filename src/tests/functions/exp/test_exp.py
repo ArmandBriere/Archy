@@ -1,7 +1,10 @@
+# pylint: disable=line-too-long
+
 import os
+from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 
-from functions.exp.main import exp, update_user_ranks
+from functions.exp.main import DATETIME_FORMAT, exp, update_user_ranks
 
 
 def get_db_value(param):  # pragma: no cover
@@ -9,6 +12,8 @@ def get_db_value(param):  # pragma: no cover
         return 1
     if param == "exp_toward_next_level":
         return 0
+    if param == "last_message_timestamp":
+        return (datetime.now() - timedelta(seconds=60)).strftime(DATETIME_FORMAT)
 
     return 0
 
@@ -24,7 +29,7 @@ def test_exp(random_mock, database_mock):
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
-    database_mock.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_db_value
     )
     random_mock.return_value = 50
@@ -45,7 +50,7 @@ def test_exp_level_up(random_mock, database_mock):
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
-    database_mock.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_db_value
     )
     random_mock.return_value = 500
@@ -64,12 +69,20 @@ def test_exp_level_up(random_mock, database_mock):
 @patch("firebase_admin.firestore.client")
 def test_exp_new_user(database_mock):
     body = {"name": "Joe"}
-    expected_set_value = {"total_exp": 0, "exp_toward_next_level": 0, "level": 0}
+    expected_set_value = {
+        "total_exp": 0,
+        "exp_toward_next_level": 0,
+        "level": 0,
+        "rank": 1,
+        "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
+    }
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
-    database_mock.return_value.collection.return_value.document.return_value.get.return_value.exists = False
+    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
+        False
+    )
     database_mock.return_value.batch.return_value = MagicMock()
 
     result = exp(request_mock)
@@ -86,8 +99,9 @@ def test_update_user_ranks(database_mock):
         MagicMock(),
     ]
     database_mock.collection.return_value.order_by.return_value.stream.return_value = mock_users
+    batch_mock = database_mock.batch.return_value = MagicMock()
 
-    update_user_ranks(database_mock)
+    update_user_ranks(database_mock, batch_mock)
 
-    assert database_mock.batch.return_value.commit.call_count == 1
-    assert database_mock.batch.return_value.update.call_count == len(mock_users)
+    assert batch_mock.commit.call_count == 0
+    assert batch_mock.update.call_count == len(mock_users)
