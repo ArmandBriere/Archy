@@ -7,10 +7,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from './shared/shared.module';
 import { HomePageComponent } from './home-page/home-page.component';
 import { LeaderboardComponent } from './leaderboard/leaderboard.component';
-import { environment } from '../environments/environment';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
-import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+
+import { environment } from 'src/environments/environment';
+import { provideAppCheck } from '@angular/fire/app-check';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
+import { provideFirebaseApp } from '@angular/fire/app';
+import { getApp, initializeApp } from 'firebase/app';
+import { AngularFireModule } from '@angular/fire/compat';
+
 
 @NgModule({
   declarations: [
@@ -24,7 +29,15 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     BrowserAnimationsModule,
     SharedModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAppCheck(() => {
+      const provider = new ReCaptchaV3Provider(environment.captcha);
+      return initializeAppCheck(getApp(), {
+        provider,
+        isTokenAutoRefreshEnabled: true,
+      });
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

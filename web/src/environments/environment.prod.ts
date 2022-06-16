@@ -9,5 +9,6 @@ export const environment = {
     messagingSenderId: '763564183085',
     measurementId: 'G-1N0M5TBE24',
   },
+  captcha: "6LcyyHYgAAAAAClHA87VqfIrBaSDLr2DgGbs2a1u",
   production: true
 };

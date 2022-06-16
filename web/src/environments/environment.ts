@@ -13,7 +13,8 @@ export const environment = {
     authDomain: 'archy-f06ed.firebaseapp.com',
     messagingSenderId: '763564183085',
     measurementId: 'G-1N0M5TBE24',
-  }
+  },
+  captcha: "6LcyyHYgAAAAAClHA87VqfIrBaSDLr2DgGbs2a1u"
 };
 
 /*
