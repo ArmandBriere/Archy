@@ -1,6 +1,5 @@
 import datetime
 import json
-import math
 import os
 import random
 import time
@@ -27,7 +26,8 @@ def exp(request):
         server_id = request_json.get("server_id", None)
         database = firestore.client(app)
 
-        doc_ref = database.collection("servers").document(server_id).collection("users").document(name)
+        collection = database.collection("servers").document(server_id).collection("users")
+        doc_ref = collection.document(name)
         doc = doc_ref.get()
         # Start a batch to write all changes at once
         batch = database.batch()
@@ -37,7 +37,7 @@ def exp(request):
             last_message_timestamp = doc.get("last_message_timestamp")
 
             time_diff_in_sec = (
-                datetime.datetime.now() - datetime.datetime.strptime(last_message_timestamp, DATETIME_FORMAT) 
+                datetime.datetime.now() - datetime.datetime.strptime(last_message_timestamp, DATETIME_FORMAT)
             ).total_seconds()
 
             print(time_diff_in_sec)
@@ -60,7 +60,9 @@ def exp(request):
                 batch.update(
                     doc_ref, ({"exp_toward_next_level": firestore.Increment(added_exp)})  # pylint: disable=E1101
                 )
-                update_user_ranks(database, batch)
+
+            update_user_ranks(database, batch)
+
             batch.update(
                 doc_ref,
                 (
@@ -79,6 +81,7 @@ def exp(request):
                     "total_exp": 0,
                     "exp_toward_next_level": 0,
                     "level": 0,
+                    "rank": len(collection.get()) + 1,
                     "last_message_timestamp": datetime.datetime.now().strftime(DATETIME_FORMAT),
                 },
             )
@@ -89,6 +92,7 @@ def exp(request):
 
 
 def update_user_ranks(database, batch):
+    """Update all user ranks by descending total_exp."""
 
     users_ref = database.collection("users")
     users = users_ref.order_by("total_exp", direction=firestore.Query.DESCENDING).stream()  # pylint: disable=E1101

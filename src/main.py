@@ -31,7 +31,7 @@ async def on_message(message: message_type):
     logger.warning("Message from %s is: %s", message.author, message.content)
 
     ctx: Context = await bot.get_context(message)
-    if ctx.invoked_with:
+    if ctx.invoked_with and ctx.guild == 964701887540645908:
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
         response = requests.post(
@@ -42,6 +42,7 @@ async def on_message(message: message_type):
             },
             data=json.dumps(
                 {
+                    "server_id": str(ctx.guild.id),
                     "name": str(ctx.author.id),
                     "channel_id": str(message.channel.id),
                     "message_id": str(message.id),
@@ -61,6 +62,7 @@ async def on_message(message: message_type):
                 )
                 await ctx.send(embed=embed)
 
+    # Add exp to the user for every message send
     elif not message.author.bot:
         function_path = f"{FUNCTION_BASE_RUL}exp"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
@@ -77,7 +79,9 @@ async def on_message(message: message_type):
                 }
             ),
         )
-    if bot.user.mentioned_in(message):
+
+    # Simple interaction when a user send "@bot_name"
+    if bot.user.mentioned_in(message) and len(bot.user) == len(message):
         await ctx.send("> Who Dares Summon Me?")
 
 
