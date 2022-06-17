@@ -28,8 +28,8 @@ def exp(request):
 
         # We create this file because fetch_id_token need the token as a file
         # TODO: Change this when a new solution is found
-        with open(TMP_FILE_PATH, "w") as f:
-            f.write(service_account_info)
+        with open(TMP_FILE_PATH, "w", encoding="utf-8") as tmp_file:
+            tmp_file.write(service_account_info)
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = TMP_FILE_PATH
 
     app = firebase_admin.initialize_app(creds, name=str(time.time()))

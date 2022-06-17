@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 from functions.exp.main import DATETIME_FORMAT, exp, update_user_ranks
 
-
 MODULE_PATH = "functions.exp.main"
+
 
 def get_db_value(param):  # pragma: no cover
     if param == "level":
