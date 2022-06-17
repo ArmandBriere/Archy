@@ -68,6 +68,12 @@ variable "python_functions" {
       timeout     = 15
       memory      = 256
     }
+    pm : {
+      description = "Send a private message to a user"
+      runtime     = "go116"
+      timeout     = 15
+      memory      = 256
+    }
   }
 }
 
