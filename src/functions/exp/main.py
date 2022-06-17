@@ -6,9 +6,13 @@ from datetime import datetime
 
 import firebase_admin
 import functions_framework
+import google.auth.transport.requests
+import google.oauth2.id_token
+import requests
 from firebase_admin import credentials, firestore
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+TMP_FILE_PATH = "/tmp/tmp.json"
 
 
 @functions_framework.http
@@ -17,7 +21,17 @@ def exp(request):
 
     # Setup firestore connection
     service_account_info = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-    creds = credentials.Certificate(json.loads(service_account_info))
+    if os.path.exists(service_account_info):
+        creds = credentials.Certificate(json.load(open(service_account_info)))
+    else:
+        creds = credentials.Certificate(json.loads(service_account_info))
+
+        # We create this file because fetch_id_token need the token as a file
+        # TODO: Change this when a new solution is found
+        with open(TMP_FILE_PATH, "w") as f:
+            f.write(service_account_info)
+            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = TMP_FILE_PATH
+
     app = firebase_admin.initialize_app(creds, name=str(time.time()))
 
     request_json = request.get_json(silent=True)
@@ -57,6 +71,9 @@ def exp(request):
             if added_exp >= exp_needed_to_level_up:
                 batch.update(doc_ref, ({"level": firestore.Increment(1)}))  # pylint: disable=E1101
                 batch.update(doc_ref, ({"exp_toward_next_level": added_exp - exp_needed_to_level_up}))
+
+                send_message_to_user(user_id, f"I'm so proud of you... You made it to level {level+1}!")
+
             else:
                 batch.update(
                     doc_ref, ({"exp_toward_next_level": firestore.Increment(added_exp)})  # pylint: disable=E1101
@@ -91,6 +108,7 @@ def exp(request):
 
         batch.commit()
 
+    os.remove(TMP_FILE_PATH)
     return f"Congratz <@{user_id}>! You have more exp now!"
 
 
@@ -102,3 +120,22 @@ def update_user_ranks(database, batch):
 
     for index, user in enumerate(users):
         batch.update(user.reference, {"rank": index + 1})
+
+
+def send_message_to_user(user_id: str, message: str):
+    """Send a private message to a user by calling a cloud function."""
+
+    function_path = "https://us-central1-archy-f06ed.cloudfunctions.net/pm"
+    data = {"user_id": user_id, "message": message}
+
+    # Auth token to invoque the PM message
+    function_request = google.auth.transport.requests.Request()
+    google_auth_token = google.oauth2.id_token.fetch_id_token(function_request, function_path)
+    requests.post(
+        function_path,
+        headers={
+            "Authorization": f"Bearer {google_auth_token}",
+            "Content-Type": "application/json",
+        },
+        json=data,
+    )

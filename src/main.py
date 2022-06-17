@@ -43,7 +43,8 @@ async def on_message(message: message_type):
             data=json.dumps(
                 {
                     "server_id": str(ctx.guild.id),
-                    "name": str(ctx.author.id),
+                    "user_id": str(ctx.author.id),
+                    "username": str(ctx.author.name),
                     "channel_id": str(message.channel.id),
                     "message_id": str(message.id),
                     "mentions": ctx.message.raw_mentions,
