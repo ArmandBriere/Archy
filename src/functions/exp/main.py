@@ -29,7 +29,7 @@ def exp(request):
         creds = credentials.Certificate(json.loads(service_account_info))
 
         # We create this file because fetch_id_token need the token as a file
-        # TODO: Change this when a new solution is found
+        # TODO: Change this when a new solution is found -> gcloud pubsub
         with open(TMP_FILE_PATH, "w", encoding="utf-8") as tmp_file:
             tmp_file.write(service_account_info)
             os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = TMP_FILE_PATH
@@ -123,7 +123,6 @@ def exp(request):
 
         batch.commit()
 
-    os.remove(TMP_FILE_PATH)
     print("Done")
     return "", 200
 
