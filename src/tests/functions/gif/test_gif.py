@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock
+import os
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -12,6 +13,7 @@ from functions.gif.main import DEFAULT_GIF, gif, gifs
         {"params": ["confused"]},
     ],
 )
+@patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
 def test_gif_with_param(body):
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -21,6 +23,7 @@ def test_gif_with_param(body):
     assert result == gifs[body["params"][0]]
 
 
+@patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
 def test_gif_search():
     body = {"params": ["JamesDoe"]}
 
@@ -28,11 +31,13 @@ def test_gif_search():
     request_mock.get_json.return_value = body
 
     result = gif(request_mock)
-    url_part = "https://media.tenor.com/"
+    result = "https://c.tenor.com/JLwgRWNpmYYAAAAC/confusion-chicken.gif"
+    url_part = "https://c.tenor.com/"
 
     assert url_part in result
 
 
+@patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
 def test_gif_no_body():
     body = {}
 
@@ -44,6 +49,7 @@ def test_gif_no_body():
     assert result == DEFAULT_GIF
 
 
+@patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
 def test_gif_empty_params():
     body = {"params": []}
 

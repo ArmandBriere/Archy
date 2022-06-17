@@ -3,11 +3,6 @@ import os
 
 import functions_framework
 import requests
-from dotenv import load_dotenv
-
-# need nev file with tenor api key
-load_dotenv()
-
 
 DEFAULT_GIF = "https://tenor.com/view/frog-multiply-gif-25342428"
 UNKNOWN_GIF = "https://tenor.com/view/bof-i-dont-mind-i-dont-understand-why-jean-dujardin-oss117-gif-20383956"
@@ -24,15 +19,21 @@ def gif(request):
     request_json = request.get_json(silent=True)
     if request_json:
         params = request_json.get("params", [""])
-        api_key = os.getenv("API_TOKEN")
+        api_key = os.environ["TENOR_API_TOKEN"]
         if len(params) == 0:
             return DEFAULT_GIF
         if params[0].lower() in gifs:
             return gifs[params[0]]
-        api_request = requests.get(f"https://g.tenor.com/v1/search?q={params[0].lower()}&key={api_key}&limit=1")
+        api_request = requests.get(
+            f"https://tenor.googleapis.com/v2/search?q={params[0].lower()}&key={api_key}&client_key=Archy&limit=1"
+        )
+        # https://g.tenor.com/v1/search?q={params[0].lower()}&key={api_key}&limit=1
         if api_request.status_code == 200:
-            top_1gifs = json.loads(api_request.content)
-            url_gif = top_1gifs["results"][0]["media"][0]["gif"]["url"]
-            return url_gif
+            top_gif = json.loads(api_request.content)
+            try:
+                url_gif = top_gif["results"][0]["media_formats"]["gif"]["url"]
+                return url_gif
+            except (IndentationError, KeyError):
+                return "https://tenor.com/view/im-dead-vanilla-patay-na-ako-dead-nako-patay-ako-gif-22020482"
         return UNKNOWN_GIF
     return DEFAULT_GIF

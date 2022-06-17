@@ -15,7 +15,8 @@ variable "secrets" {
   type = list
   default = [
     "DISCORD_TOKEN",
-    "GOOGLE_APPLICATION_CREDENTIALS"
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    "TENOR_API_TOKEN"
   ]
 }
 
