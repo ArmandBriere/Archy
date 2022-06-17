@@ -19,10 +19,12 @@ TMP_FILE_PATH = "/tmp/tmp.json"
 def exp(request):
     """Increase the user experience on firestore."""
 
+    print("Start")
+
     # Setup firestore connection
     service_account_info = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
     if os.path.exists(service_account_info):
-        creds = credentials.Certificate(json.load(open(service_account_info)))
+        creds = credentials.Certificate(json.load(open(service_account_info, encoding="utf-8")))
     else:
         creds = credentials.Certificate(json.loads(service_account_info))
 
@@ -36,10 +38,17 @@ def exp(request):
 
     request_json = request.get_json(silent=True)
     if request_json:
+        print("Parse json payload")
+
         user_id = request_json.get("user_id", None)
         username = request_json.get("username", None)
         avatar_url = request_json.get("avatar_url", None)
         server_id = request_json.get("server_id", None)
+
+        if not user_id or not username or not server_id:
+            print("Exit: Missing data in payload")
+            return "", 200
+
         database = firestore.client(app)
 
         collection = database.collection("servers").document(server_id).collection("users")
@@ -59,7 +68,8 @@ def exp(request):
 
             # Only get exp once per minute
             if time_diff_in_sec < 60:
-                return f"You need to wait a bit more, come back in {(60 - time_diff_in_sec):.0f} sec!"
+                print(f"Exit: Too soon - {(60 - time_diff_in_sec):.0f} sec!")
+                return "", 200
 
             exp_toward_next_level = doc.get("exp_toward_next_level")
             level = doc.get("level")
@@ -69,17 +79,21 @@ def exp(request):
             added_exp = random.randint(45, 75)
 
             if added_exp >= exp_needed_to_level_up:
+                print(f"Update: level up user {user_id} to level {level+1}")
+
                 batch.update(doc_ref, ({"level": firestore.Increment(1)}))  # pylint: disable=E1101
                 batch.update(doc_ref, ({"exp_toward_next_level": added_exp - exp_needed_to_level_up}))
 
                 send_message_to_user(user_id, f"I'm so proud of you... You made it to level {level+1}!")
 
             else:
+                print(f"Update: Increase {user_id}'s exp")
+
                 batch.update(
                     doc_ref, ({"exp_toward_next_level": firestore.Increment(added_exp)})  # pylint: disable=E1101
                 )
 
-            update_user_ranks(database, batch)
+            update_user_ranks(database.collection("servers").document(server_id), batch)
 
             batch.update(
                 doc_ref,
@@ -93,6 +107,7 @@ def exp(request):
 
         # Create the user
         else:
+            print(f"Create: New user {user_id}")
             batch.set(
                 doc_ref,
                 {
@@ -109,7 +124,8 @@ def exp(request):
         batch.commit()
 
     os.remove(TMP_FILE_PATH)
-    return f"Congratz <@{user_id}>! You have more exp now!"
+    print("Done")
+    return "", 200
 
 
 def update_user_ranks(database, batch):
@@ -124,6 +140,7 @@ def update_user_ranks(database, batch):
 
 def send_message_to_user(user_id: str, message: str):
     """Send a private message to a user by calling a cloud function."""
+    print(f"PM: Sending to user {user_id}")
 
     function_path = "https://us-central1-archy-f06ed.cloudfunctions.net/pm"
     data = {"user_id": user_id, "message": message}
