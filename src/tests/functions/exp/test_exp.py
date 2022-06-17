@@ -7,6 +7,8 @@ from unittest.mock import MagicMock, patch
 from functions.exp.main import DATETIME_FORMAT, exp, update_user_ranks
 
 
+MODULE_PATH = "functions.exp.main"
+
 def get_db_value(param):  # pragma: no cover
     if param == "level":
         return 1
@@ -42,6 +44,7 @@ def test_exp(random_mock, database_mock):
 @patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
 @patch("firebase_admin.credentials.Certificate", MagicMock())
 @patch("firebase_admin.initialize_app", MagicMock())
+@patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
 @patch("firebase_admin.firestore.client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
