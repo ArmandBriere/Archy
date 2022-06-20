@@ -24,7 +24,8 @@ def exp(request):
     # Setup firestore connection
     service_account_info = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
     if os.path.exists(service_account_info):
-        creds = credentials.Certificate(json.load(open(service_account_info, encoding="utf-8")))
+        with open(service_account_info, encoding="utf-8") as sercice_account_file:
+            creds = credentials.Certificate(json.load(sercice_account_file))
     else:
         creds = credentials.Certificate(json.loads(service_account_info))
 

@@ -78,7 +78,7 @@ async def on_message(message: message_type):
                     "server_id": str(ctx.guild.id),
                     "user_id": str(ctx.author.id),
                     "username": str(ctx.author.name),
-                    "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",
+                    "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",  # pylint: disable=W0212
                 }
             ),
         )
