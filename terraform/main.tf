@@ -68,12 +68,6 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
     }
-    pm : {
-      description = "Send a private message to a user"
-      runtime     = "go116"
-      timeout     = 15
-      memory      = 256
-    }
   }
 }
 
@@ -87,6 +81,25 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 256
       trigger_event = "private_message_discord"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    frogeOfTheDay : {
+      description   = "Publish the froge of the day"
+      runtime       = "python39"
+      entry_point   = "publish_froge_of_the_day"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "froge_of_the_day"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    channelMessage : {
+      description   = "Send a message to a channel"
+      runtime       = "go116"
+      entry_point   = "ChannelMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "channel_message_discord"
+      secrets       = ["DISCORD_TOKEN"]
     },
   }
 }
