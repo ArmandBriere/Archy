@@ -2,20 +2,20 @@ import json
 import random
 from datetime import datetime
 
+import flask
 import functions_framework
 from google.cloud import firestore, pubsub_v1
+from google.cloud.firestore_v1.collection import CollectionReference
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 TMP_FILE_PATH = "/tmp/tmp.json"
 
 
 @functions_framework.http
-def exp(request):
+def exp(request: flask.Request):
     """Increase the user experience on firestore."""
 
     print("Start")
-
-    # Setup firestore connection
 
     request_json = request.get_json(silent=True)
     if request_json:
@@ -32,7 +32,7 @@ def exp(request):
 
         database = firestore.Client(project="archy-f06ed")
 
-        collection = database.collection("servers").document(server_id).collection("users")
+        collection: CollectionReference = database.collection("servers").document(server_id).collection("users")
         doc_ref = collection.document(user_id)
         doc = doc_ref.get()
 
@@ -62,7 +62,7 @@ def exp(request):
             if added_exp >= exp_needed_to_level_up:
                 print(f"Update: level up user {user_id} to level {level+1}")
 
-                batch.update(doc_ref, ({"level": firestore.Increment(1)}))  # pylint: disable=E1101
+                batch.update(doc_ref, ({"level": firestore.Increment(1)}))
                 batch.update(doc_ref, ({"exp_toward_next_level": added_exp - exp_needed_to_level_up}))
 
                 send_message_to_user(user_id, f"I'm so proud of you... You made it to level {level+1}!")
@@ -70,9 +70,7 @@ def exp(request):
             else:
                 print(f"Update: Increase {user_id}'s exp")
 
-                batch.update(
-                    doc_ref, ({"exp_toward_next_level": firestore.Increment(added_exp)})  # pylint: disable=E1101
-                )
+                batch.update(doc_ref, ({"exp_toward_next_level": firestore.Increment(added_exp)}))
 
             update_user_ranks(database.collection("servers").document(server_id), batch)
 
@@ -80,7 +78,7 @@ def exp(request):
                 doc_ref,
                 (
                     {
-                        "total_exp": firestore.Increment(added_exp),  # pylint: disable=E1101
+                        "total_exp": firestore.Increment(added_exp),
                         "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                     }
                 ),

@@ -1,9 +1,11 @@
+import flask
 import functions_framework
 from google.cloud import firestore
+from google.cloud.firestore_v1.collection import CollectionReference
 
 
 @functions_framework.http
-def level(request):
+def level(request: flask.Request):
     """Return the level of a user."""
 
     request_json = request.get_json(silent=True)
@@ -19,7 +21,7 @@ def level(request):
             return ":|"
 
         database = firestore.Client(project="archy-f06ed")
-        collection = database.collection("servers").document(server_id).collection("users")
+        collection: CollectionReference = database.collection("servers").document(server_id).collection("users")
         doc_ref = collection.document(name)
         doc = doc_ref.get()
 
