@@ -17,7 +17,6 @@ func SendMessageWithReaction(w http.ResponseWriter, r *http.Request) {
 	// Parse body to get Payload
 	var payload = Payload
 	json.NewDecoder(r.Body).Decode(&payload)
-	fmt.Println(payload.ChannelId)
 
 	// Instanciate Discord bot
 	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
