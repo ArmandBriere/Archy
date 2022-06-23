@@ -1,7 +1,5 @@
 # pylint: disable=line-too-long
 
-
-import os
 from unittest.mock import MagicMock, patch
 
 from functions.level.main import level
@@ -16,10 +14,7 @@ def get_db_value(param):  # pragma: no cover
     return 0
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 def test_exp(database_mock):
     body = {"name": "Hello, World!"}
 
@@ -41,10 +36,7 @@ def test_exp(database_mock):
     assert f"<@{body['name']}> is level {current_level}! Rank {current_rank}/{number_of_users}" == result
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 def test_exp_mentions(database_mock):
     body = {"name": "Hello, World!", "mentions": ["Archy"]}
 
@@ -65,10 +57,7 @@ def test_exp_mentions(database_mock):
     assert f"<@{body['mentions'][0]}> is level {current_level}! Rank {current_rank}/{number_of_users}" == result
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 def test_exp_no_level(database_mock):
     body = {"name": "Hello, World!"}
 
@@ -83,9 +72,7 @@ def test_exp_no_level(database_mock):
     assert f"... Wait a minute, Who is <@{body['name']}>" == result
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
+@patch("google.cloud.firestore.Client", MagicMock())
 def test_exp_no_name():
     body = {"ranom": "value"}
 
@@ -97,9 +84,7 @@ def test_exp_no_name():
     assert ":|" == result
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
+@patch("google.cloud.firestore.Client", MagicMock())
 def test_exp_no_body():
     body = None
 

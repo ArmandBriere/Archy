@@ -1,13 +1,9 @@
 import json
-import os
 import random
-import time
 from datetime import datetime
 
-import firebase_admin
 import functions_framework
-from firebase_admin import credentials, firestore
-from google.cloud import pubsub_v1
+from google.cloud import firestore, pubsub_v1
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 TMP_FILE_PATH = "/tmp/tmp.json"
@@ -20,10 +16,6 @@ def exp(request):
     print("Start")
 
     # Setup firestore connection
-    service_account_info = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-    creds = credentials.Certificate(json.loads(service_account_info))
-
-    app = firebase_admin.initialize_app(creds, name=str(time.time()))
 
     request_json = request.get_json(silent=True)
     if request_json:
@@ -38,7 +30,7 @@ def exp(request):
             print("Exit: Missing data in payload")
             return "", 200
 
-        database = firestore.client(app)
+        database = firestore.Client(project="archy-f06ed")
 
         collection = database.collection("servers").document(server_id).collection("users")
         doc_ref = collection.document(user_id)

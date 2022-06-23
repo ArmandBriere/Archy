@@ -1,6 +1,5 @@
 # pylint: disable=line-too-long
 
-import os
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 
@@ -22,10 +21,7 @@ def get_db_value(param):  # pragma: no cover
     return 0
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 @patch("random.randint")
 def test_exp(random_mock, database_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
@@ -66,10 +62,7 @@ def test_exp(random_mock, database_mock):
         },
     ],
 )
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 @patch("random.randint")
 def test_exp_missing_data(random_mock, database_mock, body):
 
@@ -86,11 +79,8 @@ def test_exp_missing_data(random_mock, database_mock, body):
     assert ("", 200) == result
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
 @patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
@@ -111,10 +101,7 @@ def test_exp_level_up(random_mock, database_mock):
     assert len(database_mock.return_value.batch.mock_calls) == 5
 
 
-@patch.dict(os.environ, {"GOOGLE_APPLICATION_CREDENTIALS": "{}"})
-@patch("firebase_admin.credentials.Certificate", MagicMock())
-@patch("firebase_admin.initialize_app", MagicMock())
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 def test_exp_new_user(database_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
     expected_set_value = {
@@ -142,7 +129,7 @@ def test_exp_new_user(database_mock):
     assert set_value == expected_set_value
 
 
-@patch("firebase_admin.firestore.client")
+@patch("google.cloud.firestore.Client")
 def test_update_user_ranks(database_mock):
     mock_users = [
         MagicMock(),
