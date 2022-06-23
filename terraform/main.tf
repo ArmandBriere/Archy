@@ -23,7 +23,7 @@ variable "secrets" {
   ]
 }
 
-variable "python_functions" {
+variable "http_functions" {
   type = map(any)
   default = {
     describe : {
@@ -74,6 +74,20 @@ variable "python_functions" {
       timeout     = 15
       memory      = 256
     }
+  }
+}
+
+variable "pubsub_functions" {
+  type = map(any)
+  default = {
+    privateMessage : {
+      description   = "Send a private message to a user"
+      runtime       = "go116"
+      entry_point   = "PrivateMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "private_message_discord"
+    },
   }
 }
 
