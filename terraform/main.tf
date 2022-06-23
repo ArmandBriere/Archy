@@ -74,6 +74,13 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
     }
+    go : {
+      description = "Template of a function in Golang"
+      runtime     = "go116"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
+    }
   }
 }
 
