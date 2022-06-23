@@ -1,3 +1,5 @@
+# pylint: disable=C0103
+
 import base64
 import json
 import random
