@@ -6,10 +6,8 @@ from datetime import datetime
 
 import firebase_admin
 import functions_framework
-import google.auth.transport.requests
-import google.oauth2.id_token
-import requests
 from firebase_admin import credentials, firestore
+from google.cloud import pubsub_v1
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 TMP_FILE_PATH = "/tmp/tmp.json"
@@ -23,17 +21,7 @@ def exp(request):
 
     # Setup firestore connection
     service_account_info = os.environ["GOOGLE_APPLICATION_CREDENTIALS"]
-    if os.path.exists(service_account_info):
-        with open(service_account_info, encoding="utf-8") as sercice_account_file:
-            creds = credentials.Certificate(json.load(sercice_account_file))
-    else:
-        creds = credentials.Certificate(json.loads(service_account_info))
-
-        # We create this file because fetch_id_token need the token as a file
-        # TODO: Change this when a new solution is found -> gcloud pubsub
-        with open(TMP_FILE_PATH, "w", encoding="utf-8") as tmp_file:
-            tmp_file.write(service_account_info)
-            os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = TMP_FILE_PATH
+    creds = credentials.Certificate(json.loads(service_account_info))
 
     app = firebase_admin.initialize_app(creds, name=str(time.time()))
 
@@ -140,19 +128,19 @@ def update_user_ranks(database, batch):
 
 def send_message_to_user(user_id: str, message: str):
     """Send a private message to a user by calling a cloud function."""
-    print(f"PM: Sending to user {user_id}")
+    print(f"Private Message: Sending to user {user_id}")
 
-    function_path = "https://us-central1-archy-f06ed.cloudfunctions.net/pm"
-    data = {"user_id": user_id, "message": message}
+    # Publisher setup
+    project_id = "archy-f06ed"
+    topic_id = "private_message_discord"
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_id)
 
-    # Auth token to invoque the PM message
-    function_request = google.auth.transport.requests.Request()
-    google_auth_token = google.oauth2.id_token.fetch_id_token(function_request, function_path)
-    requests.post(
-        function_path,
-        headers={
-            "Authorization": f"Bearer {google_auth_token}",
-            "Content-Type": "application/json",
-        },
-        json=data,
-    )
+    # Data must be a bytestring
+    data = {"UserId": user_id, "Message": message}
+    user_encode_data = json.dumps(data, indent=2).encode("utf-8")
+
+    # When you publish a message, the client returns a future.
+    future = publisher.publish(topic_path, user_encode_data)
+    print(future.result())
+    print("Private Message: Done")
