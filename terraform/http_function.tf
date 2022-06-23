@@ -36,7 +36,7 @@ resource "google_cloudfunctions_function" "http_function" {
   source_archive_object = google_storage_bucket_object.http_function_zip[each.key].name
 
   # Must match the function name in the cloud function `main.py` source code
-  entry_point = each.key
+  entry_point = each.value.entry_point
 
   # Timeout
   timeout = each.value.timeout

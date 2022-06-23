@@ -28,6 +28,7 @@ variable "http_functions" {
     describe : {
       description = "Describe a user"
       runtime     = "python39"
+      entry_point = "describe"
       timeout     = 15
       memory      = 256
       secrets     = []
@@ -35,6 +36,7 @@ variable "http_functions" {
     exp : {
       description = "Increase the experience of a user"
       runtime     = "python39"
+      entry_point = "exp"
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
@@ -42,6 +44,7 @@ variable "http_functions" {
     hello : {
       description = "Simple hello"
       runtime     = "python39"
+      entry_point = "hello"
       timeout     = 15
       memory      = 256
       secrets     = []
@@ -49,6 +52,7 @@ variable "http_functions" {
     js : {
       description = "Template of a function in javascript"
       runtime     = "nodejs16"
+      entry_point = "js"
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
@@ -56,6 +60,7 @@ variable "http_functions" {
     level : {
       description = "Return the level of a user"
       runtime     = "python39"
+      entry_point = "level"
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
@@ -63,6 +68,7 @@ variable "http_functions" {
     froge : {
       description = "Return a random froge from the server"
       runtime     = "nodejs16"
+      entry_point = "froge"
       timeout     = 15
       memory      = 512
       secrets     = ["DISCORD_TOKEN"]
@@ -70,6 +76,7 @@ variable "http_functions" {
     gif : {
       description = "Return the requested gif"
       runtime     = "python39"
+      entry_point = "gif"
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
@@ -77,6 +84,7 @@ variable "http_functions" {
     go : {
       description = "Template of a function in Golang"
       runtime     = "go116"
+      entry_point = "SendMessageWithReaction"
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
