@@ -67,10 +67,10 @@ variable "http_functions" {
     }
     froge : {
       description = "Return a random froge from the server"
-      runtime     = "nodejs16"
-      entry_point = "froge"
+      runtime     = "go116"
+      entry_point = "SendRandomFroge"
       timeout     = 15
-      memory      = 512
+      memory      = 256
       secrets     = ["DISCORD_TOKEN"]
     }
     gif : {
