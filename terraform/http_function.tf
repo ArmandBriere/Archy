@@ -53,7 +53,7 @@ resource "google_cloudfunctions_function" "http_function" {
 
   # Secrets
   dynamic "secret_environment_variables" {
-    for_each = var.secrets
+    for_each = each.value.secrets
     content {
       key     = secret_environment_variables.value
       secret  = secret_environment_variables.value

@@ -19,7 +19,6 @@ variable "secrets" {
   type = list(any)
   default = [
     "DISCORD_TOKEN",
-    "GOOGLE_APPLICATION_CREDENTIALS"
   ]
 }
 
@@ -31,42 +30,49 @@ variable "http_functions" {
       runtime     = "python39"
       timeout     = 15
       memory      = 256
+      secrets     = []
     },
     exp : {
       description = "Increase the experience of a user"
       runtime     = "python39"
       timeout     = 15
       memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     },
     hello : {
       description = "Simple hello"
       runtime     = "python39"
       timeout     = 15
       memory      = 256
+      secrets     = []
     },
     js : {
       description = "Template of a function in javascript"
       runtime     = "nodejs16"
       timeout     = 15
       memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     },
     level : {
       description = "Return the level of a user"
       runtime     = "python39"
       timeout     = 15
       memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     }
     froge : {
       description = "Return a random froge from the server"
       runtime     = "nodejs16"
       timeout     = 15
       memory      = 512
+      secrets     = ["DISCORD_TOKEN"]
     }
     gif : {
       description = "Return the requested gif"
       runtime     = "python39"
       timeout     = 15
       memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     }
   }
 }
