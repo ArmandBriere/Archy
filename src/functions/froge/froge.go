@@ -52,6 +52,7 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	randomFroge := frogeEmojis[rand.Intn(len(frogeEmojis))]
 
 	// Send the Froge
-	dg.ChannelMessageSend(channel.ID, "<:"+randomFroge.Name+":"+randomFroge.ID+">")
+	bigFrogeUrl := "https://cdn.discordapp.com/emojis/" + randomFroge.ID + ".webp?size=128&quality=lossless"
+	dg.ChannelMessageSend(channel.ID, bigFrogeUrl)
 
 }
