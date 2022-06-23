@@ -81,8 +81,8 @@ def publish_froge_of_the_day(event, _context) -> base64:
 
     # Decode envent data to get channel_id
     pubsub_message = base64.b64decode(event["data"]).decode("utf-8")
-    channel_id = json.loads(pubsub_message)["ChannelId"]
-    message = json.loads(pubsub_message)["Message"]
+    channel_id = json.loads(pubsub_message)["channel_id"]
+    message = json.loads(pubsub_message)["message"]
 
     print(f"Channel id is: {channel_id}")
 
@@ -111,7 +111,7 @@ def publish_froge_of_the_day(event, _context) -> base64:
     topic_path = publisher.topic_path(project_id, topic_id)
 
     # Encode data
-    data = {"ChannelId": channel_id, "Message": message, "Image": image_str}
+    data = {"channel_id": channel_id, "message": message, "image": image_str}
     encoded_data = json.dumps(data, indent=2).encode("utf-8")
 
     # Publish the data

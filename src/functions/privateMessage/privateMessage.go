@@ -21,9 +21,9 @@ type PubSubMessage struct {
 
 // Payload struct that is expected
 type Payload struct {
-	UserId  string
-	Message string
-	Image   string
+	UserId  string `json:"user_id"`
+	Message string `json:"message"`
+	Image   string `json:"image"`
 }
 
 func PrivateMessage(ctx context.Context, m PubSubMessage) error {
