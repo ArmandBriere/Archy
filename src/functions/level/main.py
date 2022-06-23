@@ -27,10 +27,9 @@ def level(request: flask.Request):
 
         if doc.exists:
             current_level = doc.get("level")
-            rank = doc.get("rank")
-            user_count = len(list(collection.get()))
+            rank = len(collection.where("total_exp", ">", doc.get("total_exp")).get()) + 1
 
-            return f"<@{name}> is level {current_level}! Rank {rank}/{user_count}"
+            return f"<@{name}> is level {current_level}! Rank {rank}"
 
         return f"... Wait a minute, Who is <@{name}>"
 

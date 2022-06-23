@@ -33,7 +33,7 @@ def test_exp(database_mock):
 
     result = level(request_mock)
 
-    assert f"<@{body['name']}> is level {current_level}! Rank {current_rank}/{number_of_users}" == result
+    assert f"<@{body['name']}> is level {current_level}! Rank {current_rank}" == result
 
 
 @patch("google.cloud.firestore.Client")
@@ -54,7 +54,7 @@ def test_exp_mentions(database_mock):
     ] * number_of_users
     result = level(request_mock)
 
-    assert f"<@{body['mentions'][0]}> is level {current_level}! Rank {current_rank}/{number_of_users}" == result
+    assert f"<@{body['mentions'][0]}> is level {current_level}! Rank {current_rank}" == result
 
 
 @patch("google.cloud.firestore.Client")

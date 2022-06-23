@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from functions.exp.main import DATETIME_FORMAT, exp, update_user_ranks
+from functions.exp.main import DATETIME_FORMAT, exp
 
 MODULE_PATH = "functions.exp.main"
 
@@ -108,7 +108,6 @@ def test_exp_new_user(database_mock):
         "total_exp": 0,
         "exp_toward_next_level": 0,
         "level": 0,
-        "rank": 1,
         "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
         "username": body["username"],
         "avatar_url": body["avatar_url"],
@@ -127,18 +126,3 @@ def test_exp_new_user(database_mock):
     set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
     assert ("", 200) == result
     assert set_value == expected_set_value
-
-
-@patch("google.cloud.firestore.Client")
-def test_update_user_ranks(database_mock):
-    mock_users = [
-        MagicMock(),
-        MagicMock(),
-    ]
-    database_mock.collection.return_value.order_by.return_value.stream.return_value = mock_users
-    batch_mock = database_mock.batch.return_value = MagicMock()
-
-    update_user_ranks(database_mock, batch_mock)
-
-    assert batch_mock.commit.call_count == 0
-    assert batch_mock.update.call_count == len(mock_users)

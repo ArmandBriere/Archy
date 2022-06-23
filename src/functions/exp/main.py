@@ -32,8 +32,8 @@ def exp(request: flask.Request):
 
         database = firestore.Client(project="archy-f06ed")
 
-        collection: CollectionReference = database.collection("servers").document(server_id).collection("users")
-        doc_ref = collection.document(user_id)
+        user_collection: CollectionReference = database.collection("servers").document(server_id).collection("users")
+        doc_ref = user_collection.document(user_id)
         doc = doc_ref.get()
 
         # Start a batch to write all changes at once
@@ -72,8 +72,6 @@ def exp(request: flask.Request):
 
                 batch.update(doc_ref, ({"exp_toward_next_level": firestore.Increment(added_exp)}))
 
-            update_user_ranks(database.collection("servers").document(server_id), batch)
-
             batch.update(
                 doc_ref,
                 (
@@ -87,13 +85,13 @@ def exp(request: flask.Request):
         # Create the user
         else:
             print(f"Create: New user {user_id}")
+
             batch.set(
                 doc_ref,
                 {
                     "total_exp": 0,
                     "exp_toward_next_level": 0,
                     "level": 0,
-                    "rank": len(collection.get()) + 1,
                     "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                     "username": username,
                     "avatar_url": avatar_url,
@@ -104,16 +102,6 @@ def exp(request: flask.Request):
 
     print("Done")
     return "", 200
-
-
-def update_user_ranks(database, batch):
-    """Update all user ranks by descending total_exp."""
-
-    users_ref = database.collection("users")
-    users = users_ref.order_by("total_exp", direction=firestore.Query.DESCENDING).stream()  # pylint: disable=E1101
-
-    for index, user in enumerate(users):
-        batch.update(user.reference, {"rank": index + 1})
 
 
 def send_message_to_user(user_id: str, message: str):
