@@ -6,7 +6,8 @@ import random
 from io import BytesIO
 
 import requests
-from google.cloud import pubsub_v1
+from google.cloud.pubsub_v1 import PublisherClient
+from google.cloud.pubsub_v1.publisher.futures import Future
 from PIL import Image, ImageDraw, ImageFont
 
 IMAGE_FOLDER = "img/"
@@ -107,8 +108,8 @@ def publish_froge_of_the_day(event, _context) -> base64:
     # Google publisher config
     project_id = "archy-f06ed"
     topic_id = "channel_message_discord"
-    publisher = pubsub_v1.PublisherClient()
-    topic_path = publisher.topic_path(project_id, topic_id)
+    publisher = PublisherClient()
+    topic_path: str = publisher.topic_path(project_id, topic_id)
 
     # Encode data
     data = {"channel_id": channel_id, "message": message, "image": image_str}
@@ -116,6 +117,7 @@ def publish_froge_of_the_day(event, _context) -> base64:
 
     # Publish the data
     print("Publishing data")
-    publisher.publish(topic_path, encoded_data)
+    future: Future = publisher.publish(topic_path, encoded_data)
 
-    print("Done!")
+    print(f"Message id: {future.result()}")
+    print(f"Published message to {topic_path}.")

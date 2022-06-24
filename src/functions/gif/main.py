@@ -1,4 +1,5 @@
 import functions_framework
+from typing import Any, Optional
 
 DEFAULT_GIF = "https://tenor.com/view/frog-multiply-gif-25342428"
 UNKNOWN_GIF = "https://tenor.com/view/bof-i-dont-mind-i-dont-understand-why-jean-dujardin-oss117-gif-20383956"
@@ -12,7 +13,8 @@ gifs = {
 @functions_framework.http
 def gif(request):
     """HTTP Cloud Function."""
-    request_json = request.get_json(silent=True)
+
+    request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
         params = request_json.get("params", [""])
         if len(params) == 0:

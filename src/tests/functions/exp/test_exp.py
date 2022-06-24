@@ -20,23 +20,22 @@ def get_db_value(param):  # pragma: no cover
 
     return 0
 
-
-@patch("google.cloud.firestore.Client")
+@patch("src.functions.exp.main.Client")
 @patch("random.randint")
-def test_exp(random_mock, database_mock):
+def test_exp(random_mock, client_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
+    client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_db_value
     )
     random_mock.return_value = 50
 
     result = exp(request_mock)
 
-    assert ("", 200) == result
+    assert (None, 200) == result
 
 
 @pytest.mark.parametrize(
@@ -76,7 +75,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
 
     result = exp(request_mock)
 
-    assert ("", 200) == result
+    assert (None, 200) == result
 
 
 @patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
@@ -96,7 +95,7 @@ def test_exp_level_up(random_mock, database_mock):
 
     result = exp(request_mock)
 
-    assert ("", 200) == result
+    assert (None, 200) == result
     assert database_mock.return_value.batch.call_count == 1
     assert len(database_mock.return_value.batch.mock_calls) == 5
 
@@ -124,5 +123,5 @@ def test_exp_new_user(database_mock):
     result = exp(request_mock)
 
     set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
-    assert ("", 200) == result
+    assert (None, 200) == result
     assert set_value == expected_set_value

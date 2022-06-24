@@ -17,6 +17,7 @@ var Payload struct {
 	ServerId  string `json:"server_id"`
 }
 
+// Send a Random Froge emoji from the server to the selected channel
 func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	// Parse body to get Payload
 	var payload = Payload
