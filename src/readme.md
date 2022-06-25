@@ -36,7 +36,7 @@ import functions_framework
 @functions_framework.http
 def hello(request):
     """HTTP Cloud Function."""
-    request_json = request.get_json(silent=True)
+    request_json: Optional[Any] = request.get_json(silent=True)
     return "Hello world!"
 ```
 

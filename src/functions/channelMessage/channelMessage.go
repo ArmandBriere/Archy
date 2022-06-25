@@ -26,7 +26,9 @@ type Payload struct {
 	Image     string `json:"image"`
 }
 
+// Unmarshal received context and call proper function that send message
 func ChannelMessage(ctx context.Context, m PubSubMessage) error {
+
 	log.Printf("Starting!")
 
 	// Unmarshal data to a valid payload
@@ -36,7 +38,9 @@ func ChannelMessage(ctx context.Context, m PubSubMessage) error {
 	return SendChannelMessage(&payload)
 }
 
+// Send a message to a specific Discord channel
 func SendChannelMessage(payload *Payload) error {
+
 	// Instanciate discord bot
 	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {

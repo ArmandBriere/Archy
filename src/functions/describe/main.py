@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 import functions_framework
 
 
@@ -5,7 +7,7 @@ import functions_framework
 def describe(request):
     """Describe the user in mentions or the author."""
 
-    request_json = request.get_json(silent=True)
+    request_json: Optional[Any] = request.get_json(silent=True)
 
     if request_json:
         name = request_json.get("name", None)

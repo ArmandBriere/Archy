@@ -13,6 +13,8 @@ var Payload struct {
 	ChannelId string `json:"channel_id"`
 }
 
+// Send a message and react on it
+// This is a template function that show discord interaction
 func SendMessageWithReaction(w http.ResponseWriter, r *http.Request) {
 	// Parse body to get Payload
 	var payload = Payload
