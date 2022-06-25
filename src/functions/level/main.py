@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 import flask
 import functions_framework
@@ -9,7 +9,7 @@ from google.cloud.firestore_v1.document import DocumentReference
 
 
 @functions_framework.http
-def level(request: flask.Request) -> tuple[str, int]:
+def level(request: flask.Request) -> Tuple[str, int]:
     """Return the level of a user."""
 
     request_json: Optional[Any] = request.get_json(silent=True)

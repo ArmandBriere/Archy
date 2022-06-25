@@ -1,7 +1,7 @@
 import json
 import random
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
 import flask
 import functions_framework
@@ -19,7 +19,7 @@ TMP_FILE_PATH = "/tmp/tmp.json"
 
 
 @functions_framework.http
-def exp(request: flask.Request) -> tuple[None, int]:
+def exp(request: flask.Request) -> Tuple[None, int]:
     """Increase the user experience on firestore."""
 
     print("Start")
