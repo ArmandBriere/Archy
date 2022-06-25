@@ -20,7 +20,8 @@ def get_db_value(param):  # pragma: no cover
 
     return 0
 
-@patch("src.functions.exp.main.Client")
+
+@patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp(random_mock, client_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
@@ -61,7 +62,7 @@ def test_exp(random_mock, client_mock):
         },
     ],
 )
-@patch("google.cloud.firestore.Client")
+@patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp_missing_data(random_mock, database_mock, body):
 
@@ -79,7 +80,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
 
 
 @patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
-@patch("google.cloud.firestore.Client")
+@patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
@@ -100,7 +101,7 @@ def test_exp_level_up(random_mock, database_mock):
     assert len(database_mock.return_value.batch.mock_calls) == 5
 
 
-@patch("google.cloud.firestore.Client")
+@patch(f"{MODULE_PATH}.Client")
 def test_exp_new_user(database_mock):
     body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
     expected_set_value = {

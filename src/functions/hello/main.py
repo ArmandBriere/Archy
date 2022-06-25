@@ -1,5 +1,6 @@
-import functions_framework
 from typing import Any, Optional
+
+import functions_framework
 
 
 @functions_framework.http
@@ -11,6 +12,6 @@ def hello(request) -> tuple[str, int]:
     if request_json:
         name = request_json.get("name", None)
         if name:
-            return f"Hello <@{name}>!"
+            return f"Hello <@{name}>!", 200
 
     return "Hello !", 200

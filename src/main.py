@@ -5,12 +5,12 @@ import re
 
 import google.oauth2.id_token
 import requests
-from requests import Response
 from discord import Embed
 from discord.ext.commands import Bot, Context
 from discord.message import Message as message_type
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request
+from requests import Response
 
 load_dotenv()
 

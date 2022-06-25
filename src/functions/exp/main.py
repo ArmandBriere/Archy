@@ -6,9 +6,9 @@ from typing import Any, Optional
 import flask
 import functions_framework
 from google.cloud.firestore import Increment
-from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.batch import WriteBatch
+from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.pubsub_v1 import PublisherClient

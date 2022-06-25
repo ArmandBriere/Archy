@@ -1,5 +1,6 @@
-import functions_framework
 from typing import Any, Optional
+
+import functions_framework
 
 DEFAULT_GIF = "https://tenor.com/view/frog-multiply-gif-25342428"
 UNKNOWN_GIF = "https://tenor.com/view/bof-i-dont-mind-i-dont-understand-why-jean-dujardin-oss117-gif-20383956"

@@ -1,4 +1,5 @@
 from typing import Any, Optional
+
 import functions_framework
 
 
