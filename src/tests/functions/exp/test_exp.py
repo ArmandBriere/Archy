@@ -83,7 +83,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
-    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
+    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "message_count": 0, "server_id": 123456789}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -98,7 +98,7 @@ def test_exp_level_up(random_mock, database_mock):
 
     assert ("", 200) == result
     assert database_mock.return_value.batch.call_count == 1
-    assert len(database_mock.return_value.batch.mock_calls) == 5
+    assert len(database_mock.return_value.batch.mock_calls) == 6
 
 
 @patch(f"{MODULE_PATH}.Client")

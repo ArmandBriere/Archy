@@ -66,6 +66,8 @@ def exp(request: flask.Request) -> Tuple[None, int]:
 
             added_exp: int = random.randint(45, 75)
 
+            batch.update(doc_ref, ({"message_count": Increment(1)}))
+
             if added_exp >= exp_needed_to_level_up:
                 print(f"Update: level up user {user_id} to level {level+1}")
 
