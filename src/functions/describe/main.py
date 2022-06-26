@@ -14,8 +14,11 @@ def describe(request):
         mentions = request_json.get("mentions", None)
 
         # Special user are protected. This will go with firebase in the future
-        if mentions and mentions[0] == 135048445097410560:
-            return "This person is awesome!"
+        if mentions:
+            if mentions[0] == 135048445097410560:
+                return "This person is awesome!"
+            return f"<@{mentions[0]}> is a big ****!", 200
 
-        return f"<@{mentions[0]}> is a big ****!"
-    return f"You are a big ****!"
+        return f"You are a big ****! <@{name}>", 200
+
+    return "I don't even know who you are!", 200
