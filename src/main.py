@@ -31,7 +31,7 @@ async def on_message(message: message_type) -> None:
     LOGGER.warning("Message from %s is: %s", message.author, message.content)
 
     ctx: Context = await bot.get_context(message)
-    if ctx.invoked_with and ctx.guild.id == 964701887540645908:
+    if ctx.invoked_with:
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
         response: Response = requests.post(
