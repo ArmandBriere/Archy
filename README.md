@@ -9,7 +9,7 @@
   <a href="https://github.com/ArmandBriere/archy/issues">
     <img src="https://img.shields.io/github/issues/ArmandBriere/archy" alt="GitHub issues">
   </a>
-  <a href="https://github.com/open-sauced/open-sauced/releases">
+  <a href="https://github.com/ArmandBriere/archy/releases">
     <img src="https://img.shields.io/github/v/release/ArmandBriere/archy" alt="GitHub Release">
   </a>
   <a href="https://discord.gg/y76YCwFp3d">
