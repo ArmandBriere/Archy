@@ -101,6 +101,7 @@ def exp(request: flask.Request) -> Tuple[None, int]:
                     "total_exp": 0,
                     "exp_toward_next_level": 0,
                     "level": 0,
+                    "message_count": 0,
                     "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                     "username": username,
                     "avatar_url": avatar_url,
