@@ -22,6 +22,7 @@ FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot")
 
 # Gcloud auth settings
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./key.json"
 request = Request()
 
 
