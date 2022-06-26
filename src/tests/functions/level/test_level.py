@@ -18,7 +18,7 @@ def get_db_value(param):  # pragma: no cover
 
 @patch(f"{MODULE_PATH}.Client")
 def test_exp(database_mock):
-    body = {"name": "Hello, World!"}
+    body = {"user_id": 1234}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -35,12 +35,12 @@ def test_exp(database_mock):
 
     result = level(request_mock)
 
-    assert (f"<@{body['name']}> is level {current_level}! Rank {current_rank}", 200) == result
+    assert (f"<@{body['user_id']}> is level {current_level}! Rank {current_rank}", 200) == result
 
 
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_mentions(database_mock):
-    body = {"name": "Hello, World!", "mentions": ["Archy"]}
+    body = {"user_id": "Hello, World!", "mentions": ["Archy"]}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -61,7 +61,7 @@ def test_exp_mentions(database_mock):
 
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_no_level(database_mock):
-    body = {"name": "Hello, World!"}
+    body = {"user_id": 1234}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -71,12 +71,12 @@ def test_exp_no_level(database_mock):
     )
     result = level(request_mock)
 
-    assert (f"... Wait a minute, Who is <@{body['name']}>", 200) == result
+    assert (f"... Wait a minute, Who is <@{body['user_id']}>", 200) == result
 
 
 @patch(f"{MODULE_PATH}.Client", MagicMock())
 def test_exp_no_name():
-    body = {"ranom": "value"}
+    body = {"random": "value"}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
