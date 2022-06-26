@@ -35,7 +35,7 @@ def exp(request: flask.Request) -> Tuple[None, int]:
 
         if not user_id or not username or not server_id:
             print("Exit: Missing data in payload")
-            return None, 200
+            return "", 200
 
         database: Client = Client(project="archy-f06ed")
 
@@ -57,7 +57,7 @@ def exp(request: flask.Request) -> Tuple[None, int]:
             # Only get exp once per minute
             if time_diff_in_sec < 60:
                 print(f"Exit: Too soon - {(60 - time_diff_in_sec):.0f} sec!")
-                return None, 200
+                return "", 200
 
             exp_toward_next_level: int = doc.get("exp_toward_next_level")
             level: int = doc.get("level")
@@ -108,7 +108,7 @@ def exp(request: flask.Request) -> Tuple[None, int]:
         batch.commit()
 
     print("Done")
-    return None, 200
+    return "", 200
 
 
 def send_message_to_user(user_id: str, message: str) -> None:
@@ -123,7 +123,7 @@ def send_message_to_user(user_id: str, message: str) -> None:
     topic_path: str = publisher.topic_path(project_id, topic_id)
 
     # Data must be a bytestring
-    data = {"UserId": user_id, "Message": message}
+    data = {"user_id": user_id, "message": message}
     user_encode_data: str = json.dumps(data, indent=2).encode("utf-8")
 
     # When you publish a message, the client returns a future.

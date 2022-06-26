@@ -36,7 +36,7 @@ def test_exp(random_mock, client_mock):
 
     result = exp(request_mock)
 
-    assert (None, 200) == result
+    assert ("", 200) == result
 
 
 @pytest.mark.parametrize(
@@ -76,7 +76,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
 
     result = exp(request_mock)
 
-    assert (None, 200) == result
+    assert ("", 200) == result
 
 
 @patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
@@ -96,7 +96,7 @@ def test_exp_level_up(random_mock, database_mock):
 
     result = exp(request_mock)
 
-    assert (None, 200) == result
+    assert ("", 200) == result
     assert database_mock.return_value.batch.call_count == 1
     assert len(database_mock.return_value.batch.mock_calls) == 5
 
@@ -124,5 +124,5 @@ def test_exp_new_user(database_mock):
     result = exp(request_mock)
 
     set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
-    assert (None, 200) == result
+    assert ("", 200) == result
     assert set_value == expected_set_value

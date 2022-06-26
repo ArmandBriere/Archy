@@ -13,8 +13,8 @@ if __name__ == "__main__":
     topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
 
     data = {
-        "ChannelId": "<INSERT_CHANNEL_ID>",
-        "Message": "Channel message!",
+        "channel_id": "<INSERT_CHANNEL_ID>",
+        "message": "Channel message!",
     }
 
     # Data must be a bytestring
