@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Generated files
+key.json
+
+# Terraform files
+.terraform/
+*.tfstate*

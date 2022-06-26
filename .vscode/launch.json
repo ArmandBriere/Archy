@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "python": "${workspaceFolder}/src/env/archy/bin/python",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src/",
+            "justMyCode": true
+        },
+        {
+            "name": "Function - Hello",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/functions/hello",
+            "module": "functions_framework",
+            "args": [
+                "--target",
+                "hello",
+                "--debug"
+            ]
+        }
+    ]
+}

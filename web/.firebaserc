@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "archy-f06ed": {
+      "hosting": {
+        "web": [
+          "archybot"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "archy-f06ed"
+  }
+}
