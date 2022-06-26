@@ -14,27 +14,27 @@ def level(request: flask.Request) -> Tuple[str, int]:
 
     request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
-        name = request_json.get("name", None)
+        username = request_json.get("username", None)
         server_id = request_json.get("server_id", None)
 
         # If a user is mentionned, get that user's level
         mentions = request_json.get("mentions", None)
         if mentions and mentions[0]:
-            name = str(mentions[0])
-        if not name:
+            username = str(mentions[0])
+        if not username:
             return ":|", 200
 
         database: Client = Client(project="archy-f06ed")
         collection: CollectionReference = database.collection("servers").document(server_id).collection("users")
-        doc_ref: DocumentReference = collection.document(name)
+        doc_ref: DocumentReference = collection.document(username)
         doc: DocumentSnapshot = doc_ref.get()
 
         if doc.exists:
             current_level: int = doc.get("level")
             rank: int = len(collection.where("total_exp", ">", doc.get("total_exp")).get()) + 1
 
-            return f"<@{name}> is level {current_level}! Rank {rank}", 200
+            return f"<@{username}> is level {current_level}! Rank {rank}", 200
 
-        return f"... Wait a minute, Who is <@{name}>", 200
+        return f"... Wait a minute, Who is <@{username}>", 200
 
     return ":|", 200
