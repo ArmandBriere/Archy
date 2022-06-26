@@ -15,7 +15,7 @@ def describe(request):
 
         # Special user are protected. This will go with firebase in the future
         if mentions and mentions[0] == 135048445097410560:
-            return "Cette personne est formidable !"
+            return "This person is awesome!"
 
-        return f"C'est un bon gros **** ce <@{mentions[0]}> !"
-    return f"T'es un bon gros **** ! <@{name}> !"
+        return f"<@{mentions[0]}> is a big ****!"
+    return f"You are a big ****!"
