@@ -1,15 +1,39 @@
-# tox
 
-Tox is used to automate testing
+# Cloud Functions
 
-Simply run the `tox` command to execute all the test script in the `tox.ini` file
+## Run locally
 
-- `pytest` -> Unit test framework
-- `black` -> Code formatter
-- `pylint` -> Static code analysis tool for lint
+```bash 
+# pwd = functions/exp
+functions-framework --target exp
+```
+
+Then you can POST to the correct URL
+
+```bash
+curl -m 70 -X POST localhost:8080/exp -H "Authorization:bearer $(gcloud auth print-identity-token)" \
+-H "Content-Type:application/json" \
+-d '{"name": "tmp"}'
+```
+
+Call a local function
+
+```bash
+curl -H "Authorization: bearer $(./google-cloud-sdk/bin/gcloud auth print-identity-token)" https://us-central1-archy-f06ed.cloudfunctions.net/archy_py
+```
+
+# Testing & lint
+
+[Tox](https://tox.wiki/en/latest/) is used to automate testing.
+
+Simply run the `tox` command to execute all the test script in the `tox.ini` file.
+
+- `pytest` -> Unit test framework.
+- `black` -> Code formatter.
+- `pylint` -> Static code analysis tool for lint.
 - `isort` -> isort your imports, so you don't have to.
 
-You can run the script by hand if you want
+You can run the script by hand if you want:
 
 ```bash
 python -m pytest --rootdir .
@@ -17,8 +41,6 @@ black -l 120 .
 pylint functions tests main.py
 isort .
 ```
-
-# Testing
 
 ## Requirements
 
@@ -31,18 +53,20 @@ We are writting tests for the serverless cloud functions. Those are http endpoin
 
 ```py
 import functions_framework
+from typing import Tuple
 
 
 @functions_framework.http
-def hello(request):
+def hello(request) -> Tuple[str, int]:
     """HTTP Cloud Function."""
+
     request_json: Optional[Any] = request.get_json(silent=True)
-    return "Hello world!"
+    return "Hello world!", 200
 ```
 
 With google cloud function, the request is a [Flask Request](https://tedboy.github.io/flask/generated/generated/flask.Request.html)
 
-An easy solution to test thoses functions is to use a mock of the request object
+An easy solution to test thoses functions is to use a mock of the request object.
 
 ## Mock
 
@@ -92,12 +116,12 @@ def test_hello():
 
     result = hello(request_mock)
 
-    assert f"Hello world!" == result
+    assert ("Hello world!", 200) == result
 ```
 
 ## How to run test
 
-The tests can be run in the cmdline or with VsCode.
+The tests can be run in the command line or with VsCode.
 
 The python path is defined in the `pytest.ini` file, run this command to run the tests:
 
@@ -105,4 +129,4 @@ The python path is defined in the `pytest.ini` file, run this command to run the
 pytest
 ```
 
-In VsCode, open a test file and select the testing menu on the sidenav
+In VsCode, open a test file and select the testing menu on the sidenav.
