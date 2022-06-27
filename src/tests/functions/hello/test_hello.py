@@ -4,18 +4,18 @@ from functions.hello.main import hello
 
 
 def test_hello():
-    body = {"name": "Hello, World!"}
+    body = {"user_id": "Hello, World!"}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
     result = hello(request_mock)
 
-    assert (f"Hello <@{body['name']}>!", 200) == result
+    assert (f"Hello <@{body['user_id']}>!", 200) == result
 
 
 def test_hello_empty_name():
-    body = {"name": ""}
+    body = {"user_id": ""}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
