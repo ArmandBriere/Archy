@@ -1,8 +1,10 @@
+from datetime import datetime
 import json
 import requests
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 SERVER_ID = 755106635885838477
 
@@ -20,6 +22,7 @@ class User:
         self.avatar_id = avatar_id
         self.message_count = message_count
         self.avatar_url = f"{DISCORD_IMAGE_URL_PREFIX}{self.user_id}/{self.avatar_id}{DISCORD_IMAGE_URL_SUFIX}"
+        self.last_message_timestamp = datetime.now().strftime(DATETIME_FORMAT)
 
     def get_data(self):
         data = {
@@ -29,6 +32,7 @@ class User:
             "total_exp": self.total_exp,
             "message_count": self.message_count,
             "avatar_url": self.avatar_url,
+            "last_message_timestamp": self.last_message_timestamp
         }
         return data
 
@@ -42,7 +46,12 @@ if __name__ == "__main__":
         response = requests.get(f"https://mee6.xyz/api/plugins/levels/leaderboard/{SERVER_ID}?page={str(page)}")
 
         data = response.json()
-        with open("data.json", "w") as file:
+
+        if len(data["players"]) == 0:
+            print("Exit: No more data")
+            exit()
+
+        with open(f"data-page{page}.json", "w") as file:
             json.dump(response.json(), file)
 
         database = firestore.client()
