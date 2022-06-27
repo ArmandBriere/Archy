@@ -1,4 +1,3 @@
-"""Tests for !gif command"""
 import os
 from unittest.mock import MagicMock, patch
 
@@ -22,7 +21,7 @@ def test_gif_with_param(body):
 
     result = gif(request_mock)
 
-    assert result == gifs[body["params"][0]]
+    assert result == (gifs[body["params"][0]], 200)
 
 
 @patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
@@ -50,7 +49,7 @@ def test_gif_no_body():
 
     result = gif(request_mock)
 
-    assert result == DEFAULT_GIF
+    assert result == (DEFAULT_GIF, 200)
 
 
 @patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
@@ -63,7 +62,7 @@ def test_gif_empty_params():
 
     result = gif(request_mock)
 
-    assert result == DEFAULT_GIF
+    assert result == (DEFAULT_GIF, 200)
 
 
 def test_success_200():

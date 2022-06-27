@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Any, Optional
 
 import functions_framework
 import requests
@@ -22,15 +23,15 @@ def gif(request):
         api_key = os.environ["TENOR_API_TOKEN"]
 
         if len(params) == 0:
-            return DEFAULT_GIF
+            return DEFAULT_GIF, 200
         if params[0].lower() in gifs:
-            return gifs[params[0]]
+            return gifs[params[0]], 200
         api_request = requests.get(
             f"https://tenor.googleapis.com/v2/search?q={params[0].lower()}&key={api_key}&client_key=Archy&limit=1"
         )
 
-        return get_gif_from_api(api_request.status_code, api_request.content)
-    return DEFAULT_GIF
+        return get_gif_from_api(api_request.status_code, api_request.content), 200
+    return DEFAULT_GIF, 200
 
 
 def get_gif_from_api(api_request_status, api_json):
