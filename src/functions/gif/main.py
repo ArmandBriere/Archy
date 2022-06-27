@@ -1,4 +1,3 @@
-"""Cloud function for the !gif command"""
 import json
 import os
 
@@ -16,8 +15,8 @@ gifs = {
 
 @functions_framework.http
 def gif(request):
-    """HTTP Cloud Function."""
-    request_json = request.get_json(silent=True)
+    """Return the requested gif or the first found with the tenor API."""
+    request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
         params = request_json.get("params", [""])
         api_key = os.environ["TENOR_API_TOKEN"]
@@ -29,9 +28,6 @@ def gif(request):
         api_request = requests.get(
             f"https://tenor.googleapis.com/v2/search?q={params[0].lower()}&key={api_key}&client_key=Archy&limit=1"
         )
-        # https://g.tenor.com/v1/search?q={params[0].lower()}&key={api_key}&limit=1
-
-        # print(api_request.content)
 
         return get_gif_from_api(api_request.status_code, api_request.content)
     return DEFAULT_GIF
