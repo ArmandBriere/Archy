@@ -1,3 +1,4 @@
+"""Cloud function for the !gif command"""
 import json
 import os
 
@@ -28,12 +29,20 @@ def gif(request):
             f"https://tenor.googleapis.com/v2/search?q={params[0].lower()}&key={api_key}&client_key=Archy&limit=1"
         )
         # https://g.tenor.com/v1/search?q={params[0].lower()}&key={api_key}&limit=1
-        if api_request.status_code == 200:
-            top_gif = json.loads(api_request.content)
-            try:
-                url_gif = top_gif["results"][0]["media_formats"]["gif"]["url"]
-                return url_gif
-            except (IndentationError, KeyError):
-                return "https://tenor.com/view/im-dead-vanilla-patay-na-ako-dead-nako-patay-ako-gif-22020482"
-        return UNKNOWN_GIF
+
+        # print(api_request.content)
+
+        return get_gif_from_api(api_request.status_code, api_request.content)
     return DEFAULT_GIF
+
+
+def get_gif_from_api(api_request_status, api_json):
+    """Function that deals with the api request result"""
+    if api_request_status == 200:
+        top_gif = json.loads(api_json)
+        try:
+            url_gif = top_gif["results"][0]["media_formats"]["gif"]["url"]
+            return url_gif
+        except (IndentationError, KeyError):
+            return "https://tenor.com/view/im-dead-vanilla-patay-na-ako-dead-nako-patay-ako-gif-22020482"
+    return UNKNOWN_GIF
