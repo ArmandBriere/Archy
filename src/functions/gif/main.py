@@ -21,6 +21,7 @@ def gif(request):
     if request_json:
         params = request_json.get("params", [""])
         api_key = os.environ["TENOR_API_TOKEN"]
+
         if len(params) == 0:
             return DEFAULT_GIF
         if params[0].lower() in gifs:
