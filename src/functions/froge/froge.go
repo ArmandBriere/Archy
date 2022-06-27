@@ -52,8 +52,14 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().Unix())
 	randomFroge := frogeEmojis[rand.Intn(len(frogeEmojis))]
 
+	// Select extension to enable gif support
+	frogeExtension := ".webp"
+	if randomFroge.Animated {
+		frogeExtension = ".gif"
+	}
+
 	// Send the Froge
-	bigFrogeUrl := "https://cdn.discordapp.com/emojis/" + randomFroge.ID + ".webp?size=128&quality=lossless"
+	bigFrogeUrl := "https://cdn.discordapp.com/emojis/" + randomFroge.ID + frogeExtension
 	dg.ChannelMessageSend(channel.ID, bigFrogeUrl)
 
 }
