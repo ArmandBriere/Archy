@@ -33,10 +33,10 @@ def test_gif_search():
     request_mock.get_json.return_value = body
 
     result = gif(request_mock)
-    result = "https://c.tenor.com/JLwgRWNpmYYAAAAC/confusion-chicken.gif"
-    url_part = "https://c.tenor.com/"
 
-    assert url_part in result
+    exp_result = (UNKNOWN_GIF, 200)
+
+    assert exp_result == result
 
 
 @patch.dict(os.environ, {"TENOR_API_TOKEN": "{}"})
