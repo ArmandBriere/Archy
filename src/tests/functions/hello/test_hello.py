@@ -11,7 +11,7 @@ def test_hello():
 
     result = hello(request_mock)
 
-    assert f"Hello <@{body['name']}>!" == result
+    assert (f"Hello <@{body['name']}>!", 200) == result
 
 
 def test_hello_empty_name():
@@ -22,7 +22,7 @@ def test_hello_empty_name():
 
     result = hello(request_mock)
 
-    assert "Hello !" == result
+    assert ("Hello !", 200) == result
 
 
 def test_hello_missing_name():
@@ -33,4 +33,4 @@ def test_hello_missing_name():
 
     result = hello(request_mock)
 
-    assert "Hello !" == result
+    assert ("Hello !", 200) == result
