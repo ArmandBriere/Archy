@@ -37,27 +37,30 @@ if __name__ == "__main__":
     creds = credentials.Certificate("../src/key.json")
     firebase_admin.initialize_app(creds)
 
-    response = requests.get(f"https://mee6.xyz/api/plugins/levels/leaderboard/{SERVER_ID}")
+    counter = 0
+    for page in range(10):
+        response = requests.get(f"https://mee6.xyz/api/plugins/levels/leaderboard/{SERVER_ID}?page={str(page)}")
 
-    data = response.json()
-    with open("data.json", "w") as file:
-        json.dump(response.json(), file)
+        data = response.json()
+        with open("data.json", "w") as file:
+            json.dump(response.json(), file)
 
-    database = firestore.client()
+        database = firestore.client()
 
-    for user in data["players"]:
-        user_id = user["id"]
-        username = user["username"]
-        exp_toward_next_level = user["detailed_xp"][0]
-        level = user["level"]
-        total_exp = user["detailed_xp"][2]
-        message_count = user["message_count"]
-        avatar_id = user["avatar"]
+        for user in data["players"]:
+            user_id = user["id"]
+            username = user["username"]
+            exp_toward_next_level = user["detailed_xp"][0]
+            level = user["level"]
+            total_exp = user["detailed_xp"][2]
+            message_count = user["message_count"]
+            avatar_id = user["avatar"]
 
-        current_user = User(user_id, username, exp_toward_next_level, level, total_exp, message_count, avatar_id)
+            current_user = User(user_id, username, exp_toward_next_level, level, total_exp, message_count, avatar_id)
 
-        print(f"Addind data for {username}", end="")
-        database.collection("servers").document(SERVER_ID).collection("users").document(current_user.user_id).set(
-            current_user.get_data()
-        )
-        print(" - Done")
+            print(f"{counter} - Adding data for {username}", end="")
+            database.collection("servers").document(str(SERVER_ID)).collection("users").document(current_user.user_id).set(
+                current_user.get_data()
+            )
+            print(" - Done")
+            counter += 1
