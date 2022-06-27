@@ -1,86 +1,144 @@
 
 variable "project_id" {
-    default = "archy-f06ed"
+  default = "archy-f06ed"
+}
+
+variable "project_name" {
+  default = "archy"
 }
 
 variable "region" {
-    default = "us-central1"
+  default = "us-central1"
 }
 
 variable "service_account_email" {
-    default = "archyapi@archy-f06ed.iam.gserviceaccount.com"
+  default = "archyapi@archy-f06ed.iam.gserviceaccount.com"
 }
 
 variable "secrets" {
-  type = list
+  type = list(any)
   default = [
     "DISCORD_TOKEN",
-    "GOOGLE_APPLICATION_CREDENTIALS",
-    "TENOR_API_TOKEN"
+    "TENOR_API_TOKEN",
   ]
 }
 
-variable "python_functions" {
-  type = map
+variable "http_functions" {
+  type = map(any)
   default = {
-    describe: {
+    describe : {
       description = "Describe a user"
-      runtime = "python39"
-      timeout = 15
-      memory = 256
+      runtime     = "python39"
+      entry_point = "describe"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
     },
-    exp: {
+    exp : {
       description = "Increase the experience of a user"
-      runtime = "python39"
-      timeout = 15
-      memory = 256
+      runtime     = "python39"
+      entry_point = "exp"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     },
-    hello: {
+    hello : {
       description = "Simple hello"
-      runtime = "python39"
-      timeout = 15
-      memory = 256
+      runtime     = "python39"
+      entry_point = "hello"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
     },
-    js: {
+    js : {
       description = "Template of a function in javascript"
-      runtime = "nodejs16"
-      timeout = 15
-      memory = 256
+      runtime     = "nodejs16"
+      entry_point = "js"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     },
-    level: {
+    level : {
       description = "Return the level of a user"
-      runtime = "python39"
-      timeout = 15
-      memory = 256
+      runtime     = "python39"
+      entry_point = "level"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     }
-    froge: {
+    froge : {
       description = "Return a random froge from the server"
-      runtime = "nodejs16"
-      timeout = 15
-      memory = 512
+      runtime     = "go116"
+      entry_point = "SendRandomFroge"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     }
-    gif: {
+    gif : {
       description = "Return the requested gif"
-      runtime = "python39"
-      timeout = 15
-      memory = 256
+      runtime     = "python39"
+      entry_point = "gif"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN", "TENOR_API_TOKEN"]
     }
+    go : {
+      description = "Template of a function in Golang"
+      runtime     = "go116"
+      entry_point = "SendMessageWithReaction"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
+    }
+  }
+}
+
+variable "pubsub_functions" {
+  type = map(any)
+  default = {
+    privateMessage : {
+      description   = "Send a private message to a user"
+      runtime       = "go116"
+      entry_point   = "PrivateMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "private_message_discord"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    frogeOfTheDay : {
+      description   = "Publish the froge of the day"
+      runtime       = "python39"
+      entry_point   = "publish_froge_of_the_day"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "froge_of_the_day"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    channelMessage : {
+      description   = "Send a message to a channel"
+      runtime       = "go116"
+      entry_point   = "ChannelMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "channel_message_discord"
+      secrets       = ["DISCORD_TOKEN"]
+    },
   }
 }
 
 # Provider to connect to Google
 provider "google" {
-    project = var.project_id
-    region  = var.region
+  project = var.project_id
+  region  = var.region
 }
 
 # Bucket to store the function code
 resource "google_storage_bucket" "function_bucket" {
-    name     = "${var.project_id}-function"
-    location = var.region
+  name     = "${var.project_id}-function"
+  location = var.region
 }
 
 resource "google_storage_bucket" "input_bucket" {
-    name     = "${var.project_id}-input"
-    location = var.region
+  name     = "${var.project_id}-input"
+  location = var.region
 }
