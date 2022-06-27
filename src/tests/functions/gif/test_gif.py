@@ -86,22 +86,22 @@ def test_success_200():
                 ]
             }"""
 
-    result = "https://c.tenor.com/HvtIOMNuwhYAAAAC/wat-what.gif"
+    expected_result = "https://c.tenor.com/HvtIOMNuwhYAAAAC/wat-what.gif"
 
     api_status = 200
 
-    assert result == get_gif_from_api(api_status, api_request_json)
+    assert expected_result == get_gif_from_api(api_status, api_request_json)
 
 
 def test_success_200_bad_json():
     """Test bad json format api"""
     api_request_json = """{ }"""
 
-    result = "https://tenor.com/view/im-dead-vanilla-patay-na-ako-dead-nako-patay-ako-gif-22020482"
+    expected_result = "https://tenor.com/view/im-dead-vanilla-patay-na-ako-dead-nako-patay-ako-gif-22020482"
 
     api_status = 200
 
-    assert result == get_gif_from_api(api_status, api_request_json)
+    assert expected_result == get_gif_from_api(api_status, api_request_json)
 
 
 def test_fail_not_200():
