@@ -10,8 +10,8 @@ def hello(request) -> Tuple[str, int]:
     request_json: Optional[Any] = request.get_json(silent=True)
 
     if request_json:
-        name = request_json.get("name", None)
-        if name:
-            return f"Hello <@{name}>!", 200
+        user_id = request_json.get("user_id", None)
+        if user_id:
+            return f"Hello <@{user_id}>!", 200
 
     return "Hello !", 200

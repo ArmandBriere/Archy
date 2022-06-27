@@ -13,7 +13,7 @@ Then you can POST to the correct URL
 ```bash
 curl -m 70 -X POST localhost:8080/exp -H "Authorization:bearer $(gcloud auth print-identity-token)" \
 -H "Content-Type:application/json" \
--d '{"name": "tmp"}'
+-d '{"user_id": "123"}'
 ```
 
 Call a local function
@@ -91,7 +91,7 @@ request_mock = MagicMock()
 3. Override the `return_value` of the `get_json`
 
 ```py
-request_mock.get_json.return_value = {"name": "Paul"}
+request_mock.get_json.return_value = {"user_id": "123"}
 ```
 
 4. Pass the mock object as an input of the function we want to test
@@ -109,7 +109,7 @@ from functions.hello.main import hello
 
 
 def test_hello():
-    body = {"name": "Paul"}
+    body = {"user_id": "123"}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
