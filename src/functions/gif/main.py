@@ -1,13 +1,15 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
+import flask
 import functions_framework
 import requests
 
 DEFAULT_GIF = "https://tenor.com/view/frog-multiply-gif-25342428"
 UNKNOWN_GIF = "https://tenor.com/view/bof-i-dont-mind-i-dont-understand-why-jean-dujardin-oss117-gif-20383956"
 
+# This will be added to firebase in the future
 gifs = {
     "doubt": "https://tenor.com/view/doubt-press-x-la-noire-meme-x-button-gif-19259237",
     "confused": "https://tenor.com/view/confusion-chicken-gif-11299790",
@@ -15,32 +17,38 @@ gifs = {
 
 
 @functions_framework.http
-def gif(request):
+def gif(request: flask.Request) -> Tuple[str, int]:
     """Return the requested gif or the first found with the tenor API."""
+
     request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
-        params = request_json.get("params", [""])
-        api_key = os.environ["TENOR_API_TOKEN"]
+        params: list = request_json.get("params", [""])
 
-        if len(params) == 0:
+        if len(params) == 0 or params[0] == "":
             return DEFAULT_GIF, 200
+
         if params[0].lower() in gifs:
             return gifs[params[0]], 200
-        api_request = requests.get(
+
+        api_key: str = os.environ["TENOR_API_TOKEN"]
+        response: requests.Response = requests.get(
             f"https://tenor.googleapis.com/v2/search?q={params[0].lower()}&key={api_key}&client_key=Archy&limit=1"
         )
 
-        return get_gif_from_api(api_request.status_code, api_request.content), 200
+        return extract_data_from_response(response.status_code, response.content), 200
+
     return DEFAULT_GIF, 200
 
 
-def get_gif_from_api(api_request_status, api_json):
+def extract_data_from_response(response_status: int, response_content: bytes) -> str:
     """Function that deals with the api request result"""
-    if api_request_status == 200:
-        top_gif = json.loads(api_json)
+
+    if response_status == 200:
+        top_gifs = json.loads(response_content)
+
         try:
-            url_gif = top_gif["results"][0]["media_formats"]["gif"]["url"]
-            return url_gif
-        except (IndentationError, KeyError):
-            return "https://tenor.com/view/im-dead-vanilla-patay-na-ako-dead-nako-patay-ako-gif-22020482"
+            return top_gifs["results"][0]["media_formats"]["gif"]["url"]
+        except KeyError:
+            return "https://tenor.com/view/404-not-found-error-20th-century-fox-gif-24907780"
+
     return UNKNOWN_GIF
