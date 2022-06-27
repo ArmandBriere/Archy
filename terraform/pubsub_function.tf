@@ -6,7 +6,7 @@ data "archive_file" "pubsub_function_source" {
   type        = "zip"
   source_dir  = "../src/functions/${each.key}"
   output_path = "/tmp/${each.key}.zip"
-  excludes    = ["node_modules", "__pycache__", "cmd", "go.sum"]
+  excludes    = ["node_modules", "__pycache__", "cmd", "go.sum", "env"]
 }
 
 # Add source code zip to the Cloud Function's bucket
