@@ -98,7 +98,7 @@ def test_exp_level_up(random_mock, database_mock):
 
     assert ("", 200) == result
     assert database_mock.return_value.batch.call_count == 1
-    assert len(database_mock.return_value.batch.mock_calls) == 5
+    assert len(database_mock.return_value.batch.mock_calls) == 6
 
 
 @patch(f"{MODULE_PATH}.Client")
@@ -108,6 +108,7 @@ def test_exp_new_user(database_mock):
         "total_exp": 0,
         "exp_toward_next_level": 0,
         "level": 0,
+        "message_count": 0,
         "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
         "username": body["username"],
         "avatar_url": body["avatar_url"],

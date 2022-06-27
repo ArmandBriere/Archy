@@ -19,6 +19,7 @@ variable "secrets" {
   type = list(any)
   default = [
     "DISCORD_TOKEN",
+    "TENOR_API_TOKEN",
   ]
 }
 
@@ -79,7 +80,7 @@ variable "http_functions" {
       entry_point = "gif"
       timeout     = 15
       memory      = 256
-      secrets     = ["DISCORD_TOKEN"]
+      secrets     = ["DISCORD_TOKEN", "TENOR_API_TOKEN"]
     }
     go : {
       description = "Template of a function in Golang"
