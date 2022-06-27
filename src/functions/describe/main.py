@@ -10,7 +10,7 @@ def describe(request):
     request_json: Optional[Any] = request.get_json(silent=True)
 
     if request_json:
-        name = request_json.get("name", None)
+        user_id = request_json.get("user_id", None)
         mentions = request_json.get("mentions", None)
 
         # Special user are protected. This will go with firebase in the future
@@ -19,6 +19,6 @@ def describe(request):
                 return "This person is awesome!"
             return f"<@{mentions[0]}> is a big ****!", 200
 
-        return f"You are a big ****! <@{name}>", 200
+        return f"You are a big ****! <@{user_id}>", 200
 
     return "I don't even know who you are!", 200
