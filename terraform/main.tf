@@ -123,6 +123,15 @@ variable "pubsub_functions" {
       trigger_event = "channel_message_discord"
       secrets       = ["DISCORD_TOKEN"]
     },
+    cloudErrorLog : {
+      description   = "Send the Google Cloud error log from pubsub to a specific channel"
+      runtime       = "go116"
+      entry_point   = "UnmarshalPubsubMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "cloud_function_error_log"
+      secrets       = ["DISCORD_TOKEN"]
+    },
   }
 }
 

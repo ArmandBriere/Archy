@@ -32,6 +32,7 @@ type Payload struct {
 	Severity  string `json:"severity"`
 }
 
+// Unmarshal received context and call proper function that send message
 func UnmarshalPubsubMessage(ctx context.Context, m PubSubMessage) error {
 	log.Printf("Starting!")
 
@@ -72,18 +73,20 @@ func SendErrorLogToDiscordChannel(payload *Payload) error {
 	messageData := createEmbedMessage(payload)
 
 	// Sending message
-	_, err = dg.ChannelMessageSendEmbed(channel.ID, &messageData)
+	message, err := dg.ChannelMessageSendEmbed(channel.ID, &messageData)
 
 	if err != nil {
 		panic("Message didn't make it" + err.Error())
 	}
 
+	dg.MessageThreadStart(message.ChannelID, message.ID, messageData.Title, 1440)
+
 	log.Printf("Done!")
 	return nil
 }
 
+// Create the Embed message according to the payload data
 func createEmbedMessage(payload *Payload) discordgo.MessageEmbed {
-	// Create the Embed message according to the payload data
 
 	// Create Embed message
 	var messageEmbed discordgo.MessageEmbed
