@@ -93,6 +93,17 @@ variable "http_functions" {
   }
 }
 
+
+variable "pubsub_topics" {
+  type = list(any)
+  default = [
+    "channel_message_discord",
+    "cloud_function_error_log",
+    "froge_of_the_day",
+    "private_message_discord",
+  ]
+}
+
 variable "pubsub_functions" {
   type = map(any)
   default = {
