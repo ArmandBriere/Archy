@@ -93,6 +93,17 @@ variable "http_functions" {
   }
 }
 
+
+variable "pubsub_topics" {
+  type = list(any)
+  default = [
+    "channel_message_discord",
+    "cloud_function_error_log",
+    "froge_of_the_day",
+    "private_message_discord",
+  ]
+}
+
 variable "pubsub_functions" {
   type = map(any)
   default = {
@@ -121,6 +132,15 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 256
       trigger_event = "channel_message_discord"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    cloudErrorLog : {
+      description   = "Send the Google Cloud error log from pubsub to a specific channel"
+      runtime       = "go116"
+      entry_point   = "UnmarshalPubsubMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "cloud_function_error_log"
       secrets       = ["DISCORD_TOKEN"]
     },
   }
