@@ -89,6 +89,14 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
+    },
+    ban : {
+      description = "Admin only: Ban a user"
+      runtime     = "go116"
+      entry_point = "BanUser"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     }
   }
 }

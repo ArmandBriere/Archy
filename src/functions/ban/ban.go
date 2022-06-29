@@ -1,0 +1,98 @@
+package ban
+
+import (
+	"encoding/json"
+	"log"
+	"net/http"
+	"os"
+	"regexp"
+
+	"github.com/bwmarrin/discordgo"
+)
+
+// Payload struct that is expected
+type Payload struct {
+	ServerId string   `json:"server_id"`
+	UserId   string   `json:"user_id"`
+	Mentions []string `json:"mentions"`
+}
+
+// Admin only: Ban a user
+func BanUser(w http.ResponseWriter, r *http.Request) error {
+
+	// Parse body to get Payload
+	var payload = Payload{}
+	json.NewDecoder(r.Body).Decode(&payload)
+
+	// Instanciate Discord bot
+	dg := instanciateBot()
+
+	// Check admin permission
+	isAdmin := isInvokingUserAnAdmin(dg, &payload)
+	if !isAdmin {
+		log.Printf(payload.UserId + " is NOT an admin!")
+		return nil
+	}
+	log.Printf(payload.UserId + " is an admin!")
+
+	// Ban user
+	if len(payload.Mentions) == 1 {
+		err := dg.GuildBanCreate(payload.ServerId, payload.Mentions[0], 0)
+
+		if err != nil {
+			panic("Ban didn't work" + err.Error())
+		}
+		log.Printf("Done!")
+	} else {
+		log.Printf("Mentions should be of len 1")
+	}
+
+	return nil
+}
+
+// Instanciate the bot and return the session
+func instanciateBot() *discordgo.Session {
+	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
+
+	if err != nil {
+		error_message := []byte(err.Error())
+		error_400_regex, _ := regexp.Compile("400")
+		if len(error_400_regex.Find(error_message)) > 0 {
+			panic("Can't create Channel - Bad ChannelId")
+		}
+		error_401_regex, _ := regexp.Compile("401")
+		if len(error_401_regex.Find(error_message)) > 0 {
+			panic("Unauthorized to create the connection. Verify Discord Token")
+		}
+		panic(err)
+	}
+	return dg
+}
+
+// Check if the user invoking this command is an admin
+func isInvokingUserAnAdmin(dg *discordgo.Session, payload *Payload) bool {
+	//Get the invoking user
+	member, err := dg.GuildMember(payload.ServerId, payload.UserId)
+	if err != nil {
+		panic(err)
+	}
+
+	userRoles := member.Roles
+	guildRole, _ := dg.GuildRoles(payload.ServerId)
+
+	// Check if the user has Administrator permission in any of his role
+	for _, v := range guildRole {
+		if (v.Permissions & discordgo.PermissionAdministrator) == discordgo.PermissionAdministrator {
+
+			// Admin role
+			log.Print(v.Name)
+			for _, b := range userRoles {
+				if b == v.ID {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
