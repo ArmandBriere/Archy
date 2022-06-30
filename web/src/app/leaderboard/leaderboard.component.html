@@ -12,7 +12,8 @@
     <mat-card-content>
         <div class="inner-card" cdkDrag *ngFor="let user of users; let i = index">
             <div class="left-side">
-                <div class="name"> {{ i+1 }} - <img class="profile-picture" [src]=user.avatar_url> {{ user.username }}
+                <div class="name"> {{ i+1 }} - <img class="profile-picture" [src]=user.avatar_url alt="Image not found"
+                        onerror="this.src='../../assets/img/Discord-Logo-White.svg';"> {{ user.username }}
                 </div>
             </div>
             <div class="right-side">
