@@ -95,4 +95,5 @@ async def on_message_edit(before: message_type, after: message_type) -> None:
     LOGGER.warning(after)
 
 
+bot.remove_command('help')
 bot.run(DISCORD_API_TOKEN)
