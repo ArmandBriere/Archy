@@ -1,13 +1,13 @@
-from typing import Any, Optional, Tuple, Generator
+from typing import Any, Generator, Optional, Tuple
 
 import functions_framework
-from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.client import Client
-from google.cloud.firestore_v1.base_document import DocumentSnapshot
+from google.cloud.firestore_v1.collection import CollectionReference
+from google.cloud.firestore_v1.document import DocumentSnapshot
 
 
 @functions_framework.http
-def help(request) -> Tuple[str, int]:
+def help(request) -> Tuple[str, int]:  # pylint: disable=W0622
     """Return the list of all actived functions."""
 
     request_json: Optional[Any] = request.get_json(silent=True)
