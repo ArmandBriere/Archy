@@ -26,10 +26,7 @@ def hello(request) -> Tuple[str, int]:
             print("Exit: Missing data")
             return "", 200
         
-        command_liste=""
         if docs.exists:
-            for doc in docs:
-                command_liste.join(str(doc)).join('\n')
-            return command_liste, 200
+            return docs, 200
 
     return "", 200
