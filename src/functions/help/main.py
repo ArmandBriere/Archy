@@ -30,6 +30,6 @@ def hello(request) -> Tuple[str, int]:
         if docs.exists:
             for doc in docs:
                 command_liste.join(str(doc)).join('\n')
-            return command_liste
+            return command_liste, 200
 
     return "", 200
