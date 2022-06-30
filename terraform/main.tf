@@ -152,7 +152,7 @@ variable "pubsub_functions" {
       trigger_event = "cloud_function_error_log"
       secrets       = ["DISCORD_TOKEN"]
     },
-    cloudErrorLog : {
+    updateUserRole : {
       description   = "Add roles to a user based on his level"
       runtime       = "go116"
       entry_point   = "UnmarshalPubsubMessage"
