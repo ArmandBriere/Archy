@@ -1,4 +1,4 @@
-from typing import Any, Optional, Tuple
+from typing import Any, Optional, Tuple, Generator
 
 import functions_framework
 from google.cloud.firestore_v1.collection import CollectionReference
@@ -20,14 +20,14 @@ def hello(request) -> Tuple[str, int]:
         function_collection: CollectionReference = (
             database.collection("servers").document(server_id).collection("functions")
         )
-        doc_ref = function_collection.collection("functions")
-        docs: DocumentSnapshot = doc_ref.where("active", "==", True).stream()
+
+        docs: Generator[DocumentSnapshot, Any, None] = function_collection.where("active", "==", True).stream()
 
         if not server_id:
             print("Exit: Missing data")
             return "", 200
 
         if docs.exists:
-            return "\n".join([doc.get("description") for doc in docs])
+            return "\n".join([f'!{doc.id} -> {doc.get("description")}' for doc in docs])
 
     return "", 200
