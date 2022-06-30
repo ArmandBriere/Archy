@@ -79,6 +79,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
     assert ("", 200) == result
 
 
+@patch(f"{MODULE_PATH}.update_user_roles", MagicMock())
 @patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
