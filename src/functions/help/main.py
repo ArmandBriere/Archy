@@ -27,6 +27,6 @@ def hello(request) -> Tuple[str, int]:
             return "", 200
         
         if docs.exists:
-            return docs, 200
+            return list(docs), 200
 
     return "", 200
