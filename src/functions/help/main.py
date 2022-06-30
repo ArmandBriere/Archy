@@ -25,6 +25,6 @@ def hello(request) -> Tuple[str, int]:
             return "", 200
         
         if docs.exists:
-            return [doc.get("description") for doc in docs]
+            return '\n'.join([doc.get("description") for doc in docs])
 
     return "", 200
