@@ -1,11 +1,12 @@
 # pylint: disable=line-too-long
 
+import json
 from datetime import datetime, timedelta
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from functions.exp.main import DATETIME_FORMAT, exp
+from functions.exp.main import DATETIME_FORMAT, exp, send_message_to_user, update_user_roles
 
 MODULE_PATH = "functions.exp.main"
 
@@ -128,3 +129,33 @@ def test_exp_new_user(database_mock):
     set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
     assert ("", 200) == result
     assert set_value == expected_set_value
+
+
+@patch(f"{MODULE_PATH}.PublisherClient")
+def test_send_message_to_user(publisher_mock):
+    user_id = 1
+    message = "hello"
+
+    data = {"user_id": user_id, "message": message}
+    encoded_data: str = json.dumps(data, indent=2).encode("utf-8")
+
+    send_message_to_user(user_id, message)
+
+    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "private_message_discord")
+    assert publisher_mock.return_value.method_calls[1][0] == "publish"
+    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
+
+
+@patch(f"{MODULE_PATH}.PublisherClient")
+def test_update_user_roles(publisher_mock):
+    server_id = 1
+    user_id = 1
+
+    data = {"server_id": server_id, "user_id": user_id}
+    encoded_data: str = json.dumps(data, indent=2).encode("utf-8")
+
+    update_user_roles(server_id, user_id)
+
+    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "update_user_role")
+    assert publisher_mock.return_value.method_calls[1][0] == "publish"
+    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
