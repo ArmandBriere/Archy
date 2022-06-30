@@ -11,7 +11,6 @@ def help(request) -> Tuple[str, int]:  # pylint: disable=W0622
     """Return the list of all actived functions."""
 
     request_json: Optional[Any] = request.get_json(silent=True)
-
     if request_json:
         server_id = request_json.get("server_id", None)
 
@@ -25,7 +24,6 @@ def help(request) -> Tuple[str, int]:  # pylint: disable=W0622
         )
         docs: Generator[DocumentSnapshot, Any, None] = function_collection.where("active", "==", True).stream()
 
-        if docs.exists:
-            return "\n".join([f"!{doc.id} -> {doc.get('description')}" for doc in docs])
+        return "\n".join([f"!{doc.id} -> {doc.get('description')}" for doc in docs])
 
     return "", 200
