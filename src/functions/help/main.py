@@ -18,8 +18,7 @@ def hello(request) -> Tuple[str, int]:
         
         database: Client = Client(project="archy-f06ed")
         
-        collection_name = "function"
-        function_collection: CollectionReference = database.collection("servers").document(server_id).collection(collection_name)
+        function_collection: CollectionReference = database.collection("servers").document(server_id).collection("function")
         doc_ref = function_collection.collection("*")
         docs: DocumentSnapshot = doc_ref.where(u'active',u'==', True ).stream()
         
