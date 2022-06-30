@@ -1,6 +1,6 @@
 from typing import Any, Generator, Optional, Tuple
-import flask
 
+import flask
 import functions_framework
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.collection import CollectionReference
