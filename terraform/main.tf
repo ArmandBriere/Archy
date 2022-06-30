@@ -89,7 +89,15 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
-    }
+    },
+    help : {
+      description = "Describe all active command."
+      runtime     = "python39"
+      entry_point = "help"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
   }
 }
 
