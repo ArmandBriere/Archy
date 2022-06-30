@@ -25,6 +25,6 @@ def help(request: flask.Request) -> Tuple[str, int]:  # pylint: disable=W0622
         )
         docs: Generator[DocumentSnapshot, Any, None] = function_collection.where("active", "==", True).stream()
 
-        return "\n".join([f"!{doc.id} -> {doc.get('description')}" for doc in docs])
+        return "\n".join([f"!{doc.id : <10} -> {doc.get('description') : >10}" for doc in docs])
 
     return "", 200
