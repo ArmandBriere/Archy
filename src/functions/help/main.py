@@ -1,15 +1,13 @@
-from dbm import _Database
 from typing import Any, Optional, Tuple
 
 import functions_framework
 from google.cloud.firestore_v1.collection import CollectionReference
-from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 
 @functions_framework.http
 def hello(request) -> Tuple[str, int]:
-    """Return the requested list of all actived function"""
+    """Return the requested list of all actived function."""
 
     request_json: Optional[Any] = request.get_json(silent=True)
 
@@ -18,7 +16,7 @@ def hello(request) -> Tuple[str, int]:
         
         database: Client = Client(project="archy-f06ed")
         
-        function_collection: CollectionReference = database.collection("servers").document(server_id).collection("function")
+        function_collection: CollectionReference = database.collection("servers").document(server_id).collection("functions")
         doc_ref = function_collection.collection("functions")
         docs: DocumentSnapshot = doc_ref.where(u'active',u'==', True ).stream()
         
@@ -27,6 +25,6 @@ def hello(request) -> Tuple[str, int]:
             return "", 200
         
         if docs.exists:
-            return list(docs), 200
+            return [doc.get("description") for doc in docs]
 
     return "", 200
