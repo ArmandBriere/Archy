@@ -1,9 +1,9 @@
-from typing import Any, Optional, Tuple, Generator
+from typing import Any, Generator, Optional, Tuple
 
 import functions_framework
-from google.cloud.firestore_v1.collection import CollectionReference
+from google.cloud.firestore_v1 import document
 from google.cloud.firestore_v1.client import Client
-from google.cloud.firestore_v1.base_document import DocumentSnapshot
+from google.cloud.firestore_v1.collection import CollectionReference
 
 
 @functions_framework.http
@@ -21,7 +21,7 @@ def hello(request) -> Tuple[str, int]:
             database.collection("servers").document(server_id).collection("functions")
         )
 
-        docs: Generator[DocumentSnapshot, Any, None] = function_collection.where("active", "==", True).stream()
+        docs: Generator[document.DocumentSnapshot, Any, None] = function_collection.where("active", "==", True).stream()
 
         if not server_id:
             print("Exit: Missing data")
