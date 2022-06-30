@@ -1,4 +1,5 @@
 from typing import Any, Generator, Optional, Tuple
+import flask
 
 import functions_framework
 from google.cloud.firestore_v1.client import Client
@@ -7,7 +8,7 @@ from google.cloud.firestore_v1.document import DocumentSnapshot
 
 
 @functions_framework.http
-def help(request) -> Tuple[str, int]:  # pylint: disable=W0622
+def help(request: flask.Request) -> Tuple[str, int]:  # pylint: disable=W0622
     """Return the list of all actived functions."""
 
     request_json: Optional[Any] = request.get_json(silent=True)
