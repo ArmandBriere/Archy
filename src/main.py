@@ -43,6 +43,7 @@ async def on_message(message: message_type) -> None:
             data=json.dumps(
                 {
                     "server_id": str(ctx.guild.id),
+                    "server_name": str(ctx.message.guild.name),
                     "user_id": str(ctx.author.id),
                     "username": str(ctx.author.name),
                     "channel_id": str(message.channel.id),
@@ -78,6 +79,7 @@ async def on_message(message: message_type) -> None:
                 {
                     "server_id": str(ctx.guild.id),
                     "user_id": str(ctx.author.id),
+                    "server_name": str(ctx.message.guild.name),
                     "username": str(ctx.author.name),
                     "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",  # pylint: disable=W0212
                 }

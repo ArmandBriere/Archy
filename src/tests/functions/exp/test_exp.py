@@ -83,7 +83,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
-    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
+    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789, "server_name": "Archy"}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -103,7 +103,7 @@ def test_exp_level_up(random_mock, database_mock):
 
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_new_user(database_mock):
-    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
+    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789, "server_name": "Archy"}
     expected_set_value = {
         "total_exp": 0,
         "exp_toward_next_level": 0,

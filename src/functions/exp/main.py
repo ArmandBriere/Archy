@@ -32,8 +32,9 @@ def exp(request: flask.Request) -> Tuple[None, int]:
         username = request_json.get("username", None)
         avatar_url = request_json.get("avatar_url", None)
         server_id = request_json.get("server_id", None)
+        server_name = request_json.get("server_name", None)
 
-        if not user_id or not username or not server_id:
+        if not user_id or not username or not server_id or not server_name:
             print("Exit: Missing data in payload")
             return "", 200
 
@@ -69,12 +70,14 @@ def exp(request: flask.Request) -> Tuple[None, int]:
             batch.update(doc_ref, ({"message_count": Increment(1)}))
 
             if added_exp >= exp_needed_to_level_up:
-                print(f"Update: level up user {user_id} to level {level+1}")
+                print(f"Update: level up user {user_id} to level {level+1} in {server_name}")
 
                 batch.update(doc_ref, ({"level": Increment(1)}))
                 batch.update(doc_ref, ({"exp_toward_next_level": added_exp - exp_needed_to_level_up}))
 
-                send_message_to_user(user_id, f"I'm so proud of you... You made it to level {level+1}!")
+                send_message_to_user(
+                    user_id, f"I'm so proud of you... You made it to level {level+1} in {server_name}!"
+                )
 
             else:
                 print(f"Update: Increase {user_id}'s exp")
