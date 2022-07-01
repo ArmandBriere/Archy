@@ -3,6 +3,14 @@
 
 ## Run locally
 
+Login to Google Cloud
+
+```bash
+gcloud auth login
+```
+
+Run the desired function
+
 ```bash 
 # pwd = functions/exp
 functions-framework --target exp
