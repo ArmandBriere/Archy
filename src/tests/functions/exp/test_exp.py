@@ -10,8 +10,10 @@ from functions.exp.main import DATETIME_FORMAT, exp, send_message_to_user, updat
 
 MODULE_PATH = "functions.exp.main"
 
+GOOD_BODY = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789, "server_name": "Archy"}
 
-def get_db_value(param):  # pragma: no cover
+
+def get_good_db_value(param):  # pragma: no cover
     if param == "level":
         return 1
     if param == "exp_toward_next_level":
@@ -25,15 +27,36 @@ def get_db_value(param):  # pragma: no cover
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp(random_mock, client_mock):
-    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
 
     request_mock = MagicMock()
-    request_mock.get_json.return_value = body
+    request_mock.get_json.return_value = GOOD_BODY
 
     client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_db_value
+        get_good_db_value
     )
     random_mock.return_value = 50
+
+    result = exp(request_mock)
+
+    assert ("", 200) == result
+
+
+def get_timeout_timestamp_value(param):  # pragma: no cover
+    if param == "last_message_timestamp":
+        return (datetime.now() - timedelta(seconds=1)).strftime(DATETIME_FORMAT)
+
+    return 0
+
+
+@patch(f"{MODULE_PATH}.Client")
+def test_exp_timeout(client_mock):
+
+    request_mock = MagicMock()
+    request_mock.get_json.return_value = GOOD_BODY
+
+    client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
+        get_timeout_timestamp_value
+    )
 
     result = exp(request_mock)
 
@@ -71,7 +94,7 @@ def test_exp_missing_data(random_mock, database_mock, body):
     request_mock.get_json.return_value = body
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_db_value
+        get_good_db_value
     )
     random_mock.return_value = 50
 
@@ -85,13 +108,12 @@ def test_exp_missing_data(random_mock, database_mock, body):
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
 def test_exp_level_up(random_mock, database_mock):
-    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
 
     request_mock = MagicMock()
-    request_mock.get_json.return_value = body
+    request_mock.get_json.return_value = GOOD_BODY
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_db_value
+        get_good_db_value
     )
     random_mock.return_value = 500
     database_mock.return_value.batch.return_value = MagicMock()
@@ -105,19 +127,18 @@ def test_exp_level_up(random_mock, database_mock):
 
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_new_user(database_mock):
-    body = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789}
     expected_set_value = {
         "total_exp": 0,
         "exp_toward_next_level": 0,
         "level": 0,
         "message_count": 0,
         "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
-        "username": body["username"],
-        "avatar_url": body["avatar_url"],
+        "username": GOOD_BODY["username"],
+        "avatar_url": GOOD_BODY["avatar_url"],
     }
 
     request_mock = MagicMock()
-    request_mock.get_json.return_value = body
+    request_mock.get_json.return_value = GOOD_BODY
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
         False
