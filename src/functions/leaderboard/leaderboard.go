@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const BASE_URL = "https://archybot.web.app/leaderboard/"
+const baseUrl = "https://archybot.web.app/leaderboard/"
 
 type Payload struct {
 	ServerId string `json:"server_id"`
@@ -25,7 +25,7 @@ func SendLeaderboardUrl(w http.ResponseWriter, r *http.Request) string {
 
 	//Build a string efficiently with strings.Builder
 	var url strings.Builder
-	url.WriteString(BASE_URL)
+	url.WriteString(baseUrl)
 	url.WriteString(payload.ServerId)
 
 	//Send the current server leaderboard url.
