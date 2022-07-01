@@ -8,14 +8,19 @@ import (
 
 const BASE_URL = "https://archybot.web.app/leaderboard/"
 
-var Payload struct {
+type Payload struct {
 	ServerId  string `json:"server_id"`
 }
 
-func sendLeaderboardUrl(w http.ResponseWriter, r *http.Request){
+func SendLeaderboardUrl(w http.ResponseWriter, r *http.Request){
 	//Parse body to get Payload
-	var payload = Payload
+	var payload = Payload{}
 	json.NewDecoder(r.Body).Decode(&payload)
+
+	if len(payload.ServerId) == 0 {
+		log.Print("Missing server id")
+		return
+	}
 
 	//Build a string efficiently with strings.Builder
 	var url strings.Builder
