@@ -18,7 +18,7 @@ type Payload struct {
 }
 
 // Admin only: Ban a user
-func BanUser(w http.ResponseWriter, r *http.Request) error {
+func BanUser(w http.ResponseWriter, r *http.Request) {
 
 	// Parse body to get Payload
 	var payload = Payload{}
@@ -31,7 +31,7 @@ func BanUser(w http.ResponseWriter, r *http.Request) error {
 	isAdmin := isInvokingUserAnAdmin(dg, &payload)
 	if !isAdmin {
 		log.Printf(payload.UserId + " is NOT an admin!")
-		return nil
+		return
 	}
 	log.Printf(payload.UserId + " is an admin!")
 
@@ -42,12 +42,11 @@ func BanUser(w http.ResponseWriter, r *http.Request) error {
 		if err != nil {
 			panic("Ban didn't work" + err.Error())
 		}
-		log.Printf("Done!")
+		log.Printf("User " + payload.Mentions[0] + " has been banned!")
 	} else {
 		log.Printf("Mentions should be of len 1")
 	}
 
-	return nil
 }
 
 // Instanciate the bot and return the session
@@ -84,8 +83,6 @@ func isInvokingUserAnAdmin(dg *discordgo.Session, payload *Payload) bool {
 	for _, v := range guildRole {
 		if (v.Permissions & discordgo.PermissionAdministrator) == discordgo.PermissionAdministrator {
 
-			// Admin role
-			log.Print(v.Name)
 			for _, b := range userRoles {
 				if b == v.ID {
 					return true
