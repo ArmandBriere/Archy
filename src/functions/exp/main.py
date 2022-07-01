@@ -78,6 +78,7 @@ def exp(request: flask.Request) -> Tuple[None, int]:
                 send_message_to_user(
                     user_id, f"I'm so proud of you... You made it to level {level+1} in {server_name}!"
                 )
+                update_user_roles(server_id, user_id)
 
             else:
                 print(f"Update: Increase {user_id}'s exp")
@@ -130,6 +131,28 @@ def send_message_to_user(user_id: str, message: str) -> None:
 
     # Data must be a bytestring
     data = {"user_id": user_id, "message": message}
+    user_encode_data: str = json.dumps(data, indent=2).encode("utf-8")
+
+    # When you publish a message, the client returns a future.
+    future: Future = publisher.publish(topic_path, user_encode_data)
+
+    print(f"Message id: {future.result()}")
+    print(f"Published message to {topic_path}.")
+
+
+def update_user_roles(server_id: str, user_id: str) -> None:
+    """Publish a pubsub message to update_user_role."""
+
+    print(f"Update user role for {user_id}")
+
+    # Publisher setup
+    project_id = "archy-f06ed"
+    topic_id = "update_user_role"
+    publisher = PublisherClient()
+    topic_path: str = publisher.topic_path(project_id, topic_id)
+
+    # Data must be a bytestring
+    data = {"server_id": server_id, "user_id": user_id}
     user_encode_data: str = json.dumps(data, indent=2).encode("utf-8")
 
     # When you publish a message, the client returns a future.

@@ -117,6 +117,7 @@ variable "pubsub_topics" {
     "cloud_function_error_log",
     "froge_of_the_day",
     "private_message_discord",
+    "update_user_role",
   ]
 }
 
@@ -157,6 +158,15 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 256
       trigger_event = "cloud_function_error_log"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    updateUserRole : {
+      description   = "Add roles to a user based on his level"
+      runtime       = "go116"
+      entry_point   = "UnmarshalPubsubMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "update_user_role"
       secrets       = ["DISCORD_TOKEN"]
     },
   }
