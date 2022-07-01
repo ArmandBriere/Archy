@@ -1,25 +1,26 @@
 package leaderboard
 
 import (
-	"strings"
 	"encoding/json"
+	"log"
 	"net/http"
+	"strings"
 )
 
 const BASE_URL = "https://archybot.web.app/leaderboard/"
 
 type Payload struct {
-	ServerId  string `json:"server_id"`
+	ServerId string `json:"server_id"`
 }
 
-func SendLeaderboardUrl(w http.ResponseWriter, r *http.Request){
+func SendLeaderboardUrl(w http.ResponseWriter, r *http.Request) string {
 	//Parse body to get Payload
 	var payload = Payload{}
 	json.NewDecoder(r.Body).Decode(&payload)
 
 	if len(payload.ServerId) == 0 {
 		log.Print("Missing server id")
-		return
+		return ""
 	}
 
 	//Build a string efficiently with strings.Builder
