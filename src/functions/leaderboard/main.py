@@ -8,7 +8,7 @@ from google.cloud.firestore_v1.document import DocumentReference, DocumentSnapsh
 
 @functions_framework.http
 def leaderboard(request: flask.Request) -> Tuple[str, int]:  # pylint: disable=W0622
-    """Return the leaderboard server url."""
+    """Return the current server leaderboard url."""
 
     request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
