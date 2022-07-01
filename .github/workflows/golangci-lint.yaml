@@ -18,7 +18,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go-path: ["privateMessage", "froge"]
+        go-path:
+          [
+            "ban",
+            "channelMessage",
+            "cloudErrorLog",
+            "froge",
+            "go",
+            "privateMessage",
+            "updateUserRole",
+          ]
     steps:
       - uses: actions/setup-go@v3
         with:
@@ -29,4 +38,4 @@ jobs:
         with:
           version: latest
 
-          working-directory: src/function/${{ matrix.go-path }}
+          working-directory: ./src/functions/${{ matrix.go-path }}
