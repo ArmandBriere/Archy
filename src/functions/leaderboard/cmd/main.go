@@ -17,5 +17,5 @@ func main(){
 	w := httptest.NewRecorder()
 
 	// Call function
-	leaderboard.sendLeaderboardUrl(w,req)
+	leaderboard.SendLeaderboardUrl(w,req)
 }
