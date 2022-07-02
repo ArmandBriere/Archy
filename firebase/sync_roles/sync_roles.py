@@ -8,9 +8,8 @@ from google.cloud.firestore_v1.document import DocumentSnapshot
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 
-DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
-SERVER_ID = 964701887540645908
+SERVER_ID = 123
 
 PROJECT_ID = "archy-f06ed"
 TOPIC_ID = "update_user_role"
