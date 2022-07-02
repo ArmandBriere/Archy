@@ -14,5 +14,8 @@ func main() {
 		Image: "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII",
 	}
 
-	privateMessage.SendPrivateMessage(&payload)
+	err := privateMessage.SendPrivateMessage(&payload)
+	if err != nil {
+		panic(err)
+	}
 }

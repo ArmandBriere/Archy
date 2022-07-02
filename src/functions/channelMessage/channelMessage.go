@@ -33,7 +33,10 @@ func ChannelMessage(ctx context.Context, m PubSubMessage) error {
 
 	// Unmarshal data to a valid payload
 	var payload Payload
-	json.Unmarshal(m.Data, &payload)
+	err := json.Unmarshal(m.Data, &payload)
+	if err != nil {
+		panic(err)
+	}
 
 	return SendChannelMessage(&payload)
 }
