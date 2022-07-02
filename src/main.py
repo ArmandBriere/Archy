@@ -48,7 +48,7 @@ async def on_message(message: message_type) -> None:
                     "username": str(ctx.author.name),
                     "channel_id": str(message.channel.id),
                     "message_id": str(message.id),
-                    "mentions": ctx.message.raw_mentions,
+                    "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
                     "params": message.content.split(ctx.command)[1:],
                 }
             ),
