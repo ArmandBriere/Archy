@@ -2,7 +2,8 @@ package leaderboard
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
+	"html"
 	"net/http"
 	"strings"
 )
@@ -13,14 +14,17 @@ type Payload struct {
 	ServerId string `json:"server_id"`
 }
 
-func SendLeaderboardUrl(w http.ResponseWriter, r *http.Request) string {
+func GetLeaderboardUrl(w http.ResponseWriter, r *http.Request) {
 	//Parse body to get Payload
 	var payload = Payload{}
-	json.NewDecoder(r.Body).Decode(&payload)
+	err := json.NewDecoder(r.Body).Decode(&payload)
+
+	if err != nil {
+		panic(err)
+	}
 
 	if len(payload.ServerId) == 0 {
-		log.Print("Missing server id")
-		return ""
+		panic("Missing server id")
 	}
 
 	//Build a string efficiently with strings.Builder
@@ -29,5 +33,5 @@ func SendLeaderboardUrl(w http.ResponseWriter, r *http.Request) string {
 	url.WriteString(payload.ServerId)
 
 	//Send the current server leaderboard url.
-	return url.String()
+	fmt.Fprint(w, html.EscapeString(url.String()))
 }
