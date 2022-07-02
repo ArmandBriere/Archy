@@ -171,7 +171,7 @@ variable "pubsub_functions" {
     updateUserRole : {
       description   = "Add roles to a user based on his level"
       runtime       = "go116"
-      entry_point   = "UnmarshalPubsubMessage"
+      entry_point   = "UserRole"
       timeout       = 15
       memory        = 256
       trigger_event = "update_user_role"
