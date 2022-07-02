@@ -1,0 +1,42 @@
+@startuml classDiagram
+!include _common.style
+
+set namespaceSeparator none
+
+
+title Archy Firestore
+center footer Archy project - Firestore class diagram
+
+
+folder "servers: Collection" {
+    folder "serverId: Document" {
+        folder "functions: Collection" {
+            class "functionName: Document" {
+                active: bool
+                description: string
+            }
+        }
+
+        folder "level: Collection" {
+            class "levelNumber: Document" {
+                roles: [roleId: string]
+            }
+        }
+
+        folder "users: Collection" {
+            class "userId: Document" {
+                avatar_url: string
+                exp_toward_next_level: int
+                last_message_timestamp: date
+                level: int
+                message_count: int
+                total_exp: int
+                username: string
+            }
+        }
+    }
+    
+}
+
+
+@enduml
