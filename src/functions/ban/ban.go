@@ -40,7 +40,7 @@ func BanUser(w http.ResponseWriter, r *http.Request) {
 		err := dg.GuildBanCreate(payload.ServerId, payload.Mentions[0], 0)
 
 		if err != nil {
-			panic("Ban didn't work" + err.Error())
+			panic("Ban didn't work " + err.Error())
 		}
 		log.Printf("User " + payload.Mentions[0] + " has been banned!")
 	} else {
