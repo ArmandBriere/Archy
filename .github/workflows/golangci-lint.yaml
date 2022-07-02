@@ -1,12 +1,7 @@
 name: golangci-lint
 on:
-  push:
-    tags:
-      - v*
-    branches:
-      - main
-      - 36-add-go-lint-ci-to-project
-  pull_request:
+  - push
+  - pull_request
 permissions:
   contents: read
   # Optional: allow read access to pull request. Use with `only-new-issues` option.
