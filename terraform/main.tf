@@ -109,7 +109,7 @@ variable "http_functions" {
     leaderboard : {
       description = "Return the current server leaderboard url."
       runtime     = "go116"
-      entry_point = "SendLeaderboardUrl"
+      entry_point = "GetLeaderboardUrl"
       timeout     = 15
       memory      = 256
       secrets     = []
