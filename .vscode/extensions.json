@@ -1,0 +1,69 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+	// Extension identifier format: ${publisher}.${name}. Example: vscode.csharp
+
+	// List of extensions which should be recommended for users of this workspace.
+	"recommendations": [
+		//General recommandations
+		"aaron-bond.better-comments", 	     		//Better Comments
+		"esbenp.prettier-vscode",		     		//Prettier
+		"streetsidesoftware.code-spell-checker",	//Code Spell Checker
+		"dbaeumer.vscode-eslint",		 		  	//ESLint
+		"wayou.vscode-todo-highlight",			    //Todo Highlight	
+
+		// To contribute with Golang
+		"golang.go",                         		// Go language support
+
+		//To contribute with python
+		"ms-python.python",	                 		//Python
+		"ms-python.black-formatter",         		//To format the code with black
+		"slightc.pip-manager",               		//To install pip-free packages
+		"ms-python.isort",							//To sort the imports
+		"the-compiler.python-tox",					//To run the tests
+		"ms-python.pylint",							//To run the linter
+
+		//To contribute with docker
+		"ms-azuretools.vscode-docker",       		//Docker support
+		"ms-vscode-remote.remote-containers",		//To run the containers remotely with docker-machine and docker-compose 
+
+		//To contribute with HTML
+		"formulahendry.auto-close-tag",      		//To automatically close the tag when you type a tag name.
+		"formulahendry.auto-rename-tag",     		//To automatically rename the tag when you type a tag name.
+		"cstrap.flask-snippets", 		     		//To add snippets for flask framework in HTML editor.
+		"ecmel.vscode-html-css",			 		//To add snippets for html and css 
+		"zignd.html-css-class-completion",			//To add snippets for html and css classes completion
+		"solnurkarim.html-to-css-autocompletion",	//To add snippets for html to css autocompletion 
+
+		//To contribute with JS/TS
+		"xabikos.JavaScriptSnippets",		  		//To add snippets for JS/TS
+		"ms-vscode.vscode-typescript-next",	  		//To add snippets for TS next 
+
+		//To contribute with CSS/SCSS
+		"ritwickdey.LiveServer",			  		//To start a live server 
+		"glenn2223.live-sass",				  		//To format the code with sass 
+		"pranaygp.vscode-css-peek",			  		//To peek the CSS code 
+		"mrezechi3l.css-responsive",		  		//To format the code with responsive CSS
+		"kamikillerto.vscode-colorize",		  		//To colorize the code with syntax highlighting 
+
+		//To contribute with Angular
+		"johnpapa.Angular2",				  		//To add snippets for Angular 2 and Angular 2 routing (Angular 2 routing is not supported in vscode yet)
+		"Angular.ng-template",				  		//To add snippets for Angular 2 templates (ng-template) and ng-content (content) elements 
+		"alexiv.vscode-angular2-files",				//To add snippets for Angular files (component, directive, service, etc.) and templates (html, css, etc.) 
+		"natewallace.angular2-inline",				//To add snippets for Angular 2 inline templates (<ng-template>) and ng-content (<content>) elements
+		"humao.rest-client",						//To add snippets for RESTful API calls (GET, POST, PUT, DELETE, etc.) 
+
+		//To contribute with Terraform
+		"hashicorp.terraform",			  			//To add snippets for Terraform (provider, resource, etc.) 
+		"4ops.terraform",				  			//To add snippets for Terraform (provider, resource, etc.) 
+
+		//Newline at the end of json 
+		"ms-vscode.json-newline-at-end-of-file",	//To add newline at the end of json
+	],
+	// List of extensions recommended by VS Code that should not be recommended for users of this workspace.
+	"unwantedRecommendations": [
+		"abusaidm.html-snippets",		  			//To add snippets for html (deprecated) and css (deprecated) 
+		"CoenraadS.bracket-pair-colorizer-2", 		//Bracket Pair Colorizer 2 (deprecated) - It's now included in VS Code since v1.60.0 in August update.
+		"ms-vscode.vscode-typescript-tslint-plugin",//To add snippets for TS (deprecated)
+		"tiibun.vscode-docker-ws",					//To start a live server (deprecated)
+	]
+}
