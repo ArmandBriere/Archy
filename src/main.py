@@ -6,7 +6,9 @@ import re
 import google.oauth2.id_token
 import requests
 from discord import Embed
+from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
+from discord.member import Member as member_type
 from discord.message import Message as message_type
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request
@@ -24,6 +26,44 @@ bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot"
 # Gcloud auth settings
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./key.json"
 request = Request()
+
+
+@bot.event
+async def on_member_join(member: member_type) -> None:
+    LOGGER.warning("Member %s has just joined the server", member.name)
+
+    # Get welcome channel from server
+    channel: GuildChannel = bot.get_channel(int(os.getenv("WELCOME_CHANNEL_ID")))
+
+    # Identify the path to the function and his name
+    function_name = "hello"  #TODO: change this function name for the welcome function - test if clod function are called correctly
+    function_path = f"{FUNCTION_BASE_RUL}{function_name}"
+    google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+
+    # Call the function "welcome.go" by http request to the cloud function server and get the response
+    response: Response = requests.post(
+        function_path,
+        headers={
+            "Authorization": f"Bearer {google_auth_token}",
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(
+            {
+                "server_id": str(member.guild.id),
+                "server_name": str(member.guild.name),
+                "user_id": str(member.id),
+                "username": str(member.name),
+                "channel_id": str(channel.id),
+                "avatar_url": str(member.avatar_url),
+            }
+        ),
+    )
+    
+    #TODO: Handle the response - to delete after testing
+    LOGGER.warning("Response from cloud function:\n %s", response.text)
+
+    # Send the response to the welcome channel
+    await channel.send(response.content.decode("utf-8"))
 
 
 @bot.event
