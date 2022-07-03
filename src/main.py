@@ -36,7 +36,7 @@ async def on_member_join(member: member_type) -> None:
     channel: GuildChannel = bot.get_channel(int(os.getenv("WELCOME_CHANNEL_ID")))
 
     # Identify the path to the function and his name
-    function_name = "welcome"  #TODO: change this function name for the welcome function - test if clod function are called correctly
+    function_name = "welcome"
     function_path = f"{FUNCTION_BASE_RUL}{function_name}"
     google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
@@ -58,12 +58,9 @@ async def on_member_join(member: member_type) -> None:
             }
         ),
     )
-    
-    #TODO: Handle the response - to delete after testing
-    #LOGGER.warning("Response from cloud function:\n %s", response.text)
 
     # Send the response to the welcome channel
-    #await channel.send(response.content.decode("utf-8"))
+    # await channel.send(response.content.decode("utf-8"))
 
 
 @bot.event
