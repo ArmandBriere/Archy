@@ -1,4 +1,5 @@
 import json
+from time import sleep
 from typing import Any, Generator
 
 import firebase_admin
@@ -9,7 +10,7 @@ from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 
 
-SERVER_ID = 123
+SERVER_ID = 755106635885838477
 
 PROJECT_ID = "archy-f06ed"
 TOPIC_ID = "update_user_role"
@@ -35,6 +36,7 @@ if __name__ == "__main__":
     )
 
     for user in users:
+
         print(f"Adding role to {user.id}")
         publisher = PublisherClient()
         topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
@@ -49,3 +51,5 @@ if __name__ == "__main__":
 
         print(f"Message id: {future.result()}")
         print(f"Published message to {topic_path}.")
+
+        sleep(1)
