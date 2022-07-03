@@ -177,6 +177,15 @@ variable "pubsub_functions" {
       trigger_event = "update_user_role"
       secrets       = ["DISCORD_TOKEN"]
     },
+    welcome : {
+      description   = "Return a welcome message for a new user" 
+      runtime       = "go116"
+      entry_point   = "GreetingNewMember"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "welcome"
+      secrets       = ["DISCORD_TOKEN"]
+    },
   }
 }
 
