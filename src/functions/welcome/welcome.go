@@ -55,12 +55,12 @@ func GreetingNewMember(w http.ResponseWriter, r *http.Request) {
 
 	//Build a string efficiently with strings.Builder
 	var message strings.Builder
-	url.WriteString("Hey {}, welcome to {}!\n", payload.Username, payload.ServerName)
-	url.WriteString("Check out the <#{}> and have fun!.\n", payload.ServerId)
+	message.WriteString("Hey {}, welcome to {}!\n", payload.Username, payload.ServerName)
+	message.WriteString("Check out the <#{}> and have fun!.\n", payload.ServerId)
 
 	//TODO: Add a screenshot of the new member avatar like with 
 	//code ...
 
 	// Send message
-	message, _ := dg.ChannelMessageSend(channel.ID, "Golang is faster!")
+	message, _ := dg.ChannelMessageSend(channel.ID, message.String())
 }
