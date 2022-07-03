@@ -11,25 +11,32 @@
 
     <mat-card-content>
         <div class="inner-card" cdkDrag *ngFor="let user of users; let i = index">
-            <div class="left-side">
-                <div class="name"> {{ i+1 }} - <img class="profile-picture" [src]=user.avatar_url alt="Image not found"
-                        onerror="this.src='../../assets/img/Discord-Logo-White.svg';"> {{ user.username }}
+            <div class="content">
+                <div class="left-side">
+                    <div class="name"> {{ i+1 }} - <img class="profile-picture" [src]=user.avatar_url
+                            alt="Image not found" onerror="this.src='../../assets/img/Discord-Logo-White.svg';"> {{
+                        user.username }}
+                    </div>
+                </div>
+                <div class="right-side">
+                    <div class="message_count" *ngIf="user.message_count">
+                        <div class="column_name">Messages</div>
+                        {{ user.message_count }}
+                    </div>
+                    <div class="exp">
+                        <div class="column_name">Exp</div>
+                        {{ user.total_exp }}
+                    </div>
+                    <div class="level">
+                        <div class="column_name">Level</div>
+                        {{ user.level }}
+                    </div>
                 </div>
             </div>
-            <div class="right-side">
-                <div class="message_count" *ngIf="user.message_count">
-                    <div class="column_name">Messages</div>
-                    {{ user.message_count }}
-                </div>
-                <div class="exp">
-                    <div class="column_name">Exp</div>
-                    {{ user.total_exp }}
-                </div>
-                <div class="level">
-                    <div class="column_name">Level</div>
-                    {{ user.level }}
-                </div>
+            <div class="progress-bar">
+                <div class="progress-bar-fill" [ngStyle]="{'width.%': user.progress}"></div>
             </div>
+
         </div>
     </mat-card-content>
 </mat-card>

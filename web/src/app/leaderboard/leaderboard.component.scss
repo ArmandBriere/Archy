@@ -6,7 +6,11 @@
 }
 
 .inner-card {
-    margin: 20px 10px;
+    margin: 20px 0;
+}
+
+.content {
+    margin: 8px 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -52,4 +56,19 @@
         flex-direction: row;
         justify-content: space-evenly;
     }
+}
+
+.progress-bar {
+    height: 8px;
+    margin: 0 20px;
+    border-radius: 20px;
+    outline-color: initial;
+    outline-style: solid;
+    outline-width: 2px;
+}
+
+.progress-bar-fill {
+    background-color: rgb(50, 122, 50);
+    border-radius: 20px;
+    height: 100%;
 }
