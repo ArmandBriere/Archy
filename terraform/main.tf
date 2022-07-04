@@ -126,6 +126,7 @@ variable "pubsub_topics" {
     "froge_of_the_day",
     "private_message_discord",
     "update_user_role",
+    "welcome_new_user",
   ]
 }
 
@@ -183,7 +184,7 @@ variable "pubsub_functions" {
       entry_point   = "GreetingNewMember"
       timeout       = 15
       memory        = 256
-      trigger_event = "welcome"
+      trigger_event = "welcome_new_user"
       secrets       = ["DISCORD_TOKEN"]
     },
   }
