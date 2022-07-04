@@ -1,42 +1,58 @@
 <mat-card class="outer-card">
-    <mat-card-header>
-        <ng-content></ng-content>
-        <mat-card-title>
+    <div>
+        <h2 style="text-align:center;">
             Leaderboard
-        </mat-card-title>
-        <mat-card-subtitle>
-            Don't forget to drink water
-        </mat-card-subtitle>
-    </mat-card-header>
+        </h2>
+    </div>
 
     <mat-card-content>
         <div class="inner-card" cdkDrag *ngFor="let user of users; let i = index">
             <div class="content">
                 <div class="left-side">
-                    <div class="name"> {{ i+1 }} - <img class="profile-picture" [src]=user.avatar_url
-                            alt="Image not found" onerror="this.src='../../assets/img/Discord-Logo-White.svg';"> {{
-                        user.username }}
+                    <div class="name">
+                        {{ i+1 }}
+                        <img class="profile-picture" [src]=user.avatar_url alt="Image not found"
+                            onerror="this.src='../../assets/img/Discord-Logo-White.svg';">
+                        {{ user.username }}
                     </div>
                 </div>
                 <div class="right-side">
                     <div class="message_count" *ngIf="user.message_count">
-                        <div class="column_name">Messages</div>
-                        {{ user.message_count }}
+                        <div class="column_name">MESSAGES</div>
+                        {{ user.message_count | formatWithK }}
                     </div>
                     <div class="exp">
-                        <div class="column_name">Exp</div>
-                        {{ user.total_exp }}
+                        <div class="column_name">EXPERIENCE</div>
+                        {{ user.total_exp | formatWithK }}
                     </div>
                     <div class="level">
-                        <div class="column_name">Level</div>
+                        <div class="column_name">LEVEL</div>
                         {{ user.level }}
                     </div>
+                    <div class="progress">
+
+                        <mat-progress-spinner class="progress-spinner" [diameter]="60" mode="determinate"
+                            [value]="user.progress">
+                        </mat-progress-spinner>
+                        <div style="position: relative; left: -43px; width: 0;">
+                            {{ user.progress | number: '1.0-0' }}%
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="progress-bar">
-                <div class="progress-bar-fill" [ngStyle]="{'width.%': user.progress}"></div>
-            </div>
+        </div>
 
+        <div class="disclaimer">
+            <p>
+                {{ "Wondering why you're not on the leaderboard ?" | uppercase}}
+            </p>
+            <p>
+                {{ "Only the top 50 are shown here" | uppercase }}
+            </p>
+            <p>
+                {{ "Git gud" | uppercase }}
+            </p>
         </div>
     </mat-card-content>
 </mat-card>

@@ -1,20 +1,19 @@
 .outer-card {
-    margin: 10px;
-    width: calc(100% - 40px);
-    padding: 10px;
-    background: #212121;
+    padding: 10px 30px;
+    background-color: transparent;
+    box-shadow: none;
 }
 
 .inner-card {
-    margin: 20px 0;
+    padding: 10px 15px;
+    background: #212121;
 }
 
 .content {
-    margin: 8px 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    min-width: max-content;
+    flex-wrap: wrap;
 
     .name,
     .message_count,
@@ -22,12 +21,13 @@
     .level {
         font-size: medium;
         font-weight: bold;
-        margin: 0 10px;
+        margin: 0 20px;
         text-align: center;
     }
 
     .column_name {
-        font-size: x-small;
+        font-size: xx-small;
+        text-decoration: underline;
         font-weight: lighter;
         margin-bottom: 5px;
         color: grey;
@@ -41,32 +41,41 @@
     }
 
     .profile-picture {
-        margin: 0 5px;
+        margin: 0 25px;
         width: 50px;
         height: 50px;
         border-radius: 100%;
     }
 
     .left-side {
+        flex: 1;
         text-align: left;
     }
 
     .right-side {
+        flex: 1;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
+        align-items: center;
+    }
+
+    .progress {
+        display: flex;
+        align-items: center;
+
+        .mat-progress-spinner {
+            stroke-linecap: round;
+        }
     }
 }
 
-.progress-bar {
-    height: 8px;
-    margin: 0 20px;
-    border-radius: 20px;
-    background-color: lightgrey;
-}
-
-.progress-bar-fill {
-    background-color: rgb(50, 122, 50);
-    border-radius: 20px;
-    height: 100%;
+.disclaimer {
+    text-align: center;
+    color: white;
+    
+    p {
+        margin: 5px;
+        font-weight: bold;
+    }
 }
