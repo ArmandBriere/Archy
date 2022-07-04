@@ -22,7 +22,10 @@ func BanUser(w http.ResponseWriter, r *http.Request) {
 
 	// Parse body to get Payload
 	var payload = Payload{}
-	json.NewDecoder(r.Body).Decode(&payload)
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		panic(err)
+	}
 
 	// Instanciate Discord bot
 	dg := instanciateBot()

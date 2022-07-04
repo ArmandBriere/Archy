@@ -12,5 +12,8 @@ func main() {
 		UserId:   "<USER_ID>",
 	}
 
-	privateMessage.UpdateUserRole(&payload)
+	err := privateMessage.UpdateUserRole(&payload)
+	if err != nil {
+		panic(err)
+	}
 }

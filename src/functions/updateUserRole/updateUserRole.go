@@ -44,7 +44,10 @@ func UserRole(ctx context.Context, m PubSubMessage) error {
 
 	// Unmarshal data to a valid payload
 	var payload Payload
-	json.Unmarshal(m.Data, &payload)
+	err := json.Unmarshal(m.Data, &payload)
+	if err != nil {
+		panic(err)
+	}
 
 	return UpdateUserRole(&payload)
 }
@@ -79,7 +82,10 @@ func UpdateUserRole(payload *Payload) error {
 		panic(err)
 	}
 	var user FirestoreUser
-	userRef.DataTo(&user)
+	err = userRef.DataTo(&user)
+	if err != nil {
+		panic(err)
+	}
 
 	expectedRoles := getExpectedRoles(client, *payload, ctx, user)
 
