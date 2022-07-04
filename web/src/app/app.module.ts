@@ -21,7 +21,7 @@ import { AngularFireModule } from '@angular/fire/compat';
   declarations: [
     AppComponent,
     HomePageComponent,
-    LeaderboardComponent
+    LeaderboardComponent,
   ],
   imports: [
     BrowserModule,

@@ -18,15 +18,17 @@
             </button>
 
             <span class="logo" color="primary" routerLink="/" routerLinkActive="active">
-                <img class="logo-image" src="https://cdn.discordapp.com/avatars/964693548396068916/8ad3e58a027f73a71edfe9330883fc9c.webp?size=96"
+                <img class="logo-image"
+                    src="https://cdn.discordapp.com/avatars/964693548396068916/8ad3e58a027f73a71edfe9330883fc9c.webp?size=96"
                     alt="Cute Froge">
                 Archy
             </span>
 
             <span class="fill-space"></span>
 
-            <div *ngIf="(isHandset$ | async) === false">
+            <div class="nav-buttons" *ngIf="(isHandset$ | async) === false">
                 <a mat-raised-button color="primary" routerLink="/leaderboard/755106635885838477">🏆 Leaderboard</a>
+                <app-login></app-login>
             </div>
 
         </mat-toolbar>
