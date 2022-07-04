@@ -15,6 +15,9 @@ import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { provideFirebaseApp } from '@angular/fire/app';
 import { getApp, initializeApp } from 'firebase/app';
 import { AngularFireModule } from '@angular/fire/compat';
+import { HomePageService } from './home-page/home-page.service';
+import { HttpClientModule } from '@angular/common/http';
+
 
 
 @NgModule({
@@ -28,6 +31,7 @@ import { AngularFireModule } from '@angular/fire/compat';
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
+    HttpClientModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
@@ -39,7 +43,7 @@ import { AngularFireModule } from '@angular/fire/compat';
       });
     }),
   ],
-  providers: [],
+  providers: [HomePageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
