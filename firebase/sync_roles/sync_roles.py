@@ -10,19 +10,10 @@ from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 
 
-SERVER_ID = 755106635885838477
+SERVER_ID = "<SERVER_ID>"
 
 PROJECT_ID = "archy-f06ed"
 TOPIC_ID = "update_user_role"
-
-
-class Role:
-    def __init__(self, level) -> None:
-        self.level = level
-        self.role_ids = self.role_ids
-
-    def get_data_to_write(self):
-        return {"level": self.level, "roles": [str(role_id) for role_id in self.role_ids]}
 
 
 if __name__ == "__main__":
@@ -32,7 +23,7 @@ if __name__ == "__main__":
     database: Client = firestore.client()
 
     users: Generator[DocumentSnapshot, Any, None] = (
-        database.collection("servers").document(str(SERVER_ID)).collection("users").stream()
+        database.collection("servers").document(SERVER_ID).collection("users").stream()
     )
 
     for user in users:
@@ -42,7 +33,7 @@ if __name__ == "__main__":
         topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
 
         data = {
-            "server_id": str(SERVER_ID),
+            "server_id": SERVER_ID,
             "user_id": str(user.id),
         }
         encoded_data = json.dumps(data, indent=2).encode("utf-8")

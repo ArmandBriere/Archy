@@ -1,27 +1,22 @@
 skinparam monochrome  false
 skinparam shadowing   false
 skinparam handwritten false
-skinparam backgroundcolor White
+skinparam backgroundColor white
 skinparam arrowColor green
 
 set namespaceSeparator none
 
 
 skinparam Class {
-    BorderColor green
-    Backgroundcolor White
-    skinparam color White
+    borderColor green
+    backgroundColor white
 }
+
 skinparam RoundCorner 10
 
-skinparam object {
-    BorderColor green
-    BackgroundColor White
-}
-
-skinparam state {
-    BorderColor green
-    BackgroundColor White
+skinparam folder {
+    borderColor black
+    backgroundColor white
 }
 
 hide footbox
