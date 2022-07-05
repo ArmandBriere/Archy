@@ -21,7 +21,10 @@ var Payload struct {
 func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	// Parse body to get Payload
 	var payload = Payload
-	json.NewDecoder(r.Body).Decode(&payload)
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		panic(err)
+	}
 
 	// Instanciate Discord bot
 	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
@@ -60,6 +63,9 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 
 	// Send the Froge
 	bigFrogeUrl := "https://cdn.discordapp.com/emojis/" + randomFroge.ID + frogeExtension
-	dg.ChannelMessageSend(channel.ID, bigFrogeUrl)
 
+	_, err = dg.ChannelMessageSend(channel.ID, bigFrogeUrl)
+	if err != nil {
+		panic(err)
+	}
 }

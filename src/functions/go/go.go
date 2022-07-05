@@ -18,8 +18,10 @@ var Payload struct {
 func SendMessageWithReaction(w http.ResponseWriter, r *http.Request) {
 	// Parse body to get Payload
 	var payload = Payload
-	json.NewDecoder(r.Body).Decode(&payload)
-
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		panic(err)
+	}
 	// Instanciate Discord bot
 	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
@@ -36,5 +38,8 @@ func SendMessageWithReaction(w http.ResponseWriter, r *http.Request) {
 	message, _ := dg.ChannelMessageSend(channel.ID, "Golang is faster!")
 
 	// React to it
-	dg.MessageReactionAdd(channel.ID, message.ID, "🧡")
+	err = dg.MessageReactionAdd(channel.ID, message.ID, "🧡")
+	if err != nil {
+		panic(err)
+	}
 }

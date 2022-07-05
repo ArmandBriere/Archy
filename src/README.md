@@ -30,7 +30,7 @@ Call a local function
 curl -H "Authorization: bearer $(./google-cloud-sdk/bin/gcloud auth print-identity-token)" https://us-central1-archy-f06ed.cloudfunctions.net/archy_py
 ```
 
-# Testing & lint
+# Python testing & lint
 
 [Tox](https://tox.wiki/en/latest/) is used to automate testing.
 
@@ -138,3 +138,12 @@ pytest
 ```
 
 In VsCode, open a test file and select the testing menu on the sidenav.
+
+# Go linting
+
+We use [golangci-lint](https://golangci-lint.run/usage/install/), install it locally to validate your code before push:
+
+```bash
+# binary will be $(go env GOPATH)/bin/golangci-lint
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.2
+```
