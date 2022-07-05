@@ -12,6 +12,8 @@ from discord.member import Member as member_type
 from discord.message import Message as message_type
 from dotenv import load_dotenv
 from google.auth.transport.requests import Request
+from google.cloud.pubsub_v1 import PublisherClient
+from google.cloud.pubsub_v1.publisher.futures import Future
 from requests import Response
 
 load_dotenv()
@@ -19,6 +21,8 @@ load_dotenv()
 LOGGER: logging.Logger = logging.getLogger(__name__)
 DISCORD_API_TOKEN = os.getenv("DISCORD_API_TOKEN")
 FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
+PROJECT_ID = "archy-f06ed"
+TOPIC_ID = "welcome_new_user"
 
 # Discord bot settings
 bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot")
@@ -35,32 +39,26 @@ async def on_member_join(member: member_type) -> None:
     # Get welcome channel from server
     channel: GuildChannel = bot.get_channel(int(os.getenv("WELCOME_CHANNEL_ID")))
 
-    # Identify the path to the function and his name
-    function_name = "welcome"
-    function_path = f"{FUNCTION_BASE_RUL}{function_name}"
-    google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    # Publish the message to the topic
+    publisher = PublisherClient()
+    topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
+    data = {
+        "server_id": str(member.guild.id),
+        "server_name": str(member.guild.name),
+        "user_id": str(member.id),
+        "username": str(member.name),
+        "channel_id": str(channel.id),
+        "avatar_url": str(member.avatar_url),
+    }
 
-    # Call the function "welcome.go" by http request to the cloud function server and get the response
-    requests.post(
-        function_path,
-        headers={
-            "Authorization": f"Bearer {google_auth_token}",
-            "Content-Type": "application/json",
-        },
-        data=json.dumps(
-            {
-                "server_id": str(member.guild.id),
-                "server_name": str(member.guild.name),
-                "user_id": str(member.id),
-                "username": str(member.name),
-                "channel_id": str(channel.id),
-                "avatar_url": str(member.avatar_url),
-            }
-        ),
-    )
+    # Data must be a bytestring
+    user_encode_data = json.dumps(data, indent=2).encode("utf-8")
 
-    # Send the response to the welcome channel
-    # await channel.send(response.content.decode("utf-8"))
+    # When you publish a message, the client returns a future.
+    future: Future = publisher.publish(topic_path, user_encode_data)
+
+    print(f"Message id: {future.result()}")
+    print(f"Published message to {topic_path}.")
 
 
 @bot.event
@@ -71,6 +69,7 @@ async def on_message(message: message_type) -> None:
     if ctx.invoked_with:
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+
         response: Response = requests.post(
             function_path,
             headers={
