@@ -1,12 +1,13 @@
 package welcome
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"html"
-	"net/http"
-	"strings"
+	"log"
 	"os"
+	"regexp"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -16,51 +17,90 @@ type PubSubMessage struct {
 	Data []byte `json:"data"`
 }
 
+// Payload struct that is expected
 type Payload struct {
-	UserId  string `json:"user_id"`
-	Username string `json:"username"`
-	ServerId string `json:"server_id"`
+	UserId     string `json:"user_id"`
+	Username   string `json:"username"`
+	ServerId   string `json:"server_id"`
 	ServerName string `json:"server_name"`
-	AvatarUrl string `json:"avatar_url"`
-	ChannelId string `json:"channel_id"`
+	AvatarUrl  string `json:"avatar_url"`
+	ChannelId  string `json:"channel_id"`
 }
 
-func GreetingNewMember(w http.ResponseWriter, r *http.Request) {
-	//Parse body to get Payload
-	var payload = Payload{}
-	err := json.NewDecoder(r.Body).Decode(&payload)
+// User expected format in firestore
+type FirestoreUser struct {
+	Username  string `firestore:"username"`
+	AvatarUrl string `firestore:"avatar_url"`
+}
 
-	if err != nil {
-		panic(err)
-	}
+// Unmarshal received context and call proper function that send message
+func GreetingNewMember(ctx context.Context, m PubSubMessage) error {
+	log.Printf("Starting!")
 
-	if len(payload.UserId) == 0 
-	or len(payload.Username) == 0 
-	or len(payload.ServerName) == 0 
-	or len(payload.AvatarUrl) == 0 {
+	// Unmarshal data to a valid payload
+	var payload Payload
+	json.Unmarshal(m.Data, &payload)
+
+	if len(payload.UserId) == 0 ||
+		len(payload.Username) == 0 ||
+		len(payload.ServerName) == 0 ||
+		len(payload.AvatarUrl) == 0 {
 		panic("Missing data in payload")
 	}
 
-	// Instantiate Discord bot
+	return SendGreetingNewMember(&payload)
+}
+
+// Send a welcome message to a new member
+func SendGreetingNewMember(payload *Payload) error {
+
+	// Instantiate discord bot
 	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
+
 	if err != nil {
-		fmt.Println("error creating Discord session: ", err)
+		fmt.Println("error creating Discord session,", err)
+		return err
 	}
 
-	// Get the channel
+	// Instantiate a direct message channel
 	channel, err := dg.Channel(payload.ChannelId)
+
 	if err != nil {
-		panic("Unauthorized to create the connection. Verify Discord Token or ChannelID")
+		error_message := []byte(err.Error())
+		error_400_regex, _ := regexp.Compile("400")
+		if len(error_400_regex.Find(error_message)) > 0 {
+			panic("Can't create Channel - Bad ChannelId")
+		}
+		error_401_regex, _ := regexp.Compile("401")
+		if len(error_401_regex.Find(error_message)) > 0 {
+			panic("Unauthorized to create the connection. Verify Discord Token")
+		}
+		return err
 	}
 
-	//Build a string efficiently with strings.Builder
-	var message strings.Builder
-	message.WriteString("Hey {}, welcome to {}!\n", payload.Username, payload.ServerName)
-	message.WriteString("Check out the <#{}> and have fun!.\n", payload.ServerId)
+	// Create Message object
+	var messageData discordgo.MessageSend
+	messageData.Content = BuildWelcomeMessage(payload)
 
-	//TODO: Add a screenshot of the new member avatar like with 
-	//code ...
+	// Send welcome message to new member into the channel intended
+	log.Printf("Sending to channel: " + payload.ChannelId)
+	log.Printf("Message: " + messageData.Content)
+	_, err = dg.ChannelMessageSendComplex(channel.ID, &messageData)
 
-	// Send message
-	message, _ := dg.ChannelMessageSend(channel.ID, message.String())
+	if err != nil {
+		panic("Message didn't make it" + err.Error())
+	}
+
+	log.Printf("Done!")
+	return nil
+}
+
+//Build a welcome message  - efficiently with strings.Builder
+func BuildWelcomeMessage(payload *Payload) string {
+
+	var messageWelcome strings.Builder
+	messageWelcome.WriteString(fmt.Sprintf("Hey %s, welcome to %s!\n", payload.Username, payload.ServerName))
+	messageWelcome.WriteString(fmt.Sprintf("Check out the <#%s> and have fun!.\n", payload.ChannelId))
+
+	return messageWelcome.String()
 }
