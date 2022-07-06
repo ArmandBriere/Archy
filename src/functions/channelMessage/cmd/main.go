@@ -14,5 +14,8 @@ func main() {
 		Image: "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII",
 	}
 
-	channelMessage.SendChannelMessage(&payload)
+	err := channelMessage.SendChannelMessage(&payload)
+	if err != nil {
+		panic(err)
+	}
 }

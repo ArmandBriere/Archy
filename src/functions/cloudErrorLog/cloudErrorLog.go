@@ -38,7 +38,10 @@ func UnmarshalPubsubMessage(ctx context.Context, m PubSubMessage) error {
 
 	// Unmarshal data to a valid payload
 	var payload Payload
-	json.Unmarshal(m.Data, &payload)
+	err := json.Unmarshal(m.Data, &payload)
+	if err != nil {
+		panic(err)
+	}
 
 	return SendErrorLogToDiscordChannel(&payload)
 }
@@ -79,7 +82,10 @@ func SendErrorLogToDiscordChannel(payload *Payload) error {
 		panic("Message didn't make it" + err.Error())
 	}
 
-	dg.MessageThreadStart(message.ChannelID, message.ID, messageData.Title, 1440)
+	_, err = dg.MessageThreadStart(message.ChannelID, message.ID, messageData.Title, 1440)
+	if err != nil {
+		panic(nil)
+	}
 
 	log.Printf("Done!")
 	return nil

@@ -18,5 +18,8 @@ func main() {
 	payload.Resource.Labels.Region = "us-central1"
 	payload.Resource.Labels.ProjectId = "archy-f06ed"
 
-	cloudErrorLog.SendErrorLogToDiscordChannel(&payload)
+	err := cloudErrorLog.SendErrorLogToDiscordChannel(&payload)
+	if err != nil {
+		panic(nil)
+	}
 }
