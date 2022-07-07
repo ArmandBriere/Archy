@@ -15,15 +15,16 @@ jobs:
       - id: set-matrix
         run: |
           data=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \; | jq -n -s '{ items: inputs }')
-          echo "::set-output name=matrix::{$(echo $data)}"
+          echo "::set-output name=matrix::$(echo $data)"
   golangci:
     name: lint
     needs: matrix_prep
-    runs-on: ${{ matrix.runs_on }}
+    runs-on: ubuntu-latest
     strategy:
-      matrix: 
-        items: ${{fromJson(needs.matrix_prep.outputs.matrix.items)}}
+      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
     steps:
+      - name: test
+        run: echo ${{ matrix.items }}
       - uses: actions/setup-go@v3
         with:
           go-version: 1.16
