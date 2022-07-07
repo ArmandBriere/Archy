@@ -15,7 +15,7 @@ jobs:
       - id: set-matrix
         run: |
           paths=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
-          data=$(echo $data | sed 's/[^/]*$/"/' | jq -n -s '{ items: inputs }')
+          data=$(echo $paths | sed 's/[^/]*$/"/' | jq -n -s '{ items: inputs }')
           echo "::set-output name=matrix::$(echo $data)"
   golangci:
     name: lint
