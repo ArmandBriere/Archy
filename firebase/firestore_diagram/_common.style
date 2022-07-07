@@ -12,7 +12,7 @@ skinparam Class {
     backgroundColor white
 }
 
-skinparam RoundCorner 10
+skinparam roundCorner 10
 
 skinparam folder {
     borderColor black
