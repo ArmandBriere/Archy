@@ -14,9 +14,10 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          paths=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
-          data=$(echo $paths | sed 's/[^/]*$/"/' | jq -n -s '{ items: inputs }')
-          echo "::set-output name=matrix::$(echo $data)"
+          toto=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
+          data=$( echo $toto | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('[^/]*.go\"', '\"', tmp))")
+          value=$(echo $data | jq -n -s '{ items: inputs }')
+          echo "::set-output name=matrix::$(echo $value)"
   golangci:
     name: lint
     needs: matrix_prep
