@@ -15,7 +15,7 @@ jobs:
       - id: set-matrix
         run: |
           data=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \; | jq -n -s '{ items: inputs }')
-          echo "::set-output name=matrix::{\"include\":$(echo $data)}"
+          echo "::set-output name=matrix::{$(echo $data)}"
   golangci:
     name: lint
     needs: matrix_prep
