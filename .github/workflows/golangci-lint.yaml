@@ -12,11 +12,6 @@ jobs:
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
-
-      - name: install
-        run: |
-          apt update
-          apt -y install jq python
       - id: set-matrix
         run: |
           toto=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u | python -c 'import sys; import json; paths=sys.stdin.read().splitlines(); print(json.dumps(paths)[1:-1])')
