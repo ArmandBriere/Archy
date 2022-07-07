@@ -34,14 +34,6 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     },
-    exp : {
-      description = "Increase the experience of a user"
-      runtime     = "python39"
-      entry_point = "exp"
-      timeout     = 15
-      memory      = 256
-      secrets     = ["DISCORD_TOKEN"]
-    },
     hello : {
       description = "Simple hello"
       runtime     = "python39"
@@ -126,12 +118,22 @@ variable "pubsub_topics" {
     "froge_of_the_day",
     "private_message_discord",
     "update_user_role",
+    "exp_discord"
   ]
 }
 
 variable "pubsub_functions" {
   type = map(any)
   default = {
+    exp : {
+      description = "Increase the experience of a user"
+      runtime     = "python39"
+      entry_point = "exp"
+      timeout     = 15
+      memory      = 256
+      trigger_event = "exp_discord"
+      secrets     = ["DISCORD_TOKEN"]
+    },
     privateMessage : {
       description   = "Send a private message to a user"
       runtime       = "go116"
