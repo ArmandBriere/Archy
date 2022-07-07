@@ -14,16 +14,19 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          toto=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u | python -c 'import sys; paths=sys.stdin.read().splitlines(); print(paths)')
-          jsonVar=$(jq -n --arg toto "$toto" '{data: [$toto]}')
-          echo "::set-output name=matrix::{\"include\":$(echo $jsonVar)}"
+          go_folder=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
+          clean_paths=$( echo $go_folder | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('[^/]*.go\"', '\"', tmp))")
+          json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
+          echo "::set-output name=matrix::$(echo $json_data)"
   golangci:
     name: lint
     needs: matrix_prep
-    runs-on: ${{ matrix.runs_on }}
+    runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
     steps:
+      - name: test
+        run: echo ${{ matrix.items }}
       - uses: actions/setup-go@v3
         with:
           go-version: 1.16
@@ -32,4 +35,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: ${{ matrix }}
+          working-directory: ${{ matrix.items }}
