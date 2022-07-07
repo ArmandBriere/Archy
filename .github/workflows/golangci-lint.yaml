@@ -14,7 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          data=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \; | jq -n -s '{ items: inputs }')
+          paths=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
+          data=$(echo $data | sed 's/[^/]*$/"/' | jq -n -s '{ items: inputs }')
           echo "::set-output name=matrix::$(echo $data)"
   golangci:
     name: lint
