@@ -12,17 +12,22 @@ jobs:
     steps:
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
+
+      - name: install
+        run: |
+          apt update
+          apt -y install jq python
       - id: set-matrix
         run: |
-          toto=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u | python -c 'import sys; paths=sys.stdin.read().splitlines(); print(paths)')
-          jsonVar=$(jq -n --arg toto "$toto" '{data: $toto}')
-          echo "::set-output name=matrix::{\"include\":$(echo $jsonVar)}"
+          toto=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u | python -c 'import sys; import json; paths=sys.stdin.read().splitlines(); print(json.dumps(paths)[1:-1])')
+          jsonVar=$(jq -n --arg toto "$toto" '{data: [$toto]}')
+          echo "::set-output name=matrix::{$(echo $jsonVar)}"
   golangci:
     name: lint
     needs: matrix_prep
     runs-on: ${{ matrix.runs_on }}
     strategy:
-      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix.data)}}
+      matrix: ${{needs.matrix_prep.outputs.matrix.data}}
     steps:
       - uses: actions/setup-go@v3
         with:
