@@ -9,16 +9,10 @@ import requests
 DEFAULT_GIF = "https://tenor.com/view/frog-multiply-gif-25342428"
 UNKNOWN_GIF = "https://tenor.com/view/bof-i-dont-mind-i-dont-understand-why-jean-dujardin-oss117-gif-20383956"
 
-# This will be added to firebase in the future
-gifs = {
-    "doubt": "https://tenor.com/view/doubt-press-x-la-noire-meme-x-button-gif-19259237",
-    "confused": "https://tenor.com/view/confusion-chicken-gif-11299790",
-}
-
 
 @functions_framework.http
 def gif(request: flask.Request) -> Tuple[str, int]:
-    """Return the requested gif or the first found with the tenor API."""
+    """Return the first gif found with the tenor API."""
 
     request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
@@ -27,12 +21,11 @@ def gif(request: flask.Request) -> Tuple[str, int]:
         if len(params) == 0 or params[0] == "":
             return DEFAULT_GIF, 200
 
-        if params[0].lower() in gifs:
-            return gifs[params[0]], 200
+        query: str = "+".join(params)
 
         api_key: str = os.environ["TENOR_API_TOKEN"]
         response: requests.Response = requests.get(
-            f"https://tenor.googleapis.com/v2/search?q={params[0].lower()}&key={api_key}&client_key=Archy&limit=1"
+            f"https://tenor.googleapis.com/v2/search?q={query}&key={api_key}&client_key=Archy&limit=1"
         )
 
         return extract_data_from_response(response.status_code, response.content), 200
