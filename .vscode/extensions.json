@@ -1,0 +1,11 @@
+{
+	"recommendations": [
+		"esbenp.prettier-vscode",
+		"golang.go",
+		"ms-python.python",
+		"ms-azuretools.vscode-docker",
+		"johnpapa.Angular2",
+		"Angular.ng-template",
+		"hashicorp.terraform",
+	],
+}

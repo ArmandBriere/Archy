@@ -2,9 +2,7 @@ import json
 import os
 from unittest.mock import MagicMock, patch
 
-import pytest
-
-from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, extract_data_from_response, gif, gifs
+from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, extract_data_from_response, gif
 
 MODULE_PATH = "functions.gif.main"
 
@@ -18,22 +16,6 @@ def test_gif_with_empty_body():
     result = gif(request_mock)
 
     assert result == (DEFAULT_GIF, 200)
-
-
-@pytest.mark.parametrize(
-    ("body"),
-    [
-        {"params": ["doubt"]},
-        {"params": ["confused"]},
-    ],
-)
-def test_gif_with_param(body):
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = body
-
-    result = gif(request_mock)
-
-    assert result == (gifs[body["params"][0]], 200)
 
 
 @patch.dict(os.environ, {"TENOR_API_TOKEN": "TEST"}, clear=True)
