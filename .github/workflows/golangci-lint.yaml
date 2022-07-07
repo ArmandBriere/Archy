@@ -4,25 +4,24 @@ on:
   - pull_request
 permissions:
   contents: read
-  # Optional: allow read access to pull request. Use with `only-new-issues` option.
-  # pull-requests: read
 jobs:
+  matrix_prep:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          matrix=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u)                
+          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}
   golangci:
     name: lint
-    runs-on: ubuntu-latest
+    needs: matrix_prep
+    runs-on: ${{ matrix.runs_on }}
     strategy:
-      fail-fast: false
-      matrix:
-        go-path:
-          [
-            "ban",
-            "channelMessage",
-            "cloudErrorLog",
-            "froge",
-            "go",
-            "privateMessage",
-            "updateUserRole",
-          ]
+      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
     steps:
       - uses: actions/setup-go@v3
         with:
@@ -32,5 +31,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-
-          working-directory: ./src/functions/${{ matrix.go-path }}
+          working-directory: ./src/functions/${{ matrix.someValue }}
