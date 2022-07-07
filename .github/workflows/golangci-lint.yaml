@@ -4,26 +4,29 @@ on:
   - pull_request
 permissions:
   contents: read
-  # Optional: allow read access to pull request. Use with `only-new-issues` option.
-  # pull-requests: read
 jobs:
+  matrix_prep:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          go_folder=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
+          clean_paths=$( echo $go_folder | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('[^/]*.go\"', '\"', tmp))")
+          json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
+          echo "::set-output name=matrix::$(echo $json_data)"
   golangci:
     name: lint
+    needs: matrix_prep
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
-      matrix:
-        go-path:
-          [
-            "ban",
-            "channelMessage",
-            "cloudErrorLog",
-            "froge",
-            "go",
-            "privateMessage",
-            "updateUserRole",
-          ]
+      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
     steps:
+      - name: test
+        run: echo ${{ matrix.items }}
       - uses: actions/setup-go@v3
         with:
           go-version: 1.16
@@ -32,5 +35,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-
-          working-directory: ./src/functions/${{ matrix.go-path }}
+          working-directory: ${{ matrix.items }}
