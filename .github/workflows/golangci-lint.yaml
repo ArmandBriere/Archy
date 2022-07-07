@@ -21,7 +21,8 @@ jobs:
     needs: matrix_prep
     runs-on: ${{ matrix.runs_on }}
     strategy:
-      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
+      matrix: 
+        items: ${{fromJson(needs.matrix_prep.outputs.matrix.items)}}
     steps:
       - uses: actions/setup-go@v3
         with:
