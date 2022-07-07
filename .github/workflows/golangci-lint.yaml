@@ -22,7 +22,7 @@ jobs:
     needs: matrix_prep
     runs-on: ${{ matrix.runs_on }}
     strategy:
-      matrix: ${{needs.matrix_prep.outputs.matrix.data}}
+      matrix: ${{needs.matrix_prep.outputs.matrix}}
     steps:
       - uses: actions/setup-go@v3
         with:
@@ -32,4 +32,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: ${{ matrix }}
+          working-directory: ${{ matrix.data }}
