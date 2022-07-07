@@ -15,7 +15,7 @@ jobs:
       - id: set-matrix
         run: |
           toto=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u | python -c 'import sys; paths=sys.stdin.read().splitlines(); print(paths)')
-          jsonVar=$(jq -n --arg toto "$toto" '{data: [$toto]}')
+          jsonVar=$(jq -n --arg toto "$toto" '{data: $toto}')
           echo "::set-output name=matrix::{\"include\":$(echo $jsonVar)}"
   golangci:
     name: lint
