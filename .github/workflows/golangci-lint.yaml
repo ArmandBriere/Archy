@@ -14,9 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          toto=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u | python -c 'import sys; import json; paths=sys.stdin.read().splitlines(); print(json.dumps(paths)[1:-1])')
-          jsonVar=$(jq -n --arg toto "$toto" '{data: [$toto]}')
-          echo "::set-output name=matrix::{$(echo $jsonVar)}"
+          data=$(find . -type f -name "*.go" -exec jq -n --arg path {} '{ name: ($path|sub(".*/"; "")), path: $path }' \; | jq -n -s '{ items: inputs }')
+          echo "::set-output name=matrix::{$(echo $data)}"
   golangci:
     name: lint
     needs: matrix_prep
@@ -32,4 +31,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: ${{ matrix.data }}
+          working-directory: ${{ matrix.items.path }}
