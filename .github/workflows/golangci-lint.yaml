@@ -14,7 +14,8 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          matrix=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u)                
+          path=$(find . -type f -name "*.go" -exec dirname "{}" \; | sort -u)
+          matrix=$(jq --arg path "$path" 'map(. | (.runOn=="always") )')                           
           echo ::set-output name=matrix::{\"include\":$(echo $matrix)}
   golangci:
     name: lint
@@ -31,4 +32,4 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          working-directory: ./src/functions/${{ matrix.someValue }}
+          working-directory: ./src/functions/${{ matrix.path }}
