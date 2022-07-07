@@ -38,7 +38,7 @@ def test_hello_empty_user_id():
 
 
 @pytest.mark.parametrize(
-    ("body"),  # Data scheme of the next nested list
+    ("body"),
     [
         {
             "user_id": "123",
