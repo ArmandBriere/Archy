@@ -126,7 +126,6 @@ variable "pubsub_topics" {
     "froge_of_the_day",
     "private_message_discord",
     "update_user_role",
-    "welcome_new_user",
   ]
 }
 
@@ -176,15 +175,6 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 256
       trigger_event = "update_user_role"
-      secrets       = ["DISCORD_TOKEN"]
-    },
-    welcome : {
-      description   = "Return a welcome message for a new user" 
-      runtime       = "go116"
-      entry_point   = "GreetingNewMember"
-      timeout       = 15
-      memory        = 256
-      trigger_event = "welcome_new_user"
       secrets       = ["DISCORD_TOKEN"]
     },
   }
