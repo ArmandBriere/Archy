@@ -14,11 +14,11 @@ from discord.message import Message as message_type
 from dotenv import load_dotenv
 from firebase_admin import credentials, firestore
 from google.auth.transport.requests import Request
-from google.cloud.pubsub_v1 import PublisherClient
-from google.cloud.pubsub_v1.publisher.futures import Future
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
+from google.cloud.pubsub_v1 import PublisherClient
+from google.cloud.pubsub_v1.publisher.futures import Future
 from requests import Response
 
 load_dotenv()
@@ -26,8 +26,6 @@ load_dotenv()
 LOGGER: logging.Logger = logging.getLogger(__name__)
 DISCORD_API_TOKEN = os.getenv("DISCORD_API_TOKEN")
 FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
-PROJECT_ID = "archy-f06ed"
-TOPIC_ID = "welcome_new_user"
 
 # Discord bot settings
 bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot")
@@ -58,19 +56,19 @@ def is_active_command(server_id: str, command_name: str) -> bool:
 async def on_member_join(member: member_type) -> None:
     LOGGER.warning("Member %s has just joined the server", member.name)
 
-    # Get welcome channel from server
+    project_id = "archy-f06ed"
+    topic_id = "channel_message_discord"
+
+    # Get targeted channel id
     channel: GuildChannel = bot.get_channel(int(os.getenv("WELCOME_CHANNEL_ID")))
 
     # Publish the message to the topic
     publisher = PublisherClient()
-    topic_path = publisher.topic_path(PROJECT_ID, TOPIC_ID)
+    topic_path = publisher.topic_path(project_id, topic_id)
     data = {
-        "server_id": str(member.guild.id),
-        "server_name": str(member.guild.name),
-        "user_id": str(member.id),
-        "username": str(member.name),
         "channel_id": str(channel.id),
-        "avatar_url": str(member.avatar_url),
+        "message": f"Welcome {member.display_name} to the server!",
+        "image": "",
     }
 
     # Data must be a bytestring
