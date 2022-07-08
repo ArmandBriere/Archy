@@ -55,7 +55,9 @@ async def on_message(message: message_type) -> None:
     ctx: Context = await bot.get_context(message)
     if ctx.invoked_with:
         if not is_active_command(str(ctx.guild.id), str(ctx.invoked_with)):
+            await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
             return
+
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
         response: Response = requests.post(
