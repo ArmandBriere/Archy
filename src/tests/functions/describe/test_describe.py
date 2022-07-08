@@ -26,7 +26,7 @@ def test_describe_empty_body():
     assert ("I don't even know who you are!", 200) == result
 
 
-def test_hello_empty_user_id():
+def test_describe_empty_user_id():
     body = {"user_id": ""}
 
     request_mock = MagicMock()
