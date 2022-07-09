@@ -20,7 +20,7 @@ TMP_FILE_PATH = "/tmp/tmp.json"
 def exp(event: dict, _context: Context):
     """Increase the user experience on firestore."""
 
-    pubsub_message = base64.b64decode(event["data"]).decode("utf-8")
+    pubsub_message = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
     print(pubsub_message)
 
     print("Start")
