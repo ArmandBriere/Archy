@@ -15,6 +15,8 @@ from google.auth.transport.requests import Request
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
+from google.cloud.pubsub_v1 import PublisherClient
+from google.cloud.pubsub_v1.publisher.futures import Future
 from requests import Response
 
 load_dotenv()
@@ -92,27 +94,24 @@ async def on_message(message: message_type) -> None:
 
     # Add exp to the user for every message send
     elif not message.author.bot:
-        function_path = f"{FUNCTION_BASE_RUL}exp"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
-        requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(
-                {
-                    "server_id": str(ctx.guild.id),
-                    "user_id": str(ctx.author.id),
-                    "server_name": str(ctx.message.guild.name),
-                    "username": str(ctx.author.name),
-                    "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",  # pylint: disable=W0212
-                }
-            ),
-        )
+        publisher = PublisherClient()
+        topic_path = publisher.topic_path("archy-f06ed", "exp_discord")
 
-    # Simple interaction when a user send "@bot_name"
+        data = {
+            "server_id": str(ctx.guild.id),
+            "user_id": str(ctx.author.id),
+            "server_name": str(ctx.message.guild.name),
+            "username": str(ctx.author.name),
+            "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",  # pylint: disable=W0212
+        }
+
+        user_encode_data = json.dumps(data, indent=2).encode("utf-8")
+        future: Future = publisher.publish(topic_path, user_encode_data)
+
+        print(f"Message id: {future.result()}")
+        print(f"Published message to {topic_path}.")
+
     if message.content == f"<@{bot.user.id}>":
         await ctx.send("> Who Dares Summon Me?")
 

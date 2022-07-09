@@ -26,17 +26,17 @@ def get_good_db_value(param):  # pragma: no cover
 
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
-def test_exp(random_mock, client_mock):
+@patch(f"{MODULE_PATH}.base64")
+def test_exp(b64_mock, random_mock, client_mock):
 
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
 
     client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_good_db_value
     )
     random_mock.return_value = 50
 
-    result = exp(request_mock)
+    result = exp(MagicMock(), None)
 
     assert ("", 200) == result
 
@@ -49,16 +49,16 @@ def get_timeout_timestamp_value(param):  # pragma: no cover
 
 
 @patch(f"{MODULE_PATH}.Client")
-def test_exp_timeout(client_mock):
+@patch(f"{MODULE_PATH}.base64")
+def test_exp_timeout(b64_mock, client_mock):
 
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
 
     client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_timeout_timestamp_value
     )
 
-    result = exp(request_mock)
+    result = exp(b64_mock, None)
 
     assert ("", 200) == result
 
@@ -88,17 +88,17 @@ def test_exp_timeout(client_mock):
 )
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
-def test_exp_missing_data(random_mock, database_mock, body):
+@patch(f"{MODULE_PATH}.base64")
+def test_exp_missing_data(b64_mock, random_mock, database_mock, body):
 
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = body
+    b64_mock.b64decode.return_value.decode.return_value = body
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_good_db_value
     )
     random_mock.return_value = 50
 
-    result = exp(request_mock)
+    result = exp(b64_mock, None)
 
     assert ("", 200) == result
 
@@ -107,10 +107,10 @@ def test_exp_missing_data(random_mock, database_mock, body):
 @patch(f"{MODULE_PATH}.send_message_to_user", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 @patch("random.randint")
-def test_exp_level_up(random_mock, database_mock):
+@patch(f"{MODULE_PATH}.base64")
+def test_exp_level_up(b64_mock, random_mock, database_mock):
 
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_good_db_value
@@ -118,7 +118,7 @@ def test_exp_level_up(random_mock, database_mock):
     random_mock.return_value = 500
     database_mock.return_value.batch.return_value = MagicMock()
 
-    result = exp(request_mock)
+    result = exp(b64_mock, None)
 
     assert ("", 200) == result
     assert database_mock.return_value.batch.call_count == 1
@@ -126,7 +126,8 @@ def test_exp_level_up(random_mock, database_mock):
 
 
 @patch(f"{MODULE_PATH}.Client")
-def test_exp_new_user(database_mock):
+@patch(f"{MODULE_PATH}.base64")
+def test_exp_new_user(b64_mock, database_mock):
     expected_set_value = {
         "total_exp": 0,
         "exp_toward_next_level": 0,
@@ -137,15 +138,14 @@ def test_exp_new_user(database_mock):
         "avatar_url": GOOD_BODY["avatar_url"],
     }
 
-    request_mock = MagicMock()
-    request_mock.get_json.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
         False
     )
     database_mock.return_value.batch.return_value = MagicMock()
 
-    result = exp(request_mock)
+    result = exp(b64_mock, None)
 
     set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
     assert ("", 200) == result
