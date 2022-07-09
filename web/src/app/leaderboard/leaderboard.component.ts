@@ -22,9 +22,26 @@ export class LeaderboardComponent implements OnInit {
       this.leaderboardService.getUsers(this.serverId).subscribe(data => {
         if (data) {
           this.users = data;
+          this.users.forEach(user => {
+            let level_exp_needed = 5 * (user.level ** 2) + (50 * user.level) + 100
+            user.progress = user.exp_toward_next_level / level_exp_needed * 100
+
+          });
         }
       });
     }
   }
 
+}
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'formatWithK'
+})
+export class FormatWithKPipe implements PipeTransform {
+  transform(num: number): string | number {
+    return Math.abs(num) > 999 ? Math.sign(num) * (Number((Math.abs(num) / 1000).toFixed(1))) + 'K' : Math.sign(num) * Math.abs(num)
+  }
 }

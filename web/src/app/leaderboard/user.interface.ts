@@ -6,5 +6,6 @@ export interface User {
     total_exp: number,
     exp_toward_next_level: number,
     message_count: number,
-    avatar_url: string | undefined
+    avatar_url: string | undefined,
+    progress?: number
 }

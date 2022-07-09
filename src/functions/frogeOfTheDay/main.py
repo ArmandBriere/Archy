@@ -92,7 +92,7 @@ def publish_froge_of_the_day(event, _context) -> base64:
     random_text = ""
     while len(random_text) > 120 or len(random_text) < 10:
         random_text_request = requests.get("https://programming-quotes-api.herokuapp.com/quotes/random")
-        random_text = json.loads(random_text_request.content.decode("utf-8"))["en"]
+        random_text = json.loads(random_text_request.content.decode("utf-8"))["en"].replace("’", "'")
 
     print(f"Quote of the day is: {random_text}")
 

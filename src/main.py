@@ -3,13 +3,18 @@ import logging
 import os
 import re
 
+import firebase_admin
 import google.oauth2.id_token
 import requests
 from discord import Embed
 from discord.ext.commands import Bot, Context
 from discord.message import Message as message_type
 from dotenv import load_dotenv
+from firebase_admin import credentials, firestore
 from google.auth.transport.requests import Request
+from google.cloud.firestore_v1.base_document import DocumentSnapshot
+from google.cloud.firestore_v1.collection import CollectionReference
+from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 from requests import Response
@@ -27,6 +32,23 @@ bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./key.json"
 request = Request()
 
+# Firestore
+cred = credentials.Certificate("./key.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+
+def is_active_command(server_id: str, command_name: str) -> bool:
+    """Check if a command is active in the firestore db."""
+    function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
+    doc_ref: DocumentReference = function_collection.document(command_name)
+    doc: DocumentSnapshot = doc_ref.get()
+
+    if doc.exists:
+        return doc.get("active")
+
+    return False
+
 
 @bot.event
 async def on_message(message: message_type) -> None:
@@ -34,6 +56,10 @@ async def on_message(message: message_type) -> None:
 
     ctx: Context = await bot.get_context(message)
     if ctx.invoked_with:
+        if not is_active_command(str(ctx.guild.id), str(ctx.invoked_with)):
+            await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
+            return
+
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
         response: Response = requests.post(
