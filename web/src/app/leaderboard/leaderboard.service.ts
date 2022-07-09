@@ -13,6 +13,6 @@ export class LeaderboardService {
    * Get all boards owned by current user
    */
   getUsers(serverId: string) {
-    return this.db.collection('servers').doc(serverId).collection<User>('users', ref => ref.orderBy('total_exp', "desc").limit(50)).valueChanges();
+    return this.db.collection('servers').doc(serverId).collection<User>('users', ref => ref.orderBy('total_exp', 'desc').limit(50)).valueChanges();
   }
 }

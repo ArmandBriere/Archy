@@ -1,16 +1,15 @@
+import base64
 import json
 import random
 from datetime import datetime
-from typing import Any, Optional, Tuple
 
-import flask
-import functions_framework
 from google.cloud.firestore import Increment
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.batch import WriteBatch
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
+from google.cloud.functions.context import Context
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 
@@ -18,21 +17,22 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 TMP_FILE_PATH = "/tmp/tmp.json"
 
 
-@functions_framework.http
-def exp(request: flask.Request) -> Tuple[None, int]:
+def exp(event: dict, _context: Context):
     """Increase the user experience on firestore."""
+
+    pubsub_message = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
+    print(pubsub_message)
 
     print("Start")
 
-    request_json: Optional[Any] = request.get_json(silent=True)
-    if request_json:
+    if pubsub_message:
         print("Parse json payload")
 
-        user_id = request_json.get("user_id", None)
-        username = request_json.get("username", None)
-        avatar_url = request_json.get("avatar_url", None)
-        server_id = request_json.get("server_id", None)
-        server_name = request_json.get("server_name", None)
+        user_id = pubsub_message.get("user_id", None)
+        username = pubsub_message.get("username", None)
+        avatar_url = pubsub_message.get("avatar_url", None)
+        server_id = pubsub_message.get("server_id", None)
+        server_name = pubsub_message.get("server_name", None)
 
         if not user_id or not username or not server_id or not server_name:
             print("Exit: Missing data in payload")
