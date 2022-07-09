@@ -6,7 +6,7 @@ import re
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import Embed
+from discord import Embed, utils
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -52,6 +52,32 @@ def is_active_command(server_id: str, command_name: str) -> bool:
     return False
 
 
+def create_user(member: member_type) -> bool:
+    """Create a user in the firestore db."""
+    server_id = str(member.guild.id)
+    user_collection: CollectionReference = db.collection("servers").document(server_id).collection("users")
+    doc_ref: DocumentReference = user_collection.document(str(member.id))
+    doc: DocumentSnapshot = doc_ref.get()
+
+    # If user doesn't exist, create it with user_id as the document id
+    if not doc.exists:
+        doc_ref.set(
+            {
+                "avatar_url": str(member.avatar_url),
+                "exp_toward_next_level": 0,
+                "level": 1,
+                "message_count": 0,
+                "total_exp": 0,
+                "username": str(member.name),
+            }
+        )
+
+        return True
+
+    # If user exists, return False
+    return False
+
+
 @bot.event
 async def on_member_join(member: member_type) -> None:
     LOGGER.warning("Member %s has just joined the server", member.name)
@@ -60,25 +86,31 @@ async def on_member_join(member: member_type) -> None:
     topic_id = "channel_message_discord"
 
     # Get targeted channel id
-    channel: GuildChannel = bot.get_channel(int(os.getenv("WELCOME_CHANNEL_ID")))
+    default_channel: GuildChannel = utils.get(member.guild.channels, name="general")
+    welcome_channel: GuildChannel = utils.get(member.guild.channels, name="Bienvenue")
+    channel: GuildChannel = welcome_channel if welcome_channel else default_channel
 
     # Publish the message to the topic
     publisher = PublisherClient()
     topic_path = publisher.topic_path(project_id, topic_id)
     data = {
         "channel_id": str(channel.id),
-        "message": f"Welcome {member.display_name} to the server!",
+        "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
         "image": "",
     }
 
     # Data must be a bytestring
-    user_encode_data = json.dumps(data, indent=2).encode("utf-8")
+    user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
 
     # When you publish a message, the client returns a future.
     future: Future = publisher.publish(topic_path, user_encode_data)
 
+    # Create user in firestore db if doesn't exist
+    create = create_user(member)
+
     print(f"Message id: {future.result()}")
     print(f"Published message to {topic_path}.")
+    print(f"User created: {create}")
 
 
 @bot.event
