@@ -1,8 +1,8 @@
-from datetime import datetime
 import json
 import logging
 import os
 import re
+from datetime import datetime
 
 import firebase_admin
 import google.oauth2.id_token
@@ -69,7 +69,7 @@ def create_user(member: member_type) -> bool:
                 "exp_toward_next_level": 0,
                 "level": 0,
                 "message_count": 0,
-                "last_message_timestamp":  datetime.now().strftime(DATETIME_FORMAT),
+                "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                 "username": str(member.name),
                 "avatar_url": str(member.avatar_url),
             }
