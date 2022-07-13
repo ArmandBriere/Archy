@@ -7,7 +7,7 @@ from datetime import datetime
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import Embed, utils
+from discord import Embed
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -88,22 +88,26 @@ async def on_member_join(member: member_type) -> None:
     project_id = "archy-f06ed"
     topic_id = "channel_message_discord"
 
-    # Get targeted channel id
-    default_channel: GuildChannel = utils.get(member.guild.channels, name="general")
-    welcome_channel: GuildChannel = utils.get(member.guild.channels, name="Bienvenue")
-    channel: GuildChannel = welcome_channel if welcome_channel else default_channel
+    # Get targeted channel
+    server_id = str(member.guild.id)
+    channel_collection: CollectionReference = db.collection("servers").document(server_id).collection("channels")
+    doc_ref: DocumentReference = channel_collection.document("welcome")
+    doc: DocumentSnapshot = doc_ref.get()
 
-    # Publish the message to the topic
-    publisher = PublisherClient()
-    topic_path = publisher.topic_path(project_id, topic_id)
-    data = {
-        "channel_id": str(channel.id),
-        "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
-    }
+    if doc.exists:
+        channel: GuildChannel = member.guild.get_channel(int(doc.get("channel_id")))
 
-    user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
+        # Publish the message to the topic
+        publisher = PublisherClient()
+        topic_path = publisher.topic_path(project_id, topic_id)
+        data = {
+            "channel_id": str(channel.id),
+            "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
+        }
 
-    future: Future = publisher.publish(topic_path, user_encode_data)
+        user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
+
+        future: Future = publisher.publish(topic_path, user_encode_data)
 
     # Create user in firestore db if doesn't exist
     is_new_user = create_user(member)
