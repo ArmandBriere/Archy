@@ -83,7 +83,7 @@ def create_user(member: member_type) -> bool:
 
 @bot.event
 async def on_member_join(member: member_type) -> None:
-    LOGGER.warning("Member %s has just joined the server", member.name)
+    LOGGER.warning("Member %s has just joined the server %s", member.name, member.guild.name)
 
     project_id = "archy-f06ed"
     topic_id = "channel_message_discord"
@@ -99,21 +99,18 @@ async def on_member_join(member: member_type) -> None:
     data = {
         "channel_id": str(channel.id),
         "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
-        "image": "",
     }
 
-    # Data must be a bytestring
     user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
 
-    # When you publish a message, the client returns a future.
     future: Future = publisher.publish(topic_path, user_encode_data)
 
     # Create user in firestore db if doesn't exist
-    create = create_user(member)
+    is_new_user = create_user(member)
 
     print(f"Message id: {future.result()}")
     print(f"Published message to {topic_path}.")
-    print(f"User created: {create}")
+    print(f"User created: {is_new_user}")
 
 
 @bot.event
