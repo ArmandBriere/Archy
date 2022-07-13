@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import logging
 import os
@@ -26,6 +27,7 @@ load_dotenv()
 LOGGER: logging.Logger = logging.getLogger(__name__)
 DISCORD_API_TOKEN = os.getenv("DISCORD_API_TOKEN")
 FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # Discord bot settings
 bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot")
@@ -63,12 +65,13 @@ def create_user(member: member_type) -> bool:
     if not doc.exists:
         doc_ref.set(
             {
-                "avatar_url": str(member.avatar_url),
-                "exp_toward_next_level": 0,
-                "level": 1,
-                "message_count": 0,
                 "total_exp": 0,
+                "exp_toward_next_level": 0,
+                "level": 0,
+                "message_count": 0,
+                "last_message_timestamp":  datetime.now().strftime(DATETIME_FORMAT),
                 "username": str(member.name),
+                "avatar_url": str(member.avatar_url),
             }
         )
 
