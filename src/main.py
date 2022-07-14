@@ -97,7 +97,6 @@ async def on_member_join(member: member_type) -> None:
     if doc.exists:
         channel: GuildChannel = member.guild.get_channel(int(doc.get("channel_id")))
 
-        # Send a warning message if the channel id is invalid or the channel doesn't exist anymore
         if channel is None:
             LOGGER.warning(
                 "Channel id %s to welcome new user doesn't exist anymore or is invalide", str(doc.get("channel_id"))
