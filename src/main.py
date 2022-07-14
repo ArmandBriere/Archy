@@ -97,17 +97,23 @@ async def on_member_join(member: member_type) -> None:
     if doc.exists:
         channel: GuildChannel = member.guild.get_channel(int(doc.get("channel_id")))
 
-        # Publish the message to the topic
-        publisher = PublisherClient()
-        topic_path = publisher.topic_path(project_id, topic_id)
-        data = {
-            "channel_id": str(channel.id),
-            "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
-        }
+        # Send a warning message if the channel id is invalid or the channel doesn't exist anymore
+        if channel is None:
+            LOGGER.warning(
+                "Channel id %s to welcome new user doesn't exist anymore or is invalide", str(doc.get("channel_id"))
+            )
+        else:
+            # Publish the message to the topic
+            publisher = PublisherClient()
+            topic_path = publisher.topic_path(project_id, topic_id)
+            data = {
+                "channel_id": str(channel.id),
+                "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
+            }
 
-        user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
+            user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
 
-        future: Future = publisher.publish(topic_path, user_encode_data)
+            future: Future = publisher.publish(topic_path, user_encode_data)
 
     # Create user in firestore db if doesn't exist
     is_new_user = create_user(member)
