@@ -99,7 +99,7 @@ async def on_member_join(member: member_type) -> None:
 
         if channel is None:
             LOGGER.warning(
-                "Channel id %s doesn't exist anymore or is invalid for server %s",
+                "Channel id %s doesn't exist anymore or is invalid in Firestore for server %s",
                 str(doc.get("channel_id")),
                 str(member.guild.name),
             )
