@@ -29,7 +29,7 @@ def get_good_db_value(param):  # pragma: no cover
 @patch(f"{MODULE_PATH}.base64")
 def test_exp(b64_mock, random_mock, client_mock):
 
-    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
 
     client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_good_db_value
@@ -52,7 +52,7 @@ def get_timeout_timestamp_value(param):  # pragma: no cover
 @patch(f"{MODULE_PATH}.base64")
 def test_exp_timeout(b64_mock, client_mock):
 
-    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
 
     client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_timeout_timestamp_value
@@ -91,7 +91,7 @@ def test_exp_timeout(b64_mock, client_mock):
 @patch(f"{MODULE_PATH}.base64")
 def test_exp_missing_data(b64_mock, random_mock, database_mock, body):
 
-    b64_mock.b64decode.return_value.decode.return_value = body
+    b64_mock.b64decode.return_value.decode.return_value = json.dumps(body)
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_good_db_value
@@ -110,7 +110,7 @@ def test_exp_missing_data(b64_mock, random_mock, database_mock, body):
 @patch(f"{MODULE_PATH}.base64")
 def test_exp_level_up(b64_mock, random_mock, database_mock):
 
-    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
         get_good_db_value
@@ -138,7 +138,7 @@ def test_exp_new_user(b64_mock, database_mock):
         "avatar_url": GOOD_BODY["avatar_url"],
     }
 
-    b64_mock.b64decode.return_value.decode.return_value = GOOD_BODY
+    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
         False
