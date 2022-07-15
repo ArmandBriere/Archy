@@ -1,7 +1,7 @@
 import json
 from unittest.mock import MagicMock
 
-from functions.insult.main import BASE_INSULT, get_the_insult, insult
+from functions.insult.main import BASE_INSULT, get_insult, insult
 
 
 def test_insult_empty_body():
@@ -55,23 +55,29 @@ def test_insult_mult_mentions():
     assert 200 == result[1]
 
 
-def test_get_the_insult_bad_code():
+def test_get_insult_bad_code():
     response_content_dict = {}
     response_bytes = json.dumps(response_content_dict).encode("utf-8")
-    api_status = 404
 
-    expected_result = "is that an Archy reference?"
+    response_mock = MagicMock()
+    response_mock.status_code = 404
+    response_mock.content = response_bytes
 
-    result = get_the_insult(api_status, response_bytes)
+    expected_result = "Is that an Archy reference?"
+
+    result = get_insult(response_mock)
 
     assert result == expected_result
 
 
-def test_get_the_insult_bad_api_answer():
+def test_get_insult_bad_api_answer():
     response_content_dict = {}
     response_bytes = json.dumps(response_content_dict).encode("utf-8")
-    api_status = 200
 
-    result = get_the_insult(api_status, response_bytes)
+    response_mock = MagicMock()
+    response_mock.status_code = 200
+    response_mock.content = response_bytes
+
+    result = get_insult(response_mock)
 
     assert BASE_INSULT == result
