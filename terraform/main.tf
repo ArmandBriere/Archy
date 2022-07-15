@@ -120,7 +120,7 @@ variable "http_functions" {
       entry_point = "insult"
       timeout     = 15
       memory      = 256
-      secrets     = []
+      secrets     = ["DISCORD_TOKEN"]
     },
   }
 }
