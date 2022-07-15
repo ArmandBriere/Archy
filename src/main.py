@@ -7,8 +7,7 @@ from datetime import datetime
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import Embed
-from discord import Intents
+from discord import Embed, Intents
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
