@@ -106,6 +106,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     },
+    insult : {
+      description = "Return an insult using the LibInsult API (https://insult.mattbas.org/api/)"
+      runtime     = "python39"
+      entry_point = "insult"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
   }
 }
 
