@@ -30,8 +30,8 @@ FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # Discord bot settings
-intents = Intents.default()
-intents.members = True
+intents = Intents.all()
+
 bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot", intents=intents)
 
 # Gcloud auth settings
