@@ -8,6 +8,7 @@ import firebase_admin
 import google.oauth2.id_token
 import requests
 from discord import Embed
+from discord import Intents
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -30,13 +31,17 @@ FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 # Discord bot settings
-bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot")
+intents = Intents.default()
+intents.members = True
+bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot", intents=intents)
 
 # Gcloud auth settings
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./key.json"
 request = Request()
 
 # Firestore
+PROJECT_ID = "archy-f06ed"
+
 cred = credentials.Certificate("./key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
@@ -81,15 +86,43 @@ def create_user(member: member_type) -> bool:
     return False
 
 
+def update_user_role(server_id: str, user_id: str):
+    """Publish message to the update_user_role topic."""
+    topic_id = "update_user_role"
+
+    publisher = PublisherClient()
+    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
+
+    data = {"server_id": server_id, "user_id": user_id}
+
+    encoded_data: bytes = json.dumps(data, indent=2).encode("utf-8")
+    future: Future = publisher.publish(topic_path, encoded_data)
+
+    print(f"Message id: {future.result()}")
+    print(f"Published message to {topic_path}.")
+
+
+def send_message_to_channel(channel_id: str, message: str):
+    """Publish message to the channel_message_discord topic."""
+    topic_id = "channel_message_discord"
+
+    publisher = PublisherClient()
+    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
+    data = {"channel_id": channel_id, "message": message}
+
+    user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
+    future: Future = publisher.publish(topic_path, user_encode_data)
+
+    print(f"Message id: {future.result()}")
+    print(f"Published message to {topic_path}.")
+
+
 @bot.event
 async def on_member_join(member: member_type) -> None:
     LOGGER.warning("Member %s has just joined the server %s", member.name, member.guild.name)
 
-    project_id = "archy-f06ed"
-    topic_id = "channel_message_discord"
-
-    # Get targeted channel
     server_id = str(member.guild.id)
+
     channel_collection: CollectionReference = db.collection("servers").document(server_id).collection("channels")
     doc_ref: DocumentReference = channel_collection.document("welcome")
     doc: DocumentSnapshot = doc_ref.get()
@@ -104,23 +137,14 @@ async def on_member_join(member: member_type) -> None:
                 str(member.guild.name),
             )
         else:
-            # Publish the message to the topic
-            publisher = PublisherClient()
-            topic_path = publisher.topic_path(project_id, topic_id)
-            data = {
-                "channel_id": str(channel.id),
-                "message": f"Welcome {member.display_name} to the server {member.guild.name}!",
-            }
-
-            user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
-
-            future: Future = publisher.publish(topic_path, user_encode_data)
+            message = f"Welcome {member.mention} to the server {member.guild.name}!"
+            send_message_to_channel(str(channel.id), message)
 
     # Create user in firestore db if doesn't exist
     is_new_user = create_user(member)
 
-    print(f"Message id: {future.result()}")
-    print(f"Published message to {topic_path}.")
+    update_user_role(server_id, str(member.id))
+
     print(f"User created: {is_new_user}")
 
 
