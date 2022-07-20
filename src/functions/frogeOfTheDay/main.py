@@ -80,12 +80,20 @@ def get_all_channels() -> List[str]:
     channels: List[str] = []
 
     database: Client = Client(project="archy-f06ed")
-    servers: Generator[DocumentSnapshot, Any, None] = database.collection("servers").stream()
+    servers: Generator[DocumentSnapshot, Any, None] = database.collection("servers").list_documents()
+
     for server in servers:
+        print(f"ServerId: {server.id}")
         server: DocumentReference
-        doc: DocumentReference = server.collection("channels").document("froge_of_the_day")
-        if doc.get("active"):
+        doc_ref: DocumentReference = (
+            database.collection("servers").document(server.id).collection("channels").document("froge_of_the_day")
+        )
+        doc: DocumentSnapshot = doc_ref.get()
+        if doc.exists and doc.get("active"):
+            print(f"Will publish froge to this server: {server.id}")
             channels.append(doc.get("channel_id"))
+        else:
+            print(f"Will NOT publish froge to this server: {server.id}")
 
     return channels
 
@@ -139,9 +147,9 @@ def publish_froge_of_the_day(_event, _context):
 
     channels = get_all_channels()
     if len(channels) == 0:
-        print("Exit: No channels found")
+        print("Exit: No channel found")
         return
 
-    image_str = generate_froge_of_the_day()
+    base64_image = generate_froge_of_the_day()
 
-    publish_message_discord(channels, image_str)
+    publish_message_discord(channels, base64_image)
