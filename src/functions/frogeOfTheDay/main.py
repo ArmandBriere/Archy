@@ -109,8 +109,12 @@ def generate_froge_of_the_day() -> str:
     return base64.b64encode(buffered.getvalue()).decode("UTF-8")
 
 
-def publish_message(channels: List[str], image_str) -> None:
+def publish_message_discord(channels: List[str], image_str: str = "") -> None:
     """Publish image to channel_message_discord."""
+
+    if len(image_str) == 0:
+        print("Exit: No image provided")
+        return
 
     project_id = "archy-f06ed"
     topic_id = "channel_message_discord"
@@ -140,4 +144,4 @@ def publish_froge_of_the_day(_event, _context):
 
     image_str = generate_froge_of_the_day()
 
-    publish_message(channels, image_str)
+    publish_message_discord(channels, image_str)
