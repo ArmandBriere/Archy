@@ -10,6 +10,13 @@ center footer Archy project - Firestore class diagram
 
 folder "servers: Collection" {
     folder "serverId: Document" {
+        folder "channels: Collection" {
+            class "channelName: Document" {
+                active: bool
+                channel_id: string
+            }
+        }
+
         folder "functions: Collection" {
             class "functionName: Document" {
                 active: bool
