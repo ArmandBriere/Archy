@@ -6,6 +6,7 @@ resource "google_cloud_scheduler_job" "froge_of_the_day_scheduler" {
 
 
   pubsub_target {
-    topic_name = "froge_of_the_day"
+    topic_name = "projects/${var.project_id}/topics/froge_of_the_day"
+    data = base64encode("froge_of_the_day")
   }
 }
