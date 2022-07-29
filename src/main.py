@@ -7,7 +7,7 @@ from datetime import datetime
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import Embed, Intents
+from discord import Embed, Intents, DMChannel
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -150,6 +150,10 @@ async def on_member_join(member: member_type) -> None:
 @bot.event
 async def on_message(message: message_type) -> None:
     LOGGER.warning("Message from %s is: %s", message.author, message.content)
+
+    if isinstance(message.channel, DMChannel) and message.author != bot.user and message.content == os.environ['UQAM_PASSPHRASE']:
+        await message.channel.send(f"`{os.environ['UQAM_FLAG']}`")
+        return
 
     ctx: Context = await bot.get_context(message)
     if ctx.invoked_with:
