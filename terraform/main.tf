@@ -193,7 +193,7 @@ variable "pubsub_functions" {
       runtime       = "nodejs16"
       entry_point   = "generateLevelImage"
       timeout       = 15
-      memory        = 512
+      memory        = 1024
       trigger_event = "generate_level_image"
       secrets       = []
     },

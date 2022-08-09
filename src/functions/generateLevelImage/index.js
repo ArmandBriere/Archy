@@ -56,7 +56,7 @@ exports.generateLevelImage = async (event, context) => {
 
   const messageData = { "channel_id": channelId, "image": imageBuffer.toString('base64') }
 
-  publishMessage(
+  await publishMessage(
     projectId = 'archy-f06ed',
     topicName = 'channel_message_discord',
     payloadData = messageData
