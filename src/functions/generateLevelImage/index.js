@@ -2,7 +2,7 @@ const nunjucks = require('nunjucks');
 const puppeteer = require('puppeteer');
 const { PubSub } = require('@google-cloud/pubsub');
 
-const generateImage = async function (html = "") {
+exports.generateImage = async function (html = "") {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
@@ -52,7 +52,7 @@ exports.generateLevelImage = async (event, context) => {
     percent: payload.percent,
   });
 
-  const imageBuffer = await generateImage(html);
+  const imageBuffer = await this.generateImage(html);
 
   const messageData = { "channel_id": channelId, "image": imageBuffer.toString('base64') }
 
