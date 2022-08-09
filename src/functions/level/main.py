@@ -1,6 +1,4 @@
-import base64
 import json
-import os
 from typing import Any, Optional, Tuple
 
 import flask
@@ -11,8 +9,6 @@ from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
-from html2image import Html2Image
-from jinja2 import Template
 
 
 @functions_framework.http
@@ -27,14 +23,12 @@ def level(request: flask.Request) -> Tuple[str, int]:
 
         if not user_id or not server_id or not channel_id:
             print("Exit: Missing data in payload")
-            return "", 200
+            return ":|", 200
 
         # If a user is mentionned, get that user's level
         mentions = request_json.get("mentions", None)
         if mentions and mentions[0]:
             user_id = str(mentions[0])
-        if not user_id:
-            return ":|", 200
 
         database: Client = Client(project="archy-f06ed")
         collection: CollectionReference = database.collection("servers").document(server_id).collection("users")
@@ -52,50 +46,31 @@ def level(request: flask.Request) -> Tuple[str, int]:
             level_exp_needed = 5 * (current_level**2) + (50 * current_level) + 100
             percent = exp_toward_next_level / level_exp_needed * 100
 
-            image_base64 = generate_image(username, avatar_url, rank, current_level, percent)
-            publish_message_discord(channel_id, image_base64)
+            payload = {
+                "username": username,
+                "avatar_url": avatar_url,
+                "rank": rank,
+                "level": current_level,
+                "percent": round(percent),
+            }
+
+            publish_generate_image(channel_id, payload)
+            return "", 200
 
         return f"... Wait a minute, Who is <@{user_id}>", 200
 
     return ":|", 200
 
 
-def generate_image(username: str, avatar_url: str, rank: int, level: int, percent: int) -> str:
-    save_path = f"{username}.png"
-
-    hti = Html2Image()
-
-    if not os.path.exists(save_path):
-
-        with open("./templates/level.html") as template:
-            tm = Template(template.read())
-            hti.screenshot(
-                html_str=tm.render(
-                    username=username, avatar_url=avatar_url, rank=rank, level=level, percent=percent
-                ),
-                save_as=save_path,
-                size=(1680, 720),
-            )
-
-    with open(save_path, "rb") as img_file:
-        b64_string = base64.b64encode(img_file.read())
-
-    return b64_string
-
-
-def publish_message_discord(channel_id: str, image_str: str = "") -> None:
-    """Publish image to channel_message_discord."""
-
-    if len(image_str) == 0:
-        print("Exit: No image provided")
-        return
+def publish_generate_image(channel_id: str, payload) -> None:
+    """Publish image to generate_level_image."""
 
     project_id = "archy-f06ed"
-    topic_id = "channel_message_discord"
+    topic_id = "generate_level_image"
     publisher = PublisherClient()
     topic_path: str = publisher.topic_path(project_id, topic_id)
 
-    data = {"channel_id": channel_id, "image": image_str}
+    data = {"channel_id": channel_id, "payload": payload}
     encoded_data = json.dumps(data, indent=2).encode("utf-8")
 
     print("Publishing data")
