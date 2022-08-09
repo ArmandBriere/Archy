@@ -15,6 +15,7 @@ def get_db_value(param):  # pragma: no cover
 
     return 0
 
+
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 def test_exp(database_mock):
@@ -35,6 +36,7 @@ def test_exp(database_mock):
 
     assert ("", 200) == result
 
+
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_mentions(database_mock):
@@ -44,15 +46,12 @@ def test_exp_mentions(database_mock):
     request_mock.get_json.return_value = body
     number_of_users = 1
 
-    database_mock().collection().document().collection().document().get().get.side_effect = (
-        get_db_value
-    )
-    database_mock().collection().document().collection().get.return_value = [
-        "One element"
-    ] * number_of_users
+    database_mock().collection().document().collection().document().get().get.side_effect = get_db_value
+    database_mock().collection().document().collection().get.return_value = ["One element"] * number_of_users
     result = level(request_mock)
 
     assert ("", 200) == result
+
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
