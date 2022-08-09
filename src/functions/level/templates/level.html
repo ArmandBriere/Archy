@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Press Start 2P">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Press Start 2P', serif;
+            font-size: 40px;
+            text-align: center;
+            color: white;
+            background: transparent;
+            width: 1680px;
+            height: 720px;
+
+        }
+
+        .background {
+            box-sizing: border-box;
+            padding: 80px;
+
+            width: 1680px;
+            height: 720px;
+            border-radius: 20px;
+            background: rgb(32, 48, 24);
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            gap: 120px;
+        }
+
+        .background>div {
+            height: 100%;
+        }
+
+        .title {
+            margin-bottom: 40px;
+        }
+
+        .image {
+            justify-content: center;
+        }
+
+        .image>img {
+            border-radius: 50%;
+
+            width: 400px;
+            height: 400px;
+        }
+
+        .value {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 400px;
+            width: 280px;
+        }
+
+        .value>p {
+            z-index: 100;
+            font-size: xxx-large;
+        }
+
+        .value>img {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 25px;
+            opacity: 0.3;
+        }
+
+
+        .outer-circle {
+            position: relative;
+            border-radius: 50%;
+            width: 400px;
+            height: 400px;
+            background-color: rgb(217, 217, 217);
+        }
+
+        .progressbar__svg-circle {
+            fill: rgb(217, 217, 217);
+
+            stroke-width: 40;
+            stroke-dasharray: 1100;
+            stroke-dashoffset: calc(1100 - (1100 * {{percent}})/100);
+            stroke: rgb(58, 183, 1);
+            stroke-linecap: round;
+            transform-box: fill-box;
+            transform-origin: center;
+            transform: rotate(-90deg);
+        }
+
+        svg {
+            height: inherit;
+            width: inherit;
+        }
+
+        .inner-circle {
+            fill: rgb(32, 48, 24);
+        }
+
+        .percent {
+            position: absolute;
+            top: 45%;
+            left: 30%;
+            font-size: xxx-large;
+        }
+
+    </style>
+    <title>Level</title>
+</head>
+
+<body>
+    <div class="background">
+        <div class="title">
+            {{ username }}
+        </div>
+        <div class="content">
+            <div class="user">
+                <div class="title">
+                    Wow!
+                </div>
+                <div class="image">
+                    <img src="{{avatar_url}}">
+                </div>
+            </div>
+            <div class="rank">
+                <div class="title">
+                    Rank
+                </div>
+                <div class="value">
+                    <p>{{ rank }}</p>
+                    <img
+                        src="
+                    https://cdn.discordapp.com/app-icons/964693548396068916/9f6194753dba6ed1eaa4ee989deae149.png?size=512">
+                </div>
+            </div>
+            <div class="exp">
+                <div class="title">
+                    Level {{ level }}
+                </div>
+                <div class="outer-circle">
+                    <svg>
+                        <circle cx="200" cy="200" r="180" class="progressbar__svg-circle"> </circle>
+                        <circle cx="200" cy="200" r="160" class="inner-circle">
+                        </circle>
+                    </svg>
+                    <div class="percent">
+                        {{ percent }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
