@@ -44,8 +44,29 @@ exports.generateLevelImage = async (event, context) => {
 
   nunjucks.configure({ autoescape: true });
 
+  adjectives = [
+    "Amazing",
+    "Beautiful",
+    "Breathtaking",
+    "Delightful",
+    "Excellent",
+    "Exquisite",
+    "Epic",
+    "Magnificent",
+    "Marvelous",
+    "Glorious",
+    "Gorgeous",
+    "Ravishing",
+    "Stunning",
+    "Splendid",
+    "Superb",
+    "Wow",
+    "Wonderful",
+  ]
+
   let html = nunjucks.render('./templates/level.html', {
     username: payload.username,
+    adjectif: adjectives[Math.floor(Math.random() * adjectives.length)],
     avatar_url: payload.avatar_url,
     rank: payload.rank,
     level: payload.level,
