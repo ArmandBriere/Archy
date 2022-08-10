@@ -1,0 +1,17 @@
+<div class="contributor-container">
+    <div class="title">
+        Top contributors
+    </div>
+    <div class="contributors">
+        <div class="contributor" *ngFor="let contributor of contributors">
+            <div class="profile-picture">
+                <button mat-fab color="primary" (click)="openGithubPage(contributor)">
+                    <img [src]="contributor.profilePictureUrl">
+                </button>
+            </div>
+            <div class="name">
+                {{contributor.name}}
+            </div>
+        </div>
+    </div>
+</div>

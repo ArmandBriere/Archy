@@ -1,0 +1,60 @@
+@import "../../vars.scss";
+
+.contributor-container {
+    margin: 1vh auto;
+    padding: 3vh;
+    width: 100%;
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    background-color: $darkGreen;
+
+    .title {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .contributors {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 40px;
+
+        .contributor {
+            display: flex;
+            flex-direction: column;
+            background-color: $background;
+            border-radius: 10px;
+            padding: 15px 10px;
+            width: 250px;
+            max-width: 250px;
+
+            .profile-picture {
+                margin: auto;
+                margin-bottom: 10px;
+                margin-top: 0;
+            }
+
+            ::ng-deep .mat-fab .mat-button-wrapper {
+                padding: 0 !important;
+            }
+
+            .profile-picture > button,
+            img {
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+            }
+
+            .name {
+                font-size: 15px;
+                text-align: center;
+                word-wrap: break-word;
+            }
+        }
+    }
+}
