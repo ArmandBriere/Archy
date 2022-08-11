@@ -89,6 +89,7 @@ def exp(event: dict, _context: Context):
                 doc_ref,
                 (
                     {
+                        "avatar_url": avatar_url,
                         "total_exp": Increment(added_exp),
                         "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                     }
