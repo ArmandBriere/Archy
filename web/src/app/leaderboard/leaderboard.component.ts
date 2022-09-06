@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LeaderboardService } from './leaderboard.service';
-import { User } from './user.interface';
+import { User } from '@interface/user.interface';
 
 @Component({
   selector: 'app-leaderboard',

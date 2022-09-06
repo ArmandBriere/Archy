@@ -22,6 +22,18 @@
                 "hello",
                 "--debug"
             ]
+        },
+        {
+            "name": "Function - Level",
+            "type": "python",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/functions/level",
+            "module": "functions_framework",
+            "args": [
+                "--target",
+                "level",
+                "--debug"
+            ]
         }
     ]
 }

@@ -1,3 +1,16 @@
-p > a {
-    margin: 1em;
+.home-container {
+    margin-bottom: 5vh;
+    .logo {
+        margin-top: 5vh;
+    }
+
+    .github-shield {
+        a {
+            margin: 1em;
+        }
+    }
+
+    .source-code {
+        margin-top: 5vh;
+    }
 }

@@ -126,7 +126,8 @@ variable "pubsub_topics" {
     "froge_of_the_day",
     "private_message_discord",
     "update_user_role",
-    "exp_discord"
+    "exp_discord",
+    "generate_level_image"
   ]
 }
 
@@ -186,6 +187,15 @@ variable "pubsub_functions" {
       memory        = 256
       trigger_event = "update_user_role"
       secrets       = ["DISCORD_TOKEN"]
+    },
+    generateLevelImage : {
+      description   = "Generate the level image of a user"
+      runtime       = "nodejs16"
+      entry_point   = "generateLevelImage"
+      timeout       = 15
+      memory        = 1024
+      trigger_event = "generate_level_image"
+      secrets       = []
     },
   }
 }
