@@ -26,7 +26,7 @@ async function publishMessage(
 
   const dataBuffer = Buffer.from(JSON.stringify(payloadData));
   const messageId = await pubsub.topic(topicName).publish(dataBuffer);
-  conso.log(`Message ${messageId} published.`);
+  console.log(`Message ${messageId} published.`);
 
   return messageId;
 }
