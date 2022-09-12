@@ -20,7 +20,7 @@ const payload = {
 
 async function execute() {
 
-    let html = nunjucks.render('/templates/level.html', {
+    let html = nunjucks.render(path.resolve(__dirname, '../templates/level.html'), {
         username: payload.username,
         avatar_url: payload.avatar_url,
         rank: payload.rank,
@@ -74,3 +74,4 @@ app.listen(process.env.port || 3000);
 console.log(__dirname)
 
 console.log("Running at Port 3000");
+execute();
