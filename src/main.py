@@ -116,6 +116,19 @@ def send_message_to_channel(channel_id: str, message: str):
     print(f"Published message to {topic_path}.")
 
 
+def send_welcome_message(channel_id: str, username: str, avatar_url):
+    publisher = PublisherClient()
+    topic_path = publisher.topic_path("archy-f06ed", "generate_welcome_image")
+
+    data = {"channel_id": channel_id, "username": username, "avatar_url": avatar_url}
+
+    user_encode_data = json.dumps(data, indent=2).encode("utf-8")
+    future: Future = publisher.publish(topic_path, user_encode_data)
+
+    print(f"Message id: {future.result()}")
+    print(f"Published message to {topic_path}.")
+
+
 @bot.event
 async def on_member_join(member: member_type) -> None:
     LOGGER.warning("Member %s has just joined the server %s", member.name, member.guild.name)
@@ -136,8 +149,7 @@ async def on_member_join(member: member_type) -> None:
                 str(member.guild.name),
             )
         else:
-            message = f"Welcome {member.mention} to the server {member.guild.name}!"
-            send_message_to_channel(str(channel.id), message)
+            send_welcome_message(str(channel.id), str(member.name), str(member.avatar_url))
 
     # Create user in firestore db if doesn't exist
     is_new_user = create_user(member)
