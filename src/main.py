@@ -120,7 +120,9 @@ def send_welcome_message(channel_id: str, username: str, avatar_url):
     publisher = PublisherClient()
     topic_path = publisher.topic_path("archy-f06ed", "generate_welcome_image")
 
-    data = {"channel_id": channel_id, "username": username, "avatar_url": avatar_url}
+    payload = {"username": username, "avatar_url": avatar_url}
+
+    data = {"channel_id": channel_id, "payload": payload}
 
     user_encode_data = json.dumps(data, indent=2).encode("utf-8")
     future: Future = publisher.publish(topic_path, user_encode_data)
