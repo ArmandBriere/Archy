@@ -15,6 +15,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 import { provideFirebaseApp } from '@angular/fire/app';
 import { getApp, initializeApp } from 'firebase/app';
 import { AngularFireModule } from '@angular/fire/compat';
+import { ContributorComponent } from './contributor/contributor.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { AngularFireModule } from '@angular/fire/compat';
     AppComponent,
     HomePageComponent,
     LeaderboardComponent,
-    FormatWithKPipe
+    FormatWithKPipe,
+    ContributorComponent
   ],
   imports: [
     BrowserModule,

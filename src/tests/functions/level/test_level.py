@@ -16,14 +16,13 @@ def get_db_value(param):  # pragma: no cover
     return 0
 
 
+@patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 def test_exp(database_mock):
-    body = {"user_id": 1234}
+    body = {"user_id": 1234, "server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
-    current_level = get_db_value("level")
-    current_rank = get_db_value("rank")
     number_of_users = 1
 
     database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
@@ -35,33 +34,29 @@ def test_exp(database_mock):
 
     result = level(request_mock)
 
-    assert (f"<@{body['user_id']}> is level {current_level}! Rank {current_rank}", 200) == result
+    assert ("", 200) == result
 
 
+@patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_mentions(database_mock):
-    body = {"user_id": "Hello, World!", "mentions": ["Archy"]}
+    body = {"user_id": 1234, "server_id": 123, "channel_id": 123, "mentions": ["Archy"]}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
-    current_level = get_db_value("level")
-    current_rank = get_db_value("rank")
     number_of_users = 1
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_db_value
-    )
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.get.return_value = [
-        "One element"
-    ] * number_of_users
+    database_mock().collection().document().collection().document().get().get.side_effect = get_db_value
+    database_mock().collection().document().collection().get.return_value = ["One element"] * number_of_users
     result = level(request_mock)
 
-    assert (f"<@{body['mentions'][0]}> is level {current_level}! Rank {current_rank}", 200) == result
+    assert ("", 200) == result
 
 
+@patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
 def test_exp_no_level(database_mock):
-    body = {"user_id": 1234}
+    body = {"user_id": 1234, "server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
@@ -75,8 +70,8 @@ def test_exp_no_level(database_mock):
 
 
 @patch(f"{MODULE_PATH}.Client", MagicMock())
-def test_exp_no_name():
-    body = {"random": "value"}
+def test_exp_no_user_id():
+    body = {"server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
