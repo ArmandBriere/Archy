@@ -33,65 +33,51 @@
             justify-content: center;
         }
 
-        .content {
+        .top {
             display: flex;
             flex-direction: row;
             justify-content: space-evenly;
             gap: 120px;
+            margin-bottom: 10px;
         }
 
-        .content>* {
+        .top>* {
             flex: 1;
+        }
+
+        .right-side {
+            -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
         }
 
         .background>div {
             height: 100%;
         }
 
-        .title {
-            margin-bottom: 40px;
-            overflow-x: clip;
+        img {
+            width: 400px;
+            height: 400px;
         }
 
-        .username {
-            font-size: 80px;
-        }
-
-        .image {
-            justify-content: center;
-        }
-
-        .image>img {
+        .user-image>img {
             border-radius: 50%;
-
-            width: 400px;
-            height: 400px;
         }
 
-        .value {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 400px;
-        }
-
-        .value>p {
-            z-index: 100;
-            font-size: 80px;
-        }
-
-        .value>img {
-            position: absolute;
-            width: 400px;
-            height: 400px;
+        .froge {
             border-radius: 25px;
             opacity: 0.3;
         }
 
-        svg {
-            height: inherit;
-            width: inherit;
+        .bottom {
+            margin: auto;
+            display: flex;
         }
+
+        .bottom > .title {
+            margin: auto;
+        }
+
+
 
     </style>
     <title>Welcome</title>
@@ -99,19 +85,23 @@
 
 <body>
     <div class="background">
-        <div class="title username">
-            {{ username }}
+        <div class="top">
+            <img class="left-side froge"
+                src="https://cdn.discordapp.com/app-icons/964693548396068916/9f6194753dba6ed1eaa4ee989deae149.png?size=512">
+
+            <div class="user">
+                <div class="user-image">
+                    <img src="{{avatar_url}}">
+                </div>
+            </div>
+            <img class="right-side froge"
+                src="https://cdn.discordapp.com/app-icons/964693548396068916/9f6194753dba6ed1eaa4ee989deae149.png?size=512">
         </div>
-        <div class="user">
-            <div class="user-image">
-                <img src="{{avatar_url}}">
+        <div class="bottom">
+            <div class="title">
+                {{ username }} just joined the server!
             </div>
         </div>
-        <img class="left-side"
-            src="https://cdn.discordapp.com/app-icons/964693548396068916/9f6194753dba6ed1eaa4ee989deae149.png?size=512">
-        <img class="right-side"
-            src="https://cdn.discordapp.com/app-icons/964693548396068916/9f6194753dba6ed1eaa4ee989deae149.png?size=512">
-
     </div>
     </div>
 </body>
