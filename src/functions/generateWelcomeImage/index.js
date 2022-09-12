@@ -26,11 +26,12 @@ async function publishMessage(
 
   const dataBuffer = Buffer.from(JSON.stringify(payloadData));
   const messageId = await pubsub.topic(topicName).publish(dataBuffer);
-  console.log(`Message ${messageId} published.`);
+  conso.log(`Message ${messageId} published.`);
+
   return messageId;
 }
 
-exports.generateLevelImage = async (event, context) => {
+exports.generateWelcomeImage = async (event, context) => {
   const data = event.data
     ? Buffer.from(event.data, 'base64').toString()
     : undefined;
@@ -44,33 +45,9 @@ exports.generateLevelImage = async (event, context) => {
 
   nunjucks.configure({ autoescape: true });
 
-  adjectives = [
-    "Amazing",
-    "Beautiful",
-    "Breathtaking",
-    "Delightful",
-    "Excellent",
-    "Exquisite",
-    "Epic",
-    "Magnificent",
-    "Marvelous",
-    "Glorious",
-    "Gorgeous",
-    "Ravishing",
-    "Stunning",
-    "Splendid",
-    "Superb",
-    "Wow",
-    "Wonderful",
-  ]
-
-  let html = nunjucks.render('./templates/level.html', {
+  let html = nunjucks.render('./templates/welcome.html', {
     username: payload.username,
-    adjectif: adjectives[Math.floor(Math.random() * adjectives.length)],
     avatar_url: payload.avatar_url,
-    rank: payload.rank,
-    level: payload.level,
-    percent: payload.percent,
   });
 
   const imageBuffer = await this.generateImage(html);
