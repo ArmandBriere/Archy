@@ -127,7 +127,8 @@ variable "pubsub_topics" {
     "private_message_discord",
     "update_user_role",
     "exp_discord",
-    "generate_level_image"
+    "generate_level_image",
+    "generate_welcome_image"
   ]
 }
 
@@ -135,13 +136,13 @@ variable "pubsub_functions" {
   type = map(any)
   default = {
     exp : {
-      description = "Increase the experience of a user"
-      runtime     = "python39"
-      entry_point = "exp"
-      timeout     = 15
-      memory      = 256
+      description   = "Increase the experience of a user"
+      runtime       = "python39"
+      entry_point   = "exp"
+      timeout       = 15
+      memory        = 256
       trigger_event = "exp_discord"
-      secrets     = ["DISCORD_TOKEN"]
+      secrets       = ["DISCORD_TOKEN"]
     },
     privateMessage : {
       description   = "Send a private message to a user"
@@ -195,6 +196,15 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 1024
       trigger_event = "generate_level_image"
+      secrets       = []
+    },
+    generateWelcomeImage : {
+      description   = "Generate the Welcome image of a user"
+      runtime       = "nodejs16"
+      entry_point   = "generateWelcomeImage"
+      timeout       = 15
+      memory        = 1024
+      trigger_event = "generate_welcome_image"
       secrets       = []
     },
   }
