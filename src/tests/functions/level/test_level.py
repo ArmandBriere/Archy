@@ -1,8 +1,9 @@
 # pylint: disable=line-too-long
 
+import json
 from unittest.mock import MagicMock, patch
 
-from functions.level.main import level
+from functions.level.main import level, publish_generate_image
 
 MODULE_PATH = "functions.level.main"
 
@@ -93,3 +94,24 @@ def test_level_no_body():
     result = level(request_mock)
 
     assert (":|", 200) == result
+
+
+@patch(f"{MODULE_PATH}.PublisherClient")
+def test_publish_generate_image(publisher_mock):
+    channel_id = 1
+    payload = {
+        "username": "username",
+        "avatar_url": "avatar_url",
+        "rank": 1,
+        "level": 1,
+        "percent": 94,
+    }
+
+    data = {"channel_id": channel_id, "payload": payload}
+    encoded_data: str = json.dumps(data, indent=2).encode("utf-8")
+
+    publish_generate_image(channel_id, payload)
+
+    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "generate_level_image")
+    assert publisher_mock.return_value.method_calls[1][0] == "publish"
+    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
