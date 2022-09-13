@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import re
+import shlex
 from datetime import datetime
 
 import firebase_admin
@@ -197,7 +198,7 @@ async def on_message(message: message_type) -> None:
                     "channel_id": str(message.channel.id),
                     "message_id": str(message.id),
                     "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-                    "params": message.content.split(ctx.command)[1:],
+                    "params": shlex.split(message.content)[1:],
                 }
             ),
         )
