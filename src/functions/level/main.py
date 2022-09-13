@@ -3,6 +3,7 @@ from typing import Any, Optional, Tuple
 
 import flask
 import functions_framework
+import names
 from google.cloud.firestore import Client
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.collection import CollectionReference
@@ -55,7 +56,7 @@ def level(request: flask.Request) -> Tuple[str, int]:
             }
 
             publish_generate_image(channel_id, payload)
-            return "", 200
+            return f"Give me a minute, {names.get_first_name()} is working on it!", 200
 
         return f"... Wait a minute, Who is <@{user_id}>", 200
 
