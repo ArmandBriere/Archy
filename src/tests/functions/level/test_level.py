@@ -18,7 +18,7 @@ def get_db_value(param):  # pragma: no cover
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
-def test_exp(database_mock):
+def test_level(database_mock):
     body = {"user_id": 1234, "server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
@@ -34,12 +34,13 @@ def test_exp(database_mock):
 
     result = level(request_mock)
 
-    assert ("", 200) == result
+    assert "Give me a minute, " in result[0]
+    assert 200 == result[1]
 
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
-def test_exp_mentions(database_mock):
+def test_level_mentions(database_mock):
     body = {"user_id": 1234, "server_id": 123, "channel_id": 123, "mentions": ["Archy"]}
 
     request_mock = MagicMock()
@@ -50,12 +51,13 @@ def test_exp_mentions(database_mock):
     database_mock().collection().document().collection().get.return_value = ["One element"] * number_of_users
     result = level(request_mock)
 
-    assert ("", 200) == result
+    assert "Give me a minute, " in result[0]
+    assert 200 == result[1]
 
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
-def test_exp_no_level(database_mock):
+def test_level_no_level(database_mock):
     body = {"user_id": 1234, "server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
@@ -70,7 +72,7 @@ def test_exp_no_level(database_mock):
 
 
 @patch(f"{MODULE_PATH}.Client", MagicMock())
-def test_exp_no_user_id():
+def test_level_no_user_id():
     body = {"server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
@@ -82,7 +84,7 @@ def test_exp_no_user_id():
 
 
 @patch(f"{MODULE_PATH}.Client", MagicMock())
-def test_exp_no_body():
+def test_level_no_body():
     body = None
 
     request_mock = MagicMock()
