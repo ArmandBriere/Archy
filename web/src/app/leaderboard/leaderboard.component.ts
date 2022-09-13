@@ -26,6 +26,10 @@ export class LeaderboardComponent implements OnInit {
             let level_exp_needed = 5 * (user.level ** 2) + (50 * user.level) + 100
             user.progress = user.exp_toward_next_level / level_exp_needed * 100
 
+            if (user.progress === 100) {
+              user.progress = 99;
+            }
+
           });
         }
       });

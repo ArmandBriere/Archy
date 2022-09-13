@@ -13,7 +13,12 @@
                         {{ i+1 }}
                         <img class="profile-picture" [src]=user.avatar_url alt="Image not found"
                             onerror="this.src='../../assets/img/Discord-Logo-White.svg';">
-                        {{ user.username }}
+                        <span *ngIf="user.username.length <= 13; else shortName">
+                            {{ user.username }}
+                        </span>
+                        <ng-template #shortName>
+                            {{ user.username.slice(0, 10) + '...' }}
+                        </ng-template>
                     </div>
                 </div>
                 <div class="right-side">
@@ -31,10 +36,10 @@
                     </div>
                     <div class="progress">
 
-                        <mat-progress-spinner class="progress-spinner" [diameter]="60" mode="determinate"
+                        <mat-progress-spinner class="progress-spinner" [diameter]="70" mode="determinate"
                             [value]="user.progress">
                         </mat-progress-spinner>
-                        <div style="position: relative; left: -43px; width: 0;">
+                        <div class="percent">
                             {{ user.progress | number: '1.0-0' }}%
                         </div>
                     </div>

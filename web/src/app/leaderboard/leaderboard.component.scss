@@ -20,7 +20,6 @@
     .exp,
     .level {
         font-size: medium;
-        font-weight: bold;
         margin: 0 20px;
         text-align: center;
     }
@@ -28,8 +27,7 @@
     .column_name {
         font-size: xx-small;
         text-decoration: underline;
-        font-weight: lighter;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         color: grey;
     }
 
@@ -48,12 +46,12 @@
     }
 
     .left-side {
-        flex: 1;
+        flex: 1 1 500px;
         text-align: left;
     }
 
     .right-side {
-        flex: 1;
+        flex: 1 1 500px;
         display: flex;
         flex-direction: row;
         justify-content: space-evenly;
@@ -63,19 +61,28 @@
     .progress {
         display: flex;
         align-items: center;
+        position: relative;
 
         .mat-progress-spinner {
             stroke-linecap: round;
+        }
+
+        .percent {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
     }
 }
 
 .disclaimer {
+    margin-top: 10px;
+
     text-align: center;
     color: white;
-    
+
     p {
         margin: 5px;
-        font-weight: bold;
     }
 }
