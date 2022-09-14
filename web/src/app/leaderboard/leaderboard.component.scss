@@ -39,7 +39,7 @@
     }
 
     .profile-picture {
-        margin: 0 25px;
+        margin: 0 15px;
         width: 50px;
         height: 50px;
         border-radius: 100%;
@@ -48,6 +48,7 @@
     .left-side {
         flex: 1 1 500px;
         text-align: left;
+        margin-bottom: 10px;
     }
 
     .right-side {
@@ -84,5 +85,18 @@
 
     p {
         margin: 5px;
+    }
+}
+
+
+@media only screen and (max-width: 768px) {
+    .message_count {
+        display: none;
+    }
+}
+
+@media (max-width: 425px) {
+    .progress {
+        display: none !important;
     }
 }
