@@ -22,11 +22,12 @@
                     </div>
                 </div>
                 <div class="right-side">
-                    <div class="message_count" *ngIf="user.message_count">
+                    <div class="message_count" *ngIf="user.message_count" [matTooltip]="user.message_count.toString()"
+                        matTooltipShowDelay="500">
                         <div class="column_name">MESSAGES</div>
                         {{ user.message_count | formatWithK }}
                     </div>
-                    <div class="exp">
+                    <div class="exp" [matTooltip]="user.total_exp.toString()" matTooltipShowDelay="500">
                         <div class="column_name">EXPERIENCE</div>
                         {{ user.total_exp | formatWithK }}
                     </div>
