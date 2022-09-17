@@ -3,6 +3,8 @@ package warn
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"os"
@@ -16,7 +18,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-// Payload struct that is expected
 type Payload struct {
 	ServerId   string   `json:"server_id"`
 	ServerName string   `json:"server_name"`
@@ -37,10 +38,9 @@ type Warning struct {
 var ServerName string
 var Dg *discordgo.Session
 
-// Admin only: Warn a user, ban him after 3 warn
+// Admin only: Warn a user
 func WarnUser(w http.ResponseWriter, r *http.Request) {
 
-	// Parse body to get Payload
 	var payload = Payload{}
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
@@ -49,10 +49,17 @@ func WarnUser(w http.ResponseWriter, r *http.Request) {
 
 	ServerName = payload.ServerName
 
-	// Instanciate Discord bot
+	if len(payload.ServerId) == 0 ||
+		len(payload.ServerName) == 0 ||
+		len(payload.UserId) == 0 ||
+		len(payload.Mentions) == 0 ||
+		len(payload.Comment) == 0 {
+		fmt.Fprint(w, html.EscapeString("You are missing some parameters, please use the correct format: `!warn @user <message>`"))
+		return
+	}
+
 	Dg = instanciateBot()
 
-	// Check admin permission
 	isAdmin := isInvokingUserAnAdmin(&payload)
 	if !isAdmin {
 		log.Printf(payload.UserId + " is NOT an admin!")
@@ -85,7 +92,7 @@ func getAdminUsername(userId string) string {
 	return user.Username
 }
 
-// Add the new warn to the database and return the number of warnings for this user
+// Add the new warning to the database and return the number of warnings for this user
 func writeWarnInFirestore(serverId string, warn Warning) int {
 	ctx := context.Background()
 	conf := &firebase.Config{ProjectID: "archy-f06ed"}
@@ -115,6 +122,7 @@ func writeWarnInFirestore(serverId string, warn Warning) int {
 	return len(docs)
 }
 
+// Data format expected by the 'private_message_discord' function
 type PubsubData struct {
 	UserId  string `json:"user_id"`
 	Message string `json:"message"`
@@ -156,9 +164,8 @@ func sendWarnToUser(warnCount int, warn Warning) {
 	log.Printf("Message send to user, messageId: " + messageId)
 }
 
+// Mute or ban user based on the number of warnings he have
 func takeAction(warnCount int, warn Warning) {
-	// Nothing for now, will implement this after it the rest works
-
 	log.Printf("The user " + warn.UserId + " has " + strconv.Itoa(warnCount) + " warnings")
 
 	if warnCount == 3 {
@@ -221,7 +228,6 @@ func instanciateBot() *discordgo.Session {
 	return dg
 }
 
-// Check if the user invoking this command is an admin
 func isInvokingUserAnAdmin(payload *Payload) bool {
 
 	member, err := Dg.GuildMember(payload.ServerId, payload.UserId)
