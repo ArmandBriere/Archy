@@ -173,18 +173,33 @@ func takeAction(warnCount int, warn Warning) {
 func muteForADay(warn Warning) {
 	log.Printf("The user " + warn.UserId + " is muted for a day on " + ServerName)
 	tomorrow := time.Now().AddDate(0, 0, 1)
-	Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &tomorrow)
+	err := Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &tomorrow)
+
+	if err != nil {
+		log.Printf("Mute for a day of the userId " + warn.UserId + " didn't work.")
+		panic(err)
+	}
 }
 
 func muteForAWeek(warn Warning) {
 	log.Printf("The user " + warn.UserId + " is ban for a week on " + ServerName)
 	inAWeek := time.Now().AddDate(0, 0, 7)
-	Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &inAWeek)
+	err := Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &inAWeek)
+
+	if err != nil {
+		log.Printf("Mute for a week of the userId " + warn.UserId + " didn't work.")
+		panic(err)
+	}
 }
 
 func banForLife(warn Warning) {
 	log.Printf("The user " + warn.UserId + " is ban for life on " + ServerName)
-	Dg.GuildBanCreate(warn.ServerId, warn.UserId, 1)
+	err := Dg.GuildBanCreate(warn.ServerId, warn.UserId, 1)
+
+	if err != nil {
+		log.Printf("Ban for life of the userId " + warn.UserId + " didn't work.")
+		panic(err)
+	}
 }
 
 // Instanciate the bot and return the session
