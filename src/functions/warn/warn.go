@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/pubsub"
@@ -16,19 +18,24 @@ import (
 
 // Payload struct that is expected
 type Payload struct {
-	ServerId string   `json:"server_id"`
-	UserId   string   `json:"user_id"`
-	Mentions []string `json:"mentions"`
-	Comment  string   `json:"params"`
+	ServerId   string   `json:"server_id"`
+	ServerName string   `json:"server_name"`
+	UserId     string   `json:"user_id"`
+	Mentions   []string `json:"mentions"`
+	Comment    []string `json:"params"`
 }
 
 type Warning struct {
+	ServerId      string    `firestore:"server_id,omitempty"`
 	UserId        string    `firestore:"user_id,omitempty"`
 	AdminId       string    `firestore:"admin_id,omitempty"`
 	AdminUsername string    `firestore:"admin_username,omitempty"`
-	Comment       string    `firestore:"user_id,omitempty"`
+	Comment       string    `firestore:"comment,omitempty"`
 	Timestamp     time.Time `firestore:"timestamp,omitempty"`
 }
+
+var ServerName string
+var Dg *discordgo.Session
 
 // Admin only: Warn a user, ban him after 3 warn
 func WarnUser(w http.ResponseWriter, r *http.Request) {
@@ -40,36 +47,41 @@ func WarnUser(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	ServerName = payload.ServerName
+
 	// Instanciate Discord bot
-	dg := instanciateBot()
+	Dg = instanciateBot()
 
 	// Check admin permission
-	isAdmin := isInvokingUserAnAdmin(dg, &payload)
+	isAdmin := isInvokingUserAnAdmin(&payload)
 	if !isAdmin {
 		log.Printf(payload.UserId + " is NOT an admin!")
 		return
 	}
 	log.Printf(payload.UserId + " is an admin!")
 
-	log.Printf("Comment: " + payload.Comment)
+	log.Printf("Comment: " + strings.Join(payload.Comment, " "))
 
+	userId := payload.Mentions[0]
+	comment := strings.Join(payload.Comment, " ")
 	var newWarn = Warning{
-		UserId:        payload.Mentions[0],
+		ServerId:      payload.ServerId,
+		UserId:        userId,
 		AdminId:       payload.UserId,
-		AdminUsername: getAdminUsername(dg, payload.UserId),
-		Comment:       payload.Comment,
+		AdminUsername: getAdminUsername(payload.UserId),
+		Comment:       comment,
 		Timestamp:     time.Now(),
 	}
 
 	var warnCount = writeWarnInFirestore(payload.ServerId, newWarn)
 
-	sendWarnToUser(newWarn)
+	sendWarnToUser(warnCount, newWarn)
 
 	takeAction(warnCount, newWarn)
 }
 
-func getAdminUsername(dg *discordgo.Session, userId string) string {
-	user, _ := dg.User(userId)
+func getAdminUsername(userId string) string {
+	user, _ := Dg.User(userId)
 	return user.Username
 }
 
@@ -109,7 +121,7 @@ type PubsubData struct {
 }
 
 // Send a private message to the user to inform him
-func sendWarnToUser(warn Warning) {
+func sendWarnToUser(warnCount int, warn Warning) {
 	ctx := context.Background()
 	client, err := pubsub.NewClient(ctx, "archy-f06ed")
 	if err != nil {
@@ -119,10 +131,13 @@ func sendWarnToUser(warn Warning) {
 
 	topicClient := client.Topic("private_message_discord")
 
-	message := "Hi, this message is a warning from this server: <Server name>." +
-		"Please follow the code of conduct. \n" +
-		"Here is the message from the admins:\n" + warn.Comment + "\n" +
-		"Reminder: 3 warnings => 24h mute, 5 warnings => 1 week ban, 10 warnings => Life ban."
+	message := "Hi, this message is a warning from this server: **" + ServerName + "**.\n" +
+		"*Please follow the code of conduct.*\n\n" +
+		"**Explanation:**\n" +
+		warn.Comment + "\n\n" +
+		"Number of warnings that you currently have on this server: " + strconv.Itoa(warnCount) + "\n\n" +
+		"**Reminder:**\n" +
+		"3 warnings → 24h mute.\n5 warnings → 1 week mute.\n10 warnings → Life ban."
 
 	pubsubData, err := json.Marshal(PubsubData{UserId: warn.UserId, Message: message})
 	if err != nil {
@@ -138,11 +153,38 @@ func sendWarnToUser(warn Warning) {
 		panic(err)
 	}
 
-	log.Printf("Message send to user, id: " + messageId)
+	log.Printf("Message send to user, messageId: " + messageId)
 }
 
 func takeAction(warnCount int, warn Warning) {
 	// Nothing for now, will implement this after it the rest works
+
+	log.Printf("The user " + warn.UserId + " has " + strconv.Itoa(warnCount) + " warnings")
+
+	if warnCount == 3 {
+		muteForADay(warn)
+	} else if warnCount == 5 {
+		muteForAWeek(warn)
+	} else if warnCount == 10 {
+		banForLife(warn)
+	}
+}
+
+func muteForADay(warn Warning) {
+	log.Printf("The user " + warn.UserId + " is muted for a day on " + ServerName)
+	tomorrow := time.Now().AddDate(0, 0, 1)
+	Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &tomorrow)
+}
+
+func muteForAWeek(warn Warning) {
+	log.Printf("The user " + warn.UserId + " is ban for a week on " + ServerName)
+	inAWeek := time.Now().AddDate(0, 0, 7)
+	Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &inAWeek)
+}
+
+func banForLife(warn Warning) {
+	log.Printf("The user " + warn.UserId + " is ban for life on " + ServerName)
+	Dg.GuildBanCreate(warn.ServerId, warn.UserId, 1)
 }
 
 // Instanciate the bot and return the session
@@ -165,15 +207,16 @@ func instanciateBot() *discordgo.Session {
 }
 
 // Check if the user invoking this command is an admin
-func isInvokingUserAnAdmin(dg *discordgo.Session, payload *Payload) bool {
+func isInvokingUserAnAdmin(payload *Payload) bool {
 
-	member, err := dg.GuildMember(payload.ServerId, payload.UserId)
+	member, err := Dg.GuildMember(payload.ServerId, payload.UserId)
 	if err != nil {
+		log.Printf("Can't get this guild member for serverId: " + payload.ServerId + ". UserId: " + payload.UserId)
 		panic(err)
 	}
 
 	userRoles := member.Roles
-	guildRole, _ := dg.GuildRoles(payload.ServerId)
+	guildRole, _ := Dg.GuildRoles(payload.ServerId)
 
 	for _, v := range guildRole {
 		if (v.Permissions & discordgo.PermissionAdministrator) == discordgo.PermissionAdministrator {
