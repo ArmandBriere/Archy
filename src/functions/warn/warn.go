@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"time"
 
+	"cloud.google.com/go/pubsub"
 	firebase "firebase.google.com/go"
 	"github.com/bwmarrin/discordgo"
 )
@@ -85,6 +86,7 @@ func writeWarnInFirestore(serverId string, warn Warning) int {
 	if err != nil {
 		log.Fatalln(err)
 	}
+	defer client.Close()
 
 	warnings := client.Collection("servers").Doc(serverId).Collection("warnings")
 
@@ -97,17 +99,50 @@ func writeWarnInFirestore(serverId string, warn Warning) int {
 	query := warnings.Where("user_id", "==", warn.UserId)
 
 	docs, _ := query.Documents(ctx).GetAll()
-	defer client.Close()
 
 	return len(docs)
 }
 
-func sendWarnToUser(warn Warning) {
+type PubsubData struct {
+	UserId  string `json:"user_id"`
+	Message string `json:"message"`
+}
 
+// Send a private message to the user to inform him
+func sendWarnToUser(warn Warning) {
+	ctx := context.Background()
+	client, err := pubsub.NewClient(ctx, "archy-f06ed")
+	if err != nil {
+		panic(err)
+	}
+	defer client.Close()
+
+	topicClient := client.Topic("private_message_discord")
+
+	message := "Hi, this message is a warning from this server: <Server name>." +
+		"Please follow the code of conduct. \n" +
+		"Here is the message from the admins:\n" + warn.Comment + "\n" +
+		"Reminder: 3 warnings => 24h mute, 5 warnings => 1 week ban, 10 warnings => Life ban."
+
+	pubsubData, err := json.Marshal(PubsubData{UserId: warn.UserId, Message: message})
+	if err != nil {
+		panic(err)
+	}
+
+	result := topicClient.Publish(ctx, &pubsub.Message{
+		Data: []byte(pubsubData),
+	})
+
+	messageId, err := result.Get(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Printf("Message send to user, id: " + messageId)
 }
 
 func takeAction(warnCount int, warn Warning) {
-
+	// Nothing for now, will implement this after it the rest works
 }
 
 // Instanciate the bot and return the session
