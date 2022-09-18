@@ -1,0 +1,70 @@
+{
+    "commands": [
+        {
+            "name": "hello",
+            "description": "Greet the user that invoke this command.",
+            "examples": [
+                "!hello"
+            ]
+        },
+        {
+            "name": "describe",
+            "description": "Ask Archy to describe the author or the mentioned user.",
+            "examples": [
+                "!describe",
+                "!describe @user"
+            ]
+        },
+        {
+            "name": "froge",
+            "description": "Return a random froge emoji available on this server.",
+            "examples": [
+                "!froge"
+            ]
+        },
+        {
+            "name": "gif",
+            "description": "Return the best gif found with the Tenor API.",
+            "examples": [
+                "!gif",
+                "!gif cute cats"
+            ]
+        },
+        {
+            "name": "go",
+            "description": "Send a message from a Golang bot instance.",
+            "examples": [
+                "!go"
+            ]
+        },
+        {
+            "name": "js",
+            "description": "Send a message from a JS bot instance.",
+            "examples": [
+                "!js"
+            ]
+        },
+        {
+            "name": "help",
+            "description": "Describe all active commands with example.",
+            "examples": [
+                "!help"
+            ]
+        },
+        {
+            "name": "leaderboard",
+            "description": "Return the server's leaderboard url.",
+            "examples": [
+                "!leaderboard"
+            ]
+        },
+        {
+            "name": "level",
+            "description": "Return the level of the author or the mentioned user.",
+            "examples": [
+                "!level",
+                "!level @user"
+            ]
+        }
+    ]
+}
