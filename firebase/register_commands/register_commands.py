@@ -1,13 +1,9 @@
 import json
-from typing import Any, Dict, Generator
+from typing import Dict
 
 import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1.client import Client
-from google.cloud.firestore_v1.document import DocumentSnapshot
-
-
-SERVERS = ["755106635885838477", "964701887540645908"]
 
 
 def register_or_update_command(command: Dict, server_id: str, database: Client):
@@ -41,11 +37,11 @@ if __name__ == "__main__":
     firebase_admin.initialize_app(creds)
     database: Client = firestore.client()
 
+    servers = database.collection("servers").list_documents()
+
     with open("commands.json") as f:
         data = json.load(f)
-        for server_id in SERVERS:
-            server: Generator[DocumentSnapshot, Any, None] = database.collection("servers").document(server_id)
-
+        for server in servers:
             for command in data.get("commands"):
 
-                register_or_update_command(command, server_id, database)
+                register_or_update_command(command, server.id, database)
