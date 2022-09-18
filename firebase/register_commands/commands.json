@@ -65,6 +65,20 @@
                 "!level",
                 "!level @user"
             ]
+        },
+        {
+            "name": "ban",
+            "description": "Admin only: Ban a user.",
+            "examples": [
+                "!ban @user"
+            ]
+        },
+        {
+            "name": "warn",
+            "description": "Admin only: Send a warning by private message to a user.\n*Reminder:*\n3 warnings -> 24h mute.\n5 warnings -> 1 week ban.\n10 warnings -> Life ban.",
+            "examples": [
+                "!warn @user message"
+            ]
         }
     ]
 }

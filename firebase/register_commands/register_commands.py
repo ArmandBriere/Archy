@@ -1,31 +1,51 @@
 import json
-from time import sleep
-from typing import Any, Generator
+from typing import Any, Dict, Generator
 
 import firebase_admin
 from firebase_admin import credentials, firestore
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.document import DocumentSnapshot
-from google.cloud.pubsub_v1 import PublisherClient
-from google.cloud.pubsub_v1.publisher.futures import Future
 
 
-PROJECT_ID = "archy-f06ed"
-TOPIC_ID = "update_user_role"
+SERVERS = ["755106635885838477", "964701887540645908"]
+
+
+def register_or_update_command(command: Dict, server_id: str, database: Client):
+
+    doc_ref = database.collection("servers").document(server_id).collection("functions").document(command.get("name"))
+
+    if doc_ref.get().exists:
+        print(f"Update command {command.get('name')} for server {server.id}")
+
+        doc_ref.update(
+            {
+                "name": command.get("name"),
+                "description": command.get("description"),
+                "examples": command.get("examples"),
+            }
+        )
+    else:
+        print(f"Register command {command.get('name')} for server {server.id}")
+        doc_ref.set(
+            {
+                "name": command.get("name"),
+                "description": command.get("description"),
+                "examples": command.get("examples"),
+                "active": False,
+            }
+        )
 
 
 if __name__ == "__main__":
     creds = credentials.Certificate("../../src/key.json")
     firebase_admin.initialize_app(creds)
-
     database: Client = firestore.client()
 
-    servers: Generator[DocumentSnapshot, Any, None] = (
-        database.collection("servers").stream()
-    )
+    with open("commands.json") as f:
+        data = json.load(f)
+        for server_id in SERVERS:
+            server: Generator[DocumentSnapshot, Any, None] = database.collection("servers").document(server_id)
 
-    for server in servers:
+            for command in data.get("commands"):
 
-        print(f"Register commands for server {server.id}")
-
-        
+                register_or_update_command(command, server_id, database)
