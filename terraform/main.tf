@@ -114,6 +114,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     },
+    warn : {
+      description = "Admin only: Warn a user and take action if needed."
+      runtime     = "go116"
+      entry_point = "WarnUser"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
+    },
   }
 }
 
