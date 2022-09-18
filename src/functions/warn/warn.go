@@ -189,7 +189,7 @@ func muteForADay(warn Warning) {
 }
 
 func muteForAWeek(warn Warning) {
-	log.Printf("The user " + warn.UserId + " is ban for a week on " + ServerName)
+	log.Printf("The user " + warn.UserId + " is banned for a week on " + ServerName)
 	inAWeek := time.Now().AddDate(0, 0, 7)
 	err := Dg.GuildMemberTimeout(warn.ServerId, warn.UserId, &inAWeek)
 
