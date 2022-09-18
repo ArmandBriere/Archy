@@ -29,9 +29,9 @@ def help(request: flask.Request) -> Tuple[str, int]:  # pylint: disable=W0622
             function_collection.where("active", "==", True).order_by("name", direction=Query.ASCENDING).stream()
         )
 
-        response = f"Avaible commands for Archy in **{server_name}**:\n\n"
+        response = f"Avaible commands for Archy in **{server_name}**:\n"
         for doc in docs:
-            response += f"**!{doc.id}**\n"
+            response += f"\n**!{doc.id}**\n"
             response += f"{doc.get('description')}\n"
             for example in doc.get("examples"):
                 response += f"`{example}`\n"
