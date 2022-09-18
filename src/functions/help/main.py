@@ -33,7 +33,7 @@ def help(request: flask.Request) -> Tuple[str, int]:  # pylint: disable=W0622
         for doc in docs:
             response += f"**!{doc.id}**\n"
             response += f"{doc.get('description')}\n"
-            for example in doc.get("example"):
+            for example in doc.get("examples"):
                 response += f"`{example}`\n"
             response += "\n"
 
