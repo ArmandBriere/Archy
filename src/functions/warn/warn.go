@@ -200,7 +200,7 @@ func muteForAWeek(warn Warning) {
 }
 
 func banForLife(warn Warning) {
-	log.Printf("The user " + warn.UserId + " is ban for life on " + ServerName)
+	log.Printf("The user " + warn.UserId + " is banned for life on " + ServerName)
 	err := Dg.GuildBanCreate(warn.ServerId, warn.UserId, 1)
 
 	if err != nil {
