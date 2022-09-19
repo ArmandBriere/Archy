@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"html"
 	"log"
 	"net/http"
 	"os"
@@ -54,7 +53,7 @@ func WarnUser(w http.ResponseWriter, r *http.Request) {
 		len(payload.UserId) == 0 ||
 		len(payload.Mentions) == 0 ||
 		len(payload.Comment) == 0 {
-		fmt.Fprint(w, html.EscapeString("You are missing some parameters, please use the correct format: `!warn @user <message>`"))
+		fmt.Fprint(w, "You are missing some parameters, please use the correct format: `!warn @user <message>`")
 		return
 	}
 
