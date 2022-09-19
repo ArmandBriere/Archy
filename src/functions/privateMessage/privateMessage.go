@@ -93,6 +93,12 @@ func SendPrivateMessage(payload *Payload) error {
 	_, err = dg.ChannelMessageSendComplex(channel.ID, &messageData)
 
 	if err != nil {
+		error_message := []byte(err.Error())
+		error_403_regex, _ := regexp.Compile("403")
+		if len(error_403_regex.Find(error_message)) > 0 {
+			log.Printf("User " + payload.UserId + " is in private mode. We can't send a message to him.")
+			return nil
+		}
 		panic("Message didn't make it" + err.Error())
 	}
 
