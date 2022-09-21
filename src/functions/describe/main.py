@@ -18,7 +18,7 @@ def describe(request):
 
         # Special user are protected. This will go with firebase in the future
         if mentions:
-            if str(mentions[0]) == "135048445097410560" or str(mentions[0]) == "964693548396068916":
+            if str(mentions[0]) == "135048445097410560" or str(mentions[0]) == "964693548396068916" or str(mentions[0]) == "360990603477254147" :
                 return "This person is awesome!", 200
 
             return f"<@{mentions[0]}> is a big ****!", 200
