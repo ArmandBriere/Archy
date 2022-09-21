@@ -1,8 +1,9 @@
 # pylint: disable=line-too-long
 
+import json
 from unittest.mock import MagicMock, patch
 
-from functions.level.main import level
+from functions.level.main import level, publish_generate_image
 
 MODULE_PATH = "functions.level.main"
 
@@ -18,7 +19,7 @@ def get_db_value(param):  # pragma: no cover
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
-def test_exp(database_mock):
+def test_level(database_mock):
     body = {"user_id": 1234, "server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
@@ -34,12 +35,13 @@ def test_exp(database_mock):
 
     result = level(request_mock)
 
-    assert ("", 200) == result
+    assert "Give me a minute, " in result[0]
+    assert 200 == result[1]
 
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
-def test_exp_mentions(database_mock):
+def test_level_mentions(database_mock):
     body = {"user_id": 1234, "server_id": 123, "channel_id": 123, "mentions": ["Archy"]}
 
     request_mock = MagicMock()
@@ -50,12 +52,13 @@ def test_exp_mentions(database_mock):
     database_mock().collection().document().collection().get.return_value = ["One element"] * number_of_users
     result = level(request_mock)
 
-    assert ("", 200) == result
+    assert "Give me a minute, " in result[0]
+    assert 200 == result[1]
 
 
 @patch(f"{MODULE_PATH}.publish_generate_image", MagicMock())
 @patch(f"{MODULE_PATH}.Client")
-def test_exp_no_level(database_mock):
+def test_level_no_level(database_mock):
     body = {"user_id": 1234, "server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
@@ -70,7 +73,7 @@ def test_exp_no_level(database_mock):
 
 
 @patch(f"{MODULE_PATH}.Client", MagicMock())
-def test_exp_no_user_id():
+def test_level_no_user_id():
     body = {"server_id": 123, "channel_id": 123}
 
     request_mock = MagicMock()
@@ -82,7 +85,7 @@ def test_exp_no_user_id():
 
 
 @patch(f"{MODULE_PATH}.Client", MagicMock())
-def test_exp_no_body():
+def test_level_no_body():
     body = None
 
     request_mock = MagicMock()
@@ -91,3 +94,24 @@ def test_exp_no_body():
     result = level(request_mock)
 
     assert (":|", 200) == result
+
+
+@patch(f"{MODULE_PATH}.PublisherClient")
+def test_publish_generate_image(publisher_mock):
+    channel_id = 1
+    payload = {
+        "username": "username",
+        "avatar_url": "avatar_url",
+        "rank": 1,
+        "level": 1,
+        "percent": 94,
+    }
+
+    data = {"channel_id": channel_id, "payload": payload}
+    encoded_data: str = json.dumps(data, indent=2).encode("utf-8")
+
+    publish_generate_image(channel_id, payload)
+
+    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "generate_level_image")
+    assert publisher_mock.return_value.method_calls[1][0] == "publish"
+    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
