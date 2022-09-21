@@ -29,6 +29,7 @@ def exp(event: dict, _context: Context):
         print("Parse json payload")
 
         user_id = pubsub_message.get("user_id", None)
+        is_boosting = pubsub.get("is_boosting", None)
         username = pubsub_message.get("username", None)
         avatar_url = pubsub_message.get("avatar_url", None)
         server_id = pubsub_message.get("server_id", None)
@@ -65,7 +66,10 @@ def exp(event: dict, _context: Context):
 
             exp_needed_to_level_up: int = 5 * (level**2) + (50 * level) + 100 - exp_toward_next_level
 
-            added_exp: int = random.randint(45, 75)
+            added_exp: 
+                if user_id != is_boosting: int = random.randint(45, 75)
+                else:
+                    int = random.randint(45, 75) * 1.5
 
             batch.update(doc_ref, ({"message_count": Increment(1)}))
 
