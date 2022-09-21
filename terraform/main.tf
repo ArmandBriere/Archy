@@ -123,7 +123,7 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     },
     answer : {
-      description = "Return a random answer based on the game \"8 Ball\"."
+      description = "Return a random answer based on the game '8 Ball'."
       runtime     = "python39"
       entry_point = "answer"
       timeout     = 15

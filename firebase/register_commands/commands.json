@@ -82,7 +82,7 @@
         },
         {
             "name": "answer",
-            "description": "Return a random answer based on the game \"8 Ball\".",
+            "description": "Return a random answer based on the game '8 Ball'.",
             "examples": [
                 "!answer"
             ]
