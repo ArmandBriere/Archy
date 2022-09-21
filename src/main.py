@@ -199,6 +199,7 @@ async def on_message(message: message_type) -> None:
                     "message_id": str(message.id),
                     "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
                     "params": shlex.split(message.content)[1:],
+                    "is_boosting" = ctx.author.id in [subscriber.id for subscriber in ctx.author.guild.premium_subscribers]
                 }
             ),
         )
