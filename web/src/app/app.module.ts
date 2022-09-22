@@ -20,43 +20,43 @@ import { ContributorComponent } from './contributor/contributor.component';
 import { I18NextModule, ITranslationService, I18NEXT_SERVICE, I18NextTitle, defaultInterpolationFormat } from 'angular-i18next';
 
 import LanguageDetector from 'i18next-browser-languagedetector'
-import I18NextXhrBackend from 'i18next-xhr-backend';
+import backend from 'i18next-http-backend';
+import i18next from 'i18next';
 
 
 export function appInit(i18next: ITranslationService) {
   return () => 
   i18next
-  .use<any>(LanguageDetector)
-  .use(I18NextXhrBackend)
+  .use(backend)
+  .use(LanguageDetector)
   .init({
-      //whitelist: ['en', 'gr'],
-      fallbackLng: 'en',
-      debug: true,
-      returnEmptyString: false,
-      ns: [
-        'translation',
-        'validation',
-        'error',
-      ],
-      interpolation: {
-        format: I18NextModule.interpolationFormat(defaultInterpolationFormat)
-      },
-      backend: {
-        loadPath: 'assets/locales/{{lng}}.{{ns}}.json',
-      },
-      detection: {
-        // order and from where user language should be detected
-        order: ['querystring', 'cookie'],
-        // keys or params to lookup language from
-        lookupCookie: 'lang',
-        lookupQuerystring: 'lng',
-        // cache user language on
-        caches: ['localStorage', 'cookie'],
-        // optional expire and domain for set cookie
-        cookieMinutes: 10080, // 7 days
-      }
-    });
+    detection: {
+      // order and from where user language should be detected
+      order: ['querystring', 'cookie','navigator'],
+      // keys or params to lookup language from
+      lookupCookie: 'lang',
+      lookupQuerystring: 'lng',
+      // cache user language on
+      caches: ['localStorage', 'cookie'],
+      // optional expire and domain for set cookie
+      cookieMinutes: 10080, // 7 days
+      //cookieMinutes: 1,
+    },
+    supportedLngs: ['en','fr','eo'],
+    debug:false,
+    returnEmptyString: false,
+    fallbackLng: 'en',
+    backend: {
+      loadPath: 'assets/locales/{{lng}}.json',
+    },
+
+    interpolation: {
+      format: I18NextModule.interpolationFormat(defaultInterpolationFormat)
+    }
+  });
 }
+
+
 
 export function localeIdFactory(i18next: ITranslationService)  {
   return i18next.language;
