@@ -35,9 +35,8 @@ def meme(request: Request) -> Tuple[str, int]:
             "username": os.environ["IMGFLIP_API_USERNAME"],
             "password": os.environ["IMGFLIP_API_PASSWORD"],
             "text0": params[1],
+            "text1": params[2] if len(params) == 3 else None,
         }
-        if len(params) == 3:
-            request_body["text1"] = params[2]
 
         response: requests.Response = requests.post("https://api.imgflip.com/caption_image", data=request_body)
         if not response.ok:
