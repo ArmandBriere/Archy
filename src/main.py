@@ -76,7 +76,7 @@ def create_user(member: member_type) -> bool:
                 "message_count": 0,
                 "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                 "username": str(member.name),
-                "avatar_url": str(member.avatar_url),
+                "avatar_url": str(member.avatar.url),
             }
         )
 
@@ -152,7 +152,7 @@ async def on_member_join(member: member_type) -> None:
                 str(member.guild.name),
             )
         else:
-            send_welcome_message(str(channel.id), str(member.name), str(member.avatar_url))
+            send_welcome_message(str(channel.id), str(member.name), str(member.avatar.url))
 
     # Create user in firestore db if doesn't exist
     is_new_user = create_user(member)
@@ -224,7 +224,7 @@ async def on_message(message: message_type) -> None:
             "user_id": str(ctx.author.id),
             "server_name": str(ctx.message.guild.name),
             "username": str(ctx.author.name),
-            "avatar_url": f"{ctx.author.avatar_url.BASE}{ctx.author.avatar_url._url}",  # pylint: disable=W0212
+            "avatar_url": f"{ctx.author.avatar.url}",
         }
 
         user_encode_data = json.dumps(data, indent=2).encode("utf-8")
