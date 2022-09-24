@@ -90,11 +90,14 @@ func generateWarnList(serverId string) string {
 
 		var warn Warning
 
-		doc.DataTo(&warn)
+		err = doc.DataTo(&warn)
+		if err != nil {
+			panic(err)
+		}
+
 		data.WriteString("**")
 		data.WriteString(warn.Timestamp.Format("2006-02-01"))
 		data.WriteString("**\n")
-
 		data.WriteString("User: <@")
 		data.WriteString(warn.UserId)
 		data.WriteString(">")
