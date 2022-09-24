@@ -122,6 +122,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
     },
+    listwarn : {
+      description = "Admin only: List all warn of that server."
+      runtime     = "go116"
+      entry_point = "ListWarn"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
+    },
     answer : {
       description = "Return a random answer based on the game '8 Ball'."
       runtime     = "python39"

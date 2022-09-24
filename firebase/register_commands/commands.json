@@ -81,6 +81,13 @@
             ]
         },
         {
+            "name": "listwarn",
+            "description": "Admin only: List all warn of that server.",
+            "examples": [
+                "!listwarn"
+            ]
+        },
+        {
             "name": "answer",
             "description": "Return a random answer based on the game '8 Ball'.",
             "examples": [
