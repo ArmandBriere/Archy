@@ -93,6 +93,13 @@
             "examples": [
                 "!answer"
             ]
+        },
+        {
+            "name": "merch",
+            "description": "Return the merch website.",
+            "examples": [
+                "!merch"
+            ]
         }
     ]
 }
