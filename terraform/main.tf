@@ -106,18 +106,34 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     },
-    insult : {
-      description = "Return an insult using the LibInsult API (https://insult.mattbas.org/api/)"
-      runtime     = "python39"
-      entry_point = "insult"
-      timeout     = 15
-      memory      = 256
-      secrets     = []
-    },
     warn : {
       description = "Admin only: Warn a user and take action if needed."
       runtime     = "go116"
       entry_point = "WarnUser"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
+    },
+    listwarn : {
+      description = "Admin only: List all warn of that server."
+      runtime     = "go116"
+      entry_point = "ListWarn"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
+    },
+    answer : {
+      description = "Return a random answer based on the game '8 Ball'."
+      runtime     = "python39"
+      entry_point = "answer"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
+    merch : {
+      description = "Return the merch website."
+      runtime     = "go116"
+      entry_point = "Merch"
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]

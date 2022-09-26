@@ -19,7 +19,7 @@
 
 ## 📖 Prerequisites
 
-This project is designed to run on Google Cloud with an Compute Engine instance and many cloud functions.
+This project is designed to run on Google Cloud with a Compute Engine instance and many cloud functions.
 
 ## ☁ Global architecture
 
@@ -31,11 +31,11 @@ This project is designed to run on Google Cloud.
 
 The "main node" is a Compute Engine running a Docker container with [Python code](https://github.com/ArmandBriere/Archy/blob/main/src/main.py). This node is here to parse every discord message to find commands.
 
-Every commands are running inside Cloud Functions. This allows us to develop those in any [supported languages](https://cloud.google.com/functions/docs/writing).
+Every command is running inside Cloud Functions. This allows us to develop those in any [supported languages](https://cloud.google.com/functions/docs/writing).
 
 Functions can trigger other functions using [Pub/Sub](https://cloud.google.com/pubsub/docs/overview).
 
-All data are stored in [Firestore](https://firebase.google.com/docs/firestore).
+All data is stored in [Firestore](https://firebase.google.com/docs/firestore).
 
 In addition to this, we also have a web page developed in Angular on [Firebase Hosting](https://firebase.google.com/docs/hosting)
 
@@ -46,13 +46,13 @@ In addition to this, we also have a web page developed in Angular on [Firebase H
 
 ## 🤝 Contributing
 
-We encourage you to contribute to Archy! Come to our [discord server](https://discord.gg/y76YCwFp3d) to talk about your idea and changes!
+We encourage you to contribute to Archy! Come to our [discord server](https://discord.gg/y76YCwFp3d) to talk about your ideas and changes!
 
-- Note that all developpement is done in English, please do your best to code, commit and comment issues/PR in English.
+- Note that all development is done in English, please do your best to code, commit and comment issues/PR in English.
 
 Feel free to submit PRs for small issues. For large issues or features, open an issue first.
 
-(Disclamer: We took the contribution work flow from [fireship.io](https://github.com/fireship-io/fireship.io))
+(Disclaimer: We took the contribution work flow from [fireship.io](https://github.com/fireship-io/fireship.io))
 
 ### Option 1 - Simple Typo Fixes
 
