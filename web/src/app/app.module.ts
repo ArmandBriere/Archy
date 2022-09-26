@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, APP_INITIALIZER, LOCALE_ID } from '@angular/core';
+import { BrowserModule,Title } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -89,6 +89,7 @@ export const I18N_PROVIDERS = [
     ContributorComponent
   ],
   imports: [
+    I18NextModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
