@@ -6,7 +6,7 @@
         "bot": "Open source serverless bot",
         "repo": "Come check the source code on"
     },
-    "Leaderboard": {
+    "leaderboard": {
             "leaderboard": "Leaderboard",
             "wonder":"Wondering why you're not on the leaderboard?",
             "reason":"Only the top 50 are shown here",
