@@ -34,7 +34,9 @@ func Merch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Send message
-	message, _ := dg.ChannelMessageSend(channel.ID, "https://archyfroge.myshopify.com/")
+	text := "Oh you want some nice merch?\n*Every dollar I get will help me run faster and boost the Discord server*\n"
+	text += "Go check my website <https://archyfroge.myshopify.com/>"
+	message, _ := dg.ChannelMessageSend(channel.ID, text)
 
 	// React to it
 	err = dg.MessageReactionAdd(channel.ID, message.ID, "💸")
