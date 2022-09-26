@@ -105,7 +105,7 @@ export const I18N_PROVIDERS = [
       });
     }),
   ],
-  providers: [],
+  providers: [I18N_PROVIDERS],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
