@@ -6,7 +6,7 @@
         "bot": "Bot open source sans serveur",
         "repo": "Venez voir le code source sur"
     },
-    "Leaderboard": {
+    "leaderboard": {
         "leaderboard": "Classement",
         "wonder":"Vous vous demandez pourquoi vous n'êtes pas dans le classement?",
         "reason": "Seuls les 50 premiers sont présentés ici",
