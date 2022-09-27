@@ -76,7 +76,7 @@ def create_user(member: member_type) -> bool:
                 "message_count": 0,
                 "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
                 "username": str(member.name),
-                "avatar_url": str(member.avatar.url),
+                "avatar_url": str(member.avatar.url) if member.avatar else None,
             }
         )
 
@@ -198,7 +198,7 @@ async def on_message(message: message_type) -> None:
                     "channel_id": str(message.channel.id),
                     "message_id": str(message.id),
                     "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-                    "params": shlex.split(message.content)[1:],
+                    "params": message.content.split()[1:],
                 }
             ),
         )
@@ -224,7 +224,7 @@ async def on_message(message: message_type) -> None:
             "user_id": str(ctx.author.id),
             "server_name": str(ctx.message.guild.name),
             "username": str(ctx.author.name),
-            "avatar_url": f"{ctx.author.avatar.url}",
+            "avatar_url": f"{ctx.author.avatar.url if ctx.author.avatar else None}",
         }
 
         user_encode_data = json.dumps(data, indent=2).encode("utf-8")
