@@ -185,7 +185,7 @@ async def on_message(message: message_type) -> None:
                 "Authorization": f"Bearer {google_auth_token}",
                 "Content-Type": "application/json",
             },
-            data=data,
+            data=json.dumps(data),
         )
 
         if response.status_code == 200 and response.content:
