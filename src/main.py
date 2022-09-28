@@ -58,14 +58,13 @@ def is_active_command(server_id: str, command_name: str) -> bool:
     return False
 
 
-def create_user(member: member_type) -> bool:
-    """Create a user in the firestore db."""
+def create_user(member: member_type) -> None:
+    """Create a user in the firestore db if he doesn't exist already."""
     server_id = str(member.guild.id)
     user_collection: CollectionReference = db.collection("servers").document(server_id).collection("users")
     doc_ref: DocumentReference = user_collection.document(str(member.id))
     doc: DocumentSnapshot = doc_ref.get()
 
-    # If user doesn't exist, create it with user_id as the document id
     if not doc.exists:
         doc_ref.set(
             {
@@ -78,11 +77,6 @@ def create_user(member: member_type) -> bool:
                 "avatar_url": str(member.avatar.url) if member.avatar else None,
             }
         )
-
-        return True
-
-    # If user exists, return False
-    return False
 
 
 def update_user_role(server_id: str, user_id: str):
@@ -110,25 +104,19 @@ def send_message_to_channel(channel_id: str, message: str):
     data = {"channel_id": channel_id, "message": message}
 
     user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
-    future: Future = publisher.publish(topic_path, user_encode_data)
-
-    print(f"Message id: {future.result()}")
-    print(f"Published message to {topic_path}.")
+    publisher.publish(topic_path, user_encode_data)
 
 
 def send_welcome_message(channel_id: str, username: str, avatar_url):
     publisher = PublisherClient()
-    topic_path = publisher.topic_path("archy-f06ed", "generate_welcome_image")
+    topic_path = publisher.topic_path(PROJECT_ID, "generate_welcome_image")
 
     payload = {"username": username, "avatar_url": avatar_url}
 
     data = {"channel_id": channel_id, "payload": payload}
 
     user_encode_data = json.dumps(data, indent=2).encode("utf-8")
-    future: Future = publisher.publish(topic_path, user_encode_data)
-
-    print(f"Message id: {future.result()}")
-    print(f"Published message to {topic_path}.")
+    publisher.publish(topic_path, user_encode_data)
 
 
 @bot.event
@@ -153,12 +141,9 @@ async def on_member_join(member: member_type) -> None:
         else:
             send_welcome_message(str(channel.id), str(member.name), str(member.avatar.url))
 
-    # Create user in firestore db if doesn't exist
-    is_new_user = create_user(member)
+    create_user(member)
 
     update_user_role(server_id, str(member.id))
-
-    print(f"User created: {is_new_user}")
 
 
 @bot.event
@@ -174,7 +159,14 @@ async def on_message(message: message_type) -> None:
         return
 
     ctx: Context = await bot.get_context(message)
-    if ctx.invoked_with:
+
+    data = {
+        "server_id": str(ctx.guild.id),
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+    }
+    if ctx.invoked_with and not ctx.author.bot:
         if not is_active_command(str(ctx.guild.id), str(ctx.invoked_with)):
             await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
             return
@@ -182,24 +174,18 @@ async def on_message(message: message_type) -> None:
         function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
+        data["channel_id"] = str(message.channel.id)
+        data["message_id"] = str(message.id)
+        data["mentions"] = [str(user_id) for user_id in ctx.message.raw_mentions]
+        data["params"] = message.content.split()[1:]
+
         response: Response = requests.post(
             function_path,
             headers={
                 "Authorization": f"Bearer {google_auth_token}",
                 "Content-Type": "application/json",
             },
-            data=json.dumps(
-                {
-                    "server_id": str(ctx.guild.id),
-                    "server_name": str(ctx.message.guild.name),
-                    "user_id": str(ctx.author.id),
-                    "username": str(ctx.author.name),
-                    "channel_id": str(message.channel.id),
-                    "message_id": str(message.id),
-                    "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-                    "params": message.content.split()[1:],
-                }
-            ),
+            data=data,
         )
 
         if response.status_code == 200 and response.content:
@@ -216,30 +202,16 @@ async def on_message(message: message_type) -> None:
     elif not message.author.bot:
 
         publisher = PublisherClient()
-        topic_path = publisher.topic_path("archy-f06ed", "exp_discord")
+        topic_path = publisher.topic_path(PROJECT_ID, "exp_discord")
 
-        data = {
-            "server_id": str(ctx.guild.id),
-            "user_id": str(ctx.author.id),
-            "server_name": str(ctx.message.guild.name),
-            "username": str(ctx.author.name),
-            "avatar_url": f"{ctx.author.avatar.url if ctx.author.avatar else None}",
-        }
+        if ctx.author.avatar:
+            data["avatar_url"] = ctx.author.avatar.url
 
         user_encode_data = json.dumps(data, indent=2).encode("utf-8")
-        future: Future = publisher.publish(topic_path, user_encode_data)
-
-        print(f"Message id: {future.result()}")
-        print(f"Published message to {topic_path}.")
+        publisher.publish(topic_path, user_encode_data)
 
     if message.content == f"<@{bot.user.id}>":
         await ctx.send("> Who Dares Summon Me?")
-
-
-@bot.event
-async def on_message_edit(before: message_type, after: message_type) -> None:
-    LOGGER.warning(before)
-    LOGGER.warning(after)
 
 
 bot.remove_command("help")
