@@ -1,7 +1,7 @@
 <mat-card class="outer-card">
     <div>
         <h2 style="text-align:center;">
-            Leaderboard
+            {{'leaderboard.leaderboard' | i18next}}
         </h2>
     </div>
 
@@ -50,13 +50,13 @@
 
         <div class="disclaimer">
             <p>
-                {{ "Wondering why you're not on the leaderboard?" | uppercase}}
+                {{ 'leaderboard.wonder' | i18next | uppercase}}
             </p>
             <p>
-                {{ "Only the top 50 are shown here" | uppercase }}
+                {{ 'leaderboard.reason' | i18next | uppercase}}
             </p>
             <p>
-                {{ "Git gud" | uppercase }}
+                {{ 'leaderboard.solution' | i18next | uppercase}}
             </p>
         </div>
     </mat-card-content>

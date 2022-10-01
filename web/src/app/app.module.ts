@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, APP_INITIALIZER, LOCALE_ID } from '@angular/core';
+import { BrowserModule,Title } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +17,68 @@ import { getApp, initializeApp } from 'firebase/app';
 import { AngularFireModule } from '@angular/fire/compat';
 import { ContributorComponent } from './contributor/contributor.component';
 
+import { I18NextModule, ITranslationService, I18NEXT_SERVICE, I18NextTitle, defaultInterpolationFormat } from 'angular-i18next';
+
+import LanguageDetector from 'i18next-browser-languagedetector'
+import backend from 'i18next-http-backend';
+import i18next from 'i18next';
+
+
+export function appInit(i18next: ITranslationService) {
+  return () => 
+  i18next
+  .use(backend)
+  .use(LanguageDetector)
+  .init({
+    detection: {
+      // order and from where user language should be detected
+      order: ['querystring', 'cookie','navigator'],
+      // keys or params to lookup language from
+      lookupCookie: 'lang',
+      lookupQuerystring: 'lng',
+      // cache user language on
+      caches: ['localStorage', 'cookie'],
+      // optional expire and domain for set cookie
+      cookieMinutes: 10080, // 7 days
+      //cookieMinutes: 1,
+    },
+    supportedLngs: ['en','fr','eo'],
+    debug:false,
+    returnEmptyString: false,
+    fallbackLng: 'en',
+    backend: {
+      loadPath: 'assets/locales/{{lng}}.json',
+    },
+
+    interpolation: {
+      format: I18NextModule.interpolationFormat(defaultInterpolationFormat)
+    }
+  });
+}
+
+
+
+export function localeIdFactory(i18next: ITranslationService)  {
+  return i18next.language;
+}
+
+export const I18N_PROVIDERS = [
+  {
+    provide: APP_INITIALIZER,
+    useFactory: appInit,
+    deps: [I18NEXT_SERVICE],
+    multi: true
+  },
+  {
+    provide: Title,
+    useClass: I18NextTitle
+  },
+  {
+    provide: LOCALE_ID,
+    deps: [I18NEXT_SERVICE],
+    useFactory: localeIdFactory
+  }];
+
 
 @NgModule({
   declarations: [
@@ -27,6 +89,7 @@ import { ContributorComponent } from './contributor/contributor.component';
     ContributorComponent
   ],
   imports: [
+    I18NextModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -42,7 +105,7 @@ import { ContributorComponent } from './contributor/contributor.component';
       });
     }),
   ],
-  providers: [],
+  providers: [I18N_PROVIDERS],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
