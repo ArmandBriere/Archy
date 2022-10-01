@@ -26,12 +26,8 @@ def test_level(database_mock):
     request_mock.get_json.return_value = body
     number_of_users = 1
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_db_value
-    )
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.get.return_value = [
-        "One element"
-    ] * number_of_users
+    database_mock().collection().document().collection().document().get().get.side_effect = get_db_value
+    database_mock().collection().document().collection().get.return_value = ["One element"] * number_of_users
 
     result = level(request_mock)
 
@@ -64,9 +60,7 @@ def test_level_no_level(database_mock):
     request_mock = MagicMock()
     request_mock.get_json.return_value = body
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
-        False
-    )
+    database_mock().collection().document().collection().document().get().exists = False
     result = level(request_mock)
 
     assert (f"... Wait a minute, Who is <@{body['user_id']}>", 200) == result
@@ -112,6 +106,6 @@ def test_publish_generate_image(publisher_mock):
 
     publish_generate_image(channel_id, payload)
 
-    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "generate_level_image")
-    assert publisher_mock.return_value.method_calls[1][0] == "publish"
-    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
+    assert publisher_mock().method_calls[0].args == ("archy-f06ed", "generate_level_image")
+    assert publisher_mock().method_calls[1][0] == "publish"
+    assert publisher_mock().method_calls[1][1][1] == encoded_data
