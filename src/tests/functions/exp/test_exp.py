@@ -29,11 +29,9 @@ def get_good_db_value(param):  # pragma: no cover
 @patch(f"{MODULE_PATH}.base64")
 def test_exp(b64_mock, random_mock, client_mock):
 
-    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
+    b64_mock.b64decode().decode.return_value = json.dumps(GOOD_BODY)
 
-    client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_good_db_value
-    )
+    client_mock().collection().document().collection().document().get().get.side_effect = get_good_db_value
     random_mock.return_value = 50
 
     result = exp(MagicMock(), None)
@@ -52,11 +50,9 @@ def get_timeout_timestamp_value(param):  # pragma: no cover
 @patch(f"{MODULE_PATH}.base64")
 def test_exp_timeout(b64_mock, client_mock):
 
-    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
+    b64_mock.b64decode().decode.return_value = json.dumps(GOOD_BODY)
 
-    client_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_timeout_timestamp_value
-    )
+    client_mock().collection().document().collection().document().get().get.side_effect = get_timeout_timestamp_value
 
     result = exp(b64_mock, None)
 
@@ -91,11 +87,9 @@ def test_exp_timeout(b64_mock, client_mock):
 @patch(f"{MODULE_PATH}.base64")
 def test_exp_missing_data(b64_mock, random_mock, database_mock, body):
 
-    b64_mock.b64decode.return_value.decode.return_value = json.dumps(body)
+    b64_mock.b64decode().decode.return_value = json.dumps(body)
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_good_db_value
-    )
+    database_mock().collection().document().collection().document().get().get.side_effect = get_good_db_value
     random_mock.return_value = 50
 
     result = exp(b64_mock, None)
@@ -110,19 +104,17 @@ def test_exp_missing_data(b64_mock, random_mock, database_mock, body):
 @patch(f"{MODULE_PATH}.base64")
 def test_exp_level_up(b64_mock, random_mock, database_mock):
 
-    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
+    b64_mock.b64decode().decode.return_value = json.dumps(GOOD_BODY)
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.get.side_effect = (
-        get_good_db_value
-    )
+    database_mock().collection().document().collection().document().get().get.side_effect = get_good_db_value
     random_mock.return_value = 500
-    database_mock.return_value.batch.return_value = MagicMock()
+    database_mock().batch.return_value = MagicMock()
 
     result = exp(b64_mock, None)
 
     assert ("", 200) == result
-    assert database_mock.return_value.batch.call_count == 1
-    assert len(database_mock.return_value.batch.mock_calls) == 6
+    assert database_mock().batch.call_count == 1
+    assert len(database_mock().batch.mock_calls) == 6
 
 
 @patch(f"{MODULE_PATH}.Client")
@@ -138,16 +130,14 @@ def test_exp_new_user(b64_mock, database_mock):
         "avatar_url": GOOD_BODY["avatar_url"],
     }
 
-    b64_mock.b64decode.return_value.decode.return_value = json.dumps(GOOD_BODY)
+    b64_mock.b64decode().decode.return_value = json.dumps(GOOD_BODY)
 
-    database_mock.return_value.collection.return_value.document.return_value.collection.return_value.document.return_value.get.return_value.exists = (
-        False
-    )
-    database_mock.return_value.batch.return_value = MagicMock()
+    database_mock().collection().document().collection().document().get().exists = False
+    database_mock().batch.return_value = MagicMock()
 
     result = exp(b64_mock, None)
 
-    set_value = database_mock.return_value.batch.return_value.method_calls[0][1][1]
+    set_value = database_mock().batch().method_calls[0][1][1]
     assert ("", 200) == result
     assert set_value == expected_set_value
 
@@ -162,9 +152,9 @@ def test_send_message_to_user(publisher_mock):
 
     send_message_to_user(user_id, message)
 
-    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "private_message_discord")
-    assert publisher_mock.return_value.method_calls[1][0] == "publish"
-    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
+    assert publisher_mock().method_calls[0].args == ("archy-f06ed", "private_message_discord")
+    assert publisher_mock().method_calls[1][0] == "publish"
+    assert publisher_mock().method_calls[1][1][1] == encoded_data
 
 
 @patch(f"{MODULE_PATH}.PublisherClient")
@@ -177,6 +167,6 @@ def test_update_user_roles(publisher_mock):
 
     update_user_roles(server_id, user_id)
 
-    assert publisher_mock.return_value.method_calls[0].args == ("archy-f06ed", "update_user_role")
-    assert publisher_mock.return_value.method_calls[1][0] == "publish"
-    assert publisher_mock.return_value.method_calls[1][1][1] == encoded_data
+    assert publisher_mock().method_calls[0].args == ("archy-f06ed", "update_user_role")
+    assert publisher_mock().method_calls[1][0] == "publish"
+    assert publisher_mock().method_calls[1][1][1] == encoded_data
