@@ -3,6 +3,7 @@ import logging
 import os
 import re
 from datetime import datetime
+from typing import Dict
 
 import firebase_admin
 import google.oauth2.id_token
@@ -15,11 +16,11 @@ from discord.message import Message as message_type
 from dotenv import load_dotenv
 from firebase_admin import credentials, firestore
 from google.auth.transport.requests import Request
+from google.cloud.firestore import Increment
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.pubsub_v1 import PublisherClient
-from google.cloud.pubsub_v1.publisher.futures import Future
 from requests import Response
 
 load_dotenv()
@@ -40,10 +41,7 @@ request = Request()
 
 # Firestore
 PROJECT_ID = "archy-f06ed"
-
-cred = credentials.Certificate("./key.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+KEY_FILE = "./key.json"
 
 
 def is_active_command(server_id: str, command_name: str) -> bool:
@@ -52,10 +50,7 @@ def is_active_command(server_id: str, command_name: str) -> bool:
     doc_ref: DocumentReference = function_collection.document(command_name)
     doc: DocumentSnapshot = doc_ref.get()
 
-    if doc.exists:
-        return doc.get("active")
-
-    return False
+    return doc.get("active") if doc.exists else False
 
 
 def create_user(member: member_type) -> None:
@@ -82,41 +77,39 @@ def create_user(member: member_type) -> None:
 def update_user_role(server_id: str, user_id: str):
     """Publish message to the update_user_role topic."""
     topic_id = "update_user_role"
-
-    publisher = PublisherClient()
-    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
-
     data = {"server_id": server_id, "user_id": user_id}
-
-    encoded_data: bytes = json.dumps(data, indent=2).encode("utf-8")
-    future: Future = publisher.publish(topic_path, encoded_data)
-
-    print(f"Message id: {future.result()}")
-    print(f"Published message to {topic_path}.")
+    publish_message(data, topic_id)
 
 
 def send_message_to_channel(channel_id: str, message: str):
     """Publish message to the channel_message_discord topic."""
     topic_id = "channel_message_discord"
+    data = {"channel_id": channel_id, "message": message}
+    publish_message(data, topic_id)
+
+
+def send_welcome_message(channel_id: str, username: str, avatar_url):
+    """Publish message to generate_welcome_image."""
+    topic_id = "generate_welcome_image"
+    payload = {"username": username, "avatar_url": avatar_url}
+    data = {"channel_id": channel_id, "payload": payload}
+    publish_message(data, topic_id)
+
+
+def publish_message(data: Dict[str, str], topic_id: str):
+    """Publish message to the selected topic."""
 
     publisher = PublisherClient()
     topic_path = publisher.topic_path(PROJECT_ID, topic_id)
-    data = {"channel_id": channel_id, "message": message}
 
     user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
     publisher.publish(topic_path, user_encode_data)
 
 
-def send_welcome_message(channel_id: str, username: str, avatar_url):
-    publisher = PublisherClient()
-    topic_path = publisher.topic_path(PROJECT_ID, "generate_welcome_image")
-
-    payload = {"username": username, "avatar_url": avatar_url}
-
-    data = {"channel_id": channel_id, "payload": payload}
-
-    user_encode_data = json.dumps(data, indent=2).encode("utf-8")
-    publisher.publish(topic_path, user_encode_data)
+def increment_command_count(server_id: str, command_name: str):
+    function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
+    doc_ref: DocumentReference = function_collection.document(command_name)
+    doc_ref.update({"count": Increment(1)})
 
 
 @bot.event
@@ -132,13 +125,7 @@ async def on_member_join(member: member_type) -> None:
     if doc.exists:
         channel: GuildChannel = member.guild.get_channel(int(doc.get("channel_id")))
 
-        if channel is None:
-            LOGGER.warning(
-                "Channel id %s doesn't exist anymore or is invalid for document welcome for server %s",
-                str(doc.get("channel_id")),
-                str(member.guild.name),
-            )
-        else:
+        if channel:
             send_welcome_message(str(channel.id), str(member.name), str(member.avatar.url))
 
     create_user(member)
@@ -148,30 +135,33 @@ async def on_member_join(member: member_type) -> None:
 
 @bot.event
 async def on_message(message: message_type) -> None:
+    if message.author.bot:
+        return
+
     LOGGER.warning("Message from %s is: %s", message.author, message.content)
 
-    if (
-        isinstance(message.channel, DMChannel)
-        and message.author != bot.user
-        and message.content == os.environ["UQAM_PASSPHRASE"]
-    ):
+    if isinstance(message.channel, DMChannel) and message.content == os.environ["UQAM_PASSPHRASE"]:
         await message.channel.send(f"`{os.environ['UQAM_FLAG']}`")
         return
 
     ctx: Context = await bot.get_context(message)
 
+    server_id = str(ctx.guild.id)
+
     data = {
-        "server_id": str(ctx.guild.id),
+        "server_id": server_id,
         "server_name": str(ctx.message.guild.name),
         "user_id": str(ctx.author.id),
         "username": str(ctx.author.name),
     }
     if ctx.invoked_with and not ctx.author.bot:
-        if not is_active_command(str(ctx.guild.id), str(ctx.invoked_with)):
+        command_name = str(ctx.invoked_with)
+
+        if not is_active_command(server_id, command_name):
             await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
             return
 
-        function_path = f"{FUNCTION_BASE_RUL}{ctx.invoked_with}"
+        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
         data["channel_id"] = str(message.channel.id)
@@ -198,21 +188,24 @@ async def on_message(message: message_type) -> None:
                 )
                 await ctx.send(embed=embed)
 
-    # Add exp to the user for every message send
-    elif not message.author.bot:
+        increment_command_count(server_id, command_name)
 
-        publisher = PublisherClient()
-        topic_path = publisher.topic_path(PROJECT_ID, "exp_discord")
+    elif not message.author.bot:
 
         if ctx.author.avatar:
             data["avatar_url"] = ctx.author.avatar.url
 
-        user_encode_data = json.dumps(data, indent=2).encode("utf-8")
-        publisher.publish(topic_path, user_encode_data)
+        publish_message(data, "exp_discord")
 
     if message.content == f"<@{bot.user.id}>":
         await ctx.send("> Who Dares Summon Me?")
 
 
-bot.remove_command("help")
-bot.run(DISCORD_API_TOKEN)
+if __name__ == "__main__":
+
+    cred = credentials.Certificate(KEY_FILE)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+
+    bot.remove_command("help")
+    bot.run(DISCORD_API_TOKEN)
