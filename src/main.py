@@ -60,6 +60,8 @@ async def on_guild_join(guild: Guild) -> None:
 
     if not doc.exists:
         server_ref.set(data)
+    else:
+        server_ref.update({"member_count": data["member_count"]})
 
 
 def is_active_command(server_id: str, command_name: str) -> bool:
@@ -90,6 +92,8 @@ def create_user(member: member_type) -> None:
                 "avatar_url": str(member.avatar.url) if member.avatar else None,
             }
         )
+
+        db.collection("serverList").document(server_id).update({"member_count": Increment(1)})
 
 
 def update_user_role(server_id: str, user_id: str):
@@ -149,6 +153,12 @@ async def on_member_join(member: member_type) -> None:
     create_user(member)
 
     update_user_role(server_id, str(member.id))
+
+
+@bot.event
+async def on_member_remove(member: member_type) -> None:
+    server_id = str(member.guild.id)
+    db.collection("serverList").document(server_id).update({"member_count": Increment(-1)})
 
 
 @bot.event
