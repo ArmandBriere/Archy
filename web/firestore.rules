@@ -1,7 +1,13 @@
 rules_version = '2';
 service cloud.firestore {
+  match /databases/{database}/documents {
+  
+  	match /serverList/{serverId=**} {
+    	allow read: if true;
+		}
+	}
+  
   match /databases/{database}/documents/servers/{server} {
-
     match /functions/{functionName=**} {
       allow read, write, update, delete: if hasAnyRole(['admin']);
     }

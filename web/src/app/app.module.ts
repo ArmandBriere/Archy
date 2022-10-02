@@ -24,7 +24,7 @@ import { ContributorComponent } from './contributor/contributor.component';
     HomePageComponent,
     LeaderboardComponent,
     FormatWithKPipe,
-    ContributorComponent
+    ContributorComponent,
   ],
   imports: [
     BrowserModule,

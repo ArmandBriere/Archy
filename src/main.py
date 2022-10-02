@@ -8,7 +8,7 @@ from typing import Dict
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Intents
+from discord import DMChannel, Embed, Guild, Intents
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -44,6 +44,26 @@ PROJECT_ID = "archy-f06ed"
 KEY_FILE = "./key.json"
 
 
+@bot.event
+async def on_guild_join(guild: Guild) -> None:
+
+    data = {
+        "server_name": str(guild.name),
+        "server_id": str(guild.id),
+        "server_icon": f"{guild.icon_url.BASE}{guild.icon_url._url}",  # pylint: disable=protected-access
+        "member_count": int(guild.member_count),
+    }
+
+    server_list_collection: CollectionReference = db.collection("serverList")
+    server_ref = server_list_collection.document(data["server_id"])
+    doc = server_ref.get()
+
+    if not doc.exists:
+        server_ref.set(data)
+    else:
+        server_ref.update({"member_count": data["member_count"]})
+
+
 def is_active_command(server_id: str, command_name: str) -> bool:
     """Check if a command is active in the firestore db."""
     function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
@@ -73,22 +93,24 @@ def create_user(member: member_type) -> None:
             }
         )
 
+        db.collection("serverList").document(server_id).update({"member_count": Increment(1)})
 
-def update_user_role(server_id: str, user_id: str):
+
+def update_user_role(server_id: str, user_id: str) -> None:
     """Publish message to the update_user_role topic."""
     topic_id = "update_user_role"
     data = {"server_id": server_id, "user_id": user_id}
     publish_message(data, topic_id)
 
 
-def send_message_to_channel(channel_id: str, message: str):
+def send_message_to_channel(channel_id: str, message: str) -> None:
     """Publish message to the channel_message_discord topic."""
     topic_id = "channel_message_discord"
     data = {"channel_id": channel_id, "message": message}
     publish_message(data, topic_id)
 
 
-def send_welcome_message(channel_id: str, username: str, avatar_url):
+def send_welcome_message(channel_id: str, username: str, avatar_url) -> None:
     """Publish message to generate_welcome_image."""
     topic_id = "generate_welcome_image"
     payload = {"username": username, "avatar_url": avatar_url}
@@ -96,7 +118,7 @@ def send_welcome_message(channel_id: str, username: str, avatar_url):
     publish_message(data, topic_id)
 
 
-def publish_message(data: Dict[str, str], topic_id: str):
+def publish_message(data: Dict[str, str], topic_id: str) -> None:
     """Publish message to the selected topic."""
 
     publisher = PublisherClient()
@@ -106,7 +128,7 @@ def publish_message(data: Dict[str, str], topic_id: str):
     publisher.publish(topic_path, user_encode_data)
 
 
-def increment_command_count(server_id: str, command_name: str):
+def increment_command_count(server_id: str, command_name: str) -> None:
     function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
     doc_ref: DocumentReference = function_collection.document(command_name)
     doc_ref.update({"count": Increment(1)})
@@ -131,6 +153,12 @@ async def on_member_join(member: member_type) -> None:
     create_user(member)
 
     update_user_role(server_id, str(member.id))
+
+
+@bot.event
+async def on_member_remove(member: member_type) -> None:
+    server_id = str(member.guild.id)
+    db.collection("serverList").document(server_id).update({"member_count": Increment(-1)})
 
 
 @bot.event

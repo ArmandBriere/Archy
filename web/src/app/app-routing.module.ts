@@ -5,6 +5,13 @@ import { LeaderboardComponent } from './leaderboard/leaderboard.component';
 
 const routes: Routes = [
   { path: '', component: HomePageComponent },
+  {
+    path: 'servers',
+    loadChildren: () =>
+      import('./server/server.module').then(
+        (m) => m.ServerModule
+      ),
+  },
   { path: 'leaderboard/:id', component: LeaderboardComponent },
 ];
 

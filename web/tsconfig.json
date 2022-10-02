@@ -29,7 +29,8 @@
       "@angular/*": [
         "./node_modules/@angular/*"
       ]
-    }
+    },
+    "skipLibCheck": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
