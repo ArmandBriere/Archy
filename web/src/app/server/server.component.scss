@@ -18,8 +18,13 @@
             margin: auto;
         }
 
-        h3 {
+        h3, h5 {
             text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        h5 {
+            color: grey;
         }
 
         button {
