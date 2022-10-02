@@ -8,7 +8,7 @@ from typing import Dict
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Intents
+from discord import DMChannel, Embed, Guild, Intents
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -42,6 +42,24 @@ request = Request()
 # Firestore
 PROJECT_ID = "archy-f06ed"
 KEY_FILE = "./key.json"
+
+
+@bot.event
+async def on_guild_join(guild: Guild) -> None:
+
+    data = {
+        "server_name": str(guild.name),
+        "server_id": str(guild.id),
+        "server_icon": f"{guild.icon_url.BASE}{guild.icon_url._url}",
+        "member_count": int(guild.member_count),
+    }
+
+    server_list_collection: CollectionReference = db.collection("serverList")
+    server_ref = server_list_collection.document(data["server_id"])
+    doc = server_ref.get()
+
+    if not doc.exists:
+        server_ref.set(data)
 
 
 def is_active_command(server_id: str, command_name: str) -> bool:
