@@ -1,0 +1,8 @@
+<div class="servers">
+    <mat-card class="server-card" *ngFor="let server of servers">
+        <img [src]="server.server_banner">
+        <h3>{{server.server_name}}</h3>
+        <button mat-raised-button color="primary" [routerLink]="['/leaderboard/'+server.server_id]" routerLinkActive="router-link-active" >Leaderboard</button>
+        <button mat-button (click)="joinServer(server.join)">Join server</button>
+    </mat-card>
+</div>

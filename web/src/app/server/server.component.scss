@@ -1,0 +1,31 @@
+.servers {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    .server-card {
+        flex: 1 1 300px;
+        margin: 20px;
+        height: 100%;
+        
+        img {
+            height: 115px;
+            border-radius: 5px;
+            display: flex;
+            margin: auto;
+        }
+
+        h3 {
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            margin: 10px auto;
+        }
+
+    }
+}
