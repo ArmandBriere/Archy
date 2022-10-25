@@ -68,3 +68,6 @@ node_modules/
 
 # Virtualenv
 env/
+
+# Java
+.gradle
