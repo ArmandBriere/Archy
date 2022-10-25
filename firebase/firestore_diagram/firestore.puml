@@ -9,7 +9,7 @@ center footer Archy project - Firestore class diagram
 
 
 folder "servers: Collection" {
-    folder "serverId: Document" {
+    folder "serverId: SubCollection" {
         folder "channels: Collection" {
             class "channelName: Document" {
                 active: bool
@@ -21,10 +21,12 @@ folder "servers: Collection" {
             class "functionName: Document" {
                 active: bool
                 description: string
+                examples: [example: string]
+                count: int
             }
         }
 
-        folder "level: Collection" {
+        folder "levels: Collection" {
             class "levelNumber: Document" {
                 roles: [roleId: string]
             }
@@ -41,8 +43,18 @@ folder "servers: Collection" {
                 username: string
             }
         }
+
+        folder "warnings: Collection" {
+            class "id: Document" {
+                admin_id: string
+                admin_username: string
+                comment: string
+                server_id: string
+                timestamp: date
+                user_id: string
+            }
+        }
     }
-    
 }
 
 
