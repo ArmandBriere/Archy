@@ -42,6 +42,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     },
+    java : {
+      description = "Template of a function in Java"
+      runtime     = "java17"
+      entry_point = "functions.Java"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
     js : {
       description = "Template of a function in javascript"
       runtime     = "nodejs16"
