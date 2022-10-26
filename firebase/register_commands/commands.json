@@ -38,6 +38,13 @@
             ]
         },
         {
+            "name": "java",
+            "description": "Send a message from Java.",
+            "examples": [
+                "!java"
+            ]
+        },
+        {
             "name": "js",
             "description": "Send a message from a JS bot instance.",
             "examples": [
