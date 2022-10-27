@@ -10,7 +10,13 @@ from functions.exp.main import DATETIME_FORMAT, exp, send_message_to_user, updat
 
 MODULE_PATH = "functions.exp.main"
 
-GOOD_BODY = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789, "server_name": "Archy"}
+GOOD_BODY = {
+    "user_id": "123",
+    "username": "Joe",
+    "avatar_url": "url",
+    "server_id": 123456789,
+    "server_name": "Archy",
+}
 
 
 def get_good_db_value(param):  # pragma: no cover
@@ -152,7 +158,10 @@ def test_send_message_to_user(publisher_mock):
 
     send_message_to_user(user_id, message)
 
-    assert publisher_mock().method_calls[0].args == ("archy-f06ed", "private_message_discord")
+    assert publisher_mock().method_calls[0].args == (
+        "archy-f06ed",
+        "private_message_discord",
+    )
     assert publisher_mock().method_calls[1][0] == "publish"
     assert publisher_mock().method_calls[1][1][1] == encoded_data
 
