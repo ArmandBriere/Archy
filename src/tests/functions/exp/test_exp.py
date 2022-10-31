@@ -2,7 +2,6 @@
 
 import json
 from datetime import datetime, timedelta
-from time import sleep
 from unittest.mock import MagicMock, patch
 
 import pytest
