@@ -40,6 +40,7 @@ Simply run the `tox` command to execute all the test script in the `tox.ini` fil
 - `black` -> Code formatter.
 - `pylint` -> Static code analysis tool for lint.
 - `isort` -> isort your imports, so you don't have to.
+- `mypy` -> Python typing check utility.
 
 You can run the script by hand if you want:
 
@@ -48,6 +49,7 @@ python -m pytest --rootdir .
 black -l 120 .
 pylint functions tests main.py
 isort .
+mypy --install-types --non-interactive --show-error-codes functions/ main.py
 ```
 
 ## Requirements

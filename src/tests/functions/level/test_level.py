@@ -106,6 +106,9 @@ def test_publish_generate_image(publisher_mock):
 
     publish_generate_image(channel_id, payload)
 
-    assert publisher_mock().method_calls[0].args == ("archy-f06ed", "generate_level_image")
+    assert publisher_mock().method_calls[0].args == (
+        "archy-f06ed",
+        "generate_level_image",
+    )
     assert publisher_mock().method_calls[1][0] == "publish"
     assert publisher_mock().method_calls[1][1][1] == encoded_data
