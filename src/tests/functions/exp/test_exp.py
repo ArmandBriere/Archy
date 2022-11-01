@@ -123,20 +123,22 @@ def test_exp_level_up(b64_mock, random_mock, database_mock):
     assert len(database_mock().batch.mock_calls) == 6
 
 
+@patch(f"{MODULE_PATH}.datetime")
 @patch(f"{MODULE_PATH}.Client")
 @patch(f"{MODULE_PATH}.base64")
-def test_exp_new_user(b64_mock, database_mock):
+def test_exp_new_user(b64_mock, database_mock, datetime_mock):
     expected_set_value = {
         "total_exp": 0,
         "exp_toward_next_level": 0,
         "level": 0,
         "message_count": 0,
-        "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
+        "last_message_timestamp": 0,
         "username": GOOD_BODY["username"],
         "avatar_url": GOOD_BODY["avatar_url"],
     }
 
     b64_mock.b64decode().decode.return_value = json.dumps(GOOD_BODY)
+    datetime_mock.now().strftime.return_value = 0
 
     database_mock().collection().document().collection().document().get().exists = False
     database_mock().batch.return_value = MagicMock()
