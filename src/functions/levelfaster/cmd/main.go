@@ -9,13 +9,15 @@ import (
 )
 
 func main() {
-	// Add custom channel_id to test
-	body := []byte(`{"server_id": "<SERVER_ID>", "user_id": "<USER_ID>"}`)
+	body := []byte(`{
+		"server_id": "", 
+		"user_id": "",
+		"mentions": [""]}
+	`)
 	reader := bytes.NewReader(body)
 
 	req := httptest.NewRequest(http.MethodGet, "/test", reader)
 	w := httptest.NewRecorder()
 
-	// Call function
 	levelFaster.Level(w, req)
 }

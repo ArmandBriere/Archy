@@ -17,8 +17,9 @@ import (
 
 // Payload struct that is expected
 type Payload struct {
-	ServerId string `json:"server_id"`
-	UserId   string `json:"user_id"`
+	ServerId string   `json:"server_id"`
+	UserId   string   `json:"user_id"`
+	Mentions []string `json:"mentions"`
 }
 
 // User expected format in firestore
@@ -75,6 +76,7 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, formatedUrl.String())
 }
 
+// Get the user info from Firestore
 func getUserInfo(payload Payload) FirestoreUser {
 	ctx := context.Background()
 	conf := &firebase.Config{ProjectID: "archy-f06ed"}
@@ -89,7 +91,12 @@ func getUserInfo(payload Payload) FirestoreUser {
 		log.Fatalln(err)
 	}
 
-	userRef, err := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(payload.UserId).Get(ctx)
+	var userId string = payload.UserId
+	if len(payload.Mentions) > 0 {
+		userId = payload.Mentions[0]
+	}
+
+	userRef, err := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(userId).Get(ctx)
 	if err != nil {
 		panic(err)
 	}
