@@ -28,6 +28,9 @@ type FirestoreUser struct {
 	AvatarUrl          string `firestore:"avatar_url"`
 	ExpTowardNextLevel int    `firestore:"exp_toward_next_level"`
 	TotalExp           int    `firestore:"total_exp"`
+	Rank               int
+	AvatarId           string
+	LevelExpNeeded     float64
 }
 
 // Return the level image url
@@ -45,7 +48,34 @@ func Level(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Instanciate the firestore context
+	user := getUserInfo(payload)
+
+	var formatedUrl strings.Builder
+	formatedUrl.WriteString("https://us-central1-archy-f06ed.cloudfunctions.net/nextjs/api/bar?")
+
+	formatedUrl.WriteString("username=")
+	formatedUrl.WriteString(url.QueryEscape(user.Username))
+
+	formatedUrl.WriteString("&rank=")
+	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.Rank), 10)))
+
+	formatedUrl.WriteString("&level=")
+	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.Level), 10)))
+
+	formatedUrl.WriteString("&avatar_url=")
+	formatedUrl.WriteString(url.QueryEscape(user.AvatarId))
+
+	formatedUrl.WriteString("&exp_toward_next_level=")
+	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.ExpTowardNextLevel), 10)))
+
+	formatedUrl.WriteString("&level_exp_needed=")
+	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
+
+	print(formatedUrl.String())
+	fmt.Fprint(w, formatedUrl.String())
+}
+
+func getUserInfo(payload Payload) FirestoreUser {
 	ctx := context.Background()
 	conf := &firebase.Config{ProjectID: "archy-f06ed"}
 	app, err := firebase.NewApp(ctx, conf)
@@ -70,7 +100,8 @@ func Level(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	rank, _ := client.Collection("servers").Doc(payload.ServerId).Collection("users").Where("total_exp", ">", user.TotalExp).Documents(ctx).GetAll()
+	higherExpUserCount, _ := client.Collection("servers").Doc(payload.ServerId).Collection("users").Where("total_exp", ">", user.TotalExp).Documents(ctx).GetAll()
+	user.Rank = len(higherExpUserCount) + 1
 
 	re := regexp.MustCompile("avatars/(.*).png")
 	var subMatch = re.FindStringSubmatch(user.AvatarUrl)
@@ -79,31 +110,9 @@ func Level(w http.ResponseWriter, r *http.Request) {
 		subMatch = re.FindStringSubmatch(user.AvatarUrl)
 	}
 
-	var avatarId = subMatch[1]
+	user.AvatarId = subMatch[1]
 
-	var levelExpNeeded float64 = (5 * math.Pow(float64(user.Level), 2)) + (50 * float64(user.Level)) + 100
+	user.LevelExpNeeded = (5 * math.Pow(float64(user.Level), 2)) + (50 * float64(user.Level)) + 100
 
-	var formatedUrl strings.Builder
-	formatedUrl.WriteString("https://us-central1-archy-f06ed.cloudfunctions.net/nextjs/api/bar?")
-
-	formatedUrl.WriteString("username=")
-	formatedUrl.WriteString(url.QueryEscape(user.Username))
-
-	formatedUrl.WriteString("&rank=")
-	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(len(rank)+1), 10)))
-
-	formatedUrl.WriteString("&level=")
-	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.Level), 10)))
-
-	formatedUrl.WriteString("&avatar_url=")
-	formatedUrl.WriteString(url.QueryEscape(avatarId))
-
-	formatedUrl.WriteString("&exp_toward_next_level=")
-	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.ExpTowardNextLevel), 10)))
-
-	formatedUrl.WriteString("&level_exp_needed=")
-	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(levelExpNeeded), 10)))
-
-	print(formatedUrl.String())
-	fmt.Fprint(w, formatedUrl.String())
+	return user
 }
