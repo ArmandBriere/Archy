@@ -74,6 +74,14 @@
             ]
         },
         {
+            "name": "levelfaster",
+            "description": "Return the level of the author or the mentioned user.",
+            "examples": [
+                "!levelfaster",
+                "!levelfaster @user"
+            ]
+        },
+        {
             "name": "ban",
             "description": "Admin only: Ban a user.",
             "examples": [
