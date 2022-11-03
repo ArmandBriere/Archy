@@ -20,7 +20,6 @@ jobs:
         with:
           workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/archy-pool/providers/archy-provider-github"
           service_account: "archyapi@archy-f06ed.iam.gserviceaccount.com"
-          token_format: "access_token"
 
       - uses: hashicorp/setup-terraform@v2
 
