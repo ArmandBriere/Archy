@@ -76,7 +76,7 @@ variable "http_functions" {
     }
     froge : {
       description = "Return a random froge from the server"
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "SendRandomFroge"
       timeout     = 15
       memory      = 256
@@ -92,7 +92,7 @@ variable "http_functions" {
     }
     go : {
       description = "Template of a function in Golang"
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "SendMessageWithReaction"
       timeout     = 15
       memory      = 256
@@ -100,7 +100,7 @@ variable "http_functions" {
     },
     ban : {
       description = "Admin only: Ban a user"
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "BanUser"
       timeout     = 15
       memory      = 256
@@ -116,7 +116,7 @@ variable "http_functions" {
     },
     leaderboard : {
       description = "Return the current server leaderboard url."
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "GetLeaderboardUrl"
       timeout     = 15
       memory      = 256
@@ -124,7 +124,7 @@ variable "http_functions" {
     },
     warn : {
       description = "Admin only: Warn a user and take action if needed."
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "WarnUser"
       timeout     = 15
       memory      = 256
@@ -132,7 +132,7 @@ variable "http_functions" {
     },
     listwarn : {
       description = "Admin only: List all warn of that server."
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "ListWarn"
       timeout     = 15
       memory      = 256
@@ -148,7 +148,7 @@ variable "http_functions" {
     },
     merch : {
       description = "Return the merch website."
-      runtime     = "go116"
+      runtime     = "go119"
       entry_point = "Merch"
       timeout     = 15
       memory      = 256
@@ -186,7 +186,7 @@ variable "pubsub_functions" {
     },
     privateMessage : {
       description   = "Send a private message to a user"
-      runtime       = "go116"
+      runtime       = "go119"
       entry_point   = "PrivateMessage"
       timeout       = 15
       memory        = 256
@@ -204,7 +204,7 @@ variable "pubsub_functions" {
     },
     channelMessage : {
       description   = "Send a message to a channel"
-      runtime       = "go116"
+      runtime       = "go119"
       entry_point   = "ChannelMessage"
       timeout       = 15
       memory        = 256
@@ -213,7 +213,7 @@ variable "pubsub_functions" {
     },
     cloudErrorLog : {
       description   = "Send the Google Cloud error log from pubsub to a specific channel"
-      runtime       = "go116"
+      runtime       = "go119"
       entry_point   = "UnmarshalPubsubMessage"
       timeout       = 15
       memory        = 256
@@ -222,7 +222,7 @@ variable "pubsub_functions" {
     },
     updateUserRole : {
       description   = "Add roles to a user based on his level"
-      runtime       = "go116"
+      runtime       = "go119"
       entry_point   = "UserRole"
       timeout       = 15
       memory        = 256
