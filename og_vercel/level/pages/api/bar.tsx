@@ -1,41 +1,48 @@
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 
-// http://localhost:3000/api/bar?username=Hannibal119&rank=540&level=62&avatar_url=135048445097410560%2Fc71476c9a123cb79d1859687792bf9c3&exp_toward_next_level=432&level_exp_needed=1000
-
 export const config = {
   runtime: "experimental-edge",
 };
 
-function kFormatter(num: number) {
+function kFormatter(num: number): string {
+  // Format a number into a string with k
   return Math.abs(num) > 999
     ? Math.sign(num) * +(Math.abs(num) / 1000).toFixed(1) + "k"
-    : Math.sign(num) * Math.abs(num);
+    : Math.sign(num) * Math.abs(num) + "";
 }
 
 export default function handler(req: NextRequest) {
+  // Handle the http requests.
+  // Generates the image
   try {
     const searchParams = new URLSearchParams(req.nextUrl.search);
 
     const hasUsername = searchParams.has("username");
-    const username = hasUsername
-      ? searchParams.get("username")
-      : "Who are you?";
+    const username = hasUsername ? searchParams.get("username") : undefined;
 
     const hasAvatarUrl = searchParams.has("avatar_url");
-    const avatarUrl = hasAvatarUrl ? searchParams.get("avatar_url") : "...";
+    const avatarUrl = hasAvatarUrl ? searchParams.get("avatar_url") : undefined;
 
     const hasRank = searchParams.has("rank");
-    const rank = hasRank ? searchParams.get("rank") : "999";
+    const rank = hasRank ? searchParams.get("rank") : undefined;
 
     const hasLevel = searchParams.has("level");
-    const level = hasLevel ? searchParams.get("level") : "0";
+    const level = hasLevel ? searchParams.get("level") : undefined;
 
     const hasExp = searchParams.has("exp_toward_next_level");
-    const exp = hasExp ? searchParams.get("exp_toward_next_level") : "0";
+    const exp = hasExp ? searchParams.get("exp_toward_next_level") : undefined;
 
     const hasExpNeeded = searchParams.has("level_exp_needed");
-    const expNeeded = hasExpNeeded ? searchParams.get("level_exp_needed") : "0";
+    const expNeeded = hasExpNeeded
+      ? searchParams.get("level_exp_needed")
+      : undefined;
+
+    if (
+      [username, avatarUrl, rank, level, exp, expNeeded].includes(undefined)
+    ) {
+      throw Error("Missing parameters");
+    }
 
     let percent = (+exp! / +expNeeded!) * 100;
     let percentValue = +percent! > 6 ? percent : 6;
@@ -244,8 +251,13 @@ export default function handler(req: NextRequest) {
     );
   } catch (e: any) {
     console.log(`${e.message}`);
-    return new Response(`Failed to generate the image`, {
-      status: 500,
-    });
+    return new ImageResponse(
+      (
+        <div style={{ display: "flex", background: "transparent" }}>
+          <img src="https://cdn.discordapp.com/emojis/1022875335697629246.png" />
+        </div>
+      ),
+      { width: 128, height: 128 }
+    );
   }
 }
