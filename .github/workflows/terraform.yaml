@@ -1,13 +1,12 @@
 name: Deploy with terraform
 on: [workflow_dispatch]
 
-permissions:
-  pull-requests: write
-  contents: "read"
-  id-token: "write"
-
 jobs:
   build:
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     defaults:
       run:
