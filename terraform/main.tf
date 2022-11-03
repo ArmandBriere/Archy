@@ -33,7 +33,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     hello : {
       description = "Simple hello"
       runtime     = "python39"
@@ -41,7 +41,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     java : {
       description = "Template of a function in Java"
       runtime     = "java17"
@@ -49,7 +49,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     js : {
       description = "Template of a function in javascript"
       runtime     = "nodejs16"
@@ -57,7 +57,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
-    },
+    }
     level : {
       description = "Return the level of a user"
       runtime     = "python39"
@@ -65,6 +65,14 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
+    }
+    levelfaster : {
+      description = "Return the level of a user using the NextJS route"
+      runtime     = "go119"
+      entry_point = "Level"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
     }
     froge : {
       description = "Return a random froge from the server"
