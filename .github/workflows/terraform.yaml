@@ -19,8 +19,8 @@ jobs:
         uses: "google-github-actions/auth@v0"
         with:
           token_format: "access_token"
-          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/archy-pool/providers/archy-provider-github"
-          service_account: "archyapi@archy-f06ed.iam.gserviceaccount.com"
+          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: " my-service-account@archy-f06ed.iam.gserviceaccount.com"
 
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v0"
