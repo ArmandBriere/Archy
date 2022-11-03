@@ -21,6 +21,12 @@ jobs:
           workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/archy-pool/providers/archy-provider-github"
           service_account: "archyapi@archy-f06ed.iam.gserviceaccount.com"
 
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v0"
+
+      - name: "List buckets"
+        run: "gcloud storage ls"
+
       - uses: hashicorp/setup-terraform@v2
 
       - name: Terraform fmt
