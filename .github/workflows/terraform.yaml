@@ -3,6 +3,8 @@ on: [workflow_dispatch]
 
 permissions:
   pull-requests: write
+  contents: "read"
+  id-token: "write"
 
 jobs:
   build:
@@ -11,7 +13,15 @@ jobs:
       run:
         working-directory: ./terraform
     steps:
-      - uses: actions/checkout@v3
+      - uses: "actions/checkout@v3"
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/archy-pool/providers/archy-provider-github"
+          service_account: "archyapi@archy-f06ed.iam.gserviceaccount.com"
+
       - uses: hashicorp/setup-terraform@v2
 
       - name: Terraform fmt
@@ -22,21 +32,15 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
         continue-on-error: true
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
