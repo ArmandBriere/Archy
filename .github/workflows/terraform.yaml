@@ -1,10 +1,5 @@
 name: Deploy with terraform
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
-      
+on: [workflow_dispatch]
 
 permissions:
   pull-requests: write
