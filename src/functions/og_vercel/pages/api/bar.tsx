@@ -1,6 +1,8 @@
 import { ImageResponse } from "@vercel/og";
 import { NextRequest } from "next/server";
 
+// http://localhost:3000/api/bar?username=Hannibal119&avatar_url=135048445097410560%2Fc71476c9a123cb79d1859687792bf9c3&rank=1&level=62&exp_toward_next_level=33&level_exp_needed=550&exp=10
+
 export const config = {
   runtime: "experimental-edge",
 };
@@ -10,6 +12,50 @@ function kFormatter(num: number): string {
   return Math.abs(num) > 999
     ? Math.sign(num) * +(Math.abs(num) / 1000).toFixed(1) + "k"
     : Math.sign(num) * Math.abs(num) + "";
+}
+
+function getRandomFroge(): String {
+  const froges = [
+    "bonkfroge.png",
+    "froge.png",
+    "frogeangry.png",
+    "frogeangryshaking.gif",
+    "frogebonk.png",
+    "frogechicken.gif",
+    "frogedetective.png",
+    "frogefr.png",
+    "frogehacker.png",
+    "frogeheart.png",
+    "frogeking.png",
+    "frogelove.png",
+    "frogeparty.png",
+    "frogepeek.png",
+    "frogepopcorn.gif",
+    "frogepopcorn.png",
+    "frogepuke.png",
+    "frogesad.png",
+    "frogeshh.png",
+    "frogesilly.gif",
+    "frogesip.png",
+    "frogesith.png",
+    "frogesleep.png",
+    "frogesmile.png",
+    "frogestonks.png",
+    "frogestudy.png",
+    "frogesuspicious.png",
+    "frogethink.png",
+    "frogeyoda.png",
+    "lovefroge.png",
+    "noodlefroge.png",
+    "partyfroge.png",
+    "policefroge.png",
+    "popcornfroge.png",
+    "popefroge.png",
+    "thinkfroge.png",
+    "yodafroge.png",
+  ];
+
+  return froges[Math.floor(Math.random() * froges.length)];
 }
 
 export default function handler(req: NextRequest) {
@@ -49,6 +95,8 @@ export default function handler(req: NextRequest) {
 
     const expFormatted = kFormatter(+exp!);
     const expNeededFormatted = kFormatter(+expNeeded!);
+
+    let randomFroge = `https://storage.googleapis.com/froge-public-bucket/${getRandomFroge()}`;
 
     return new ImageResponse(
       (
@@ -129,7 +177,7 @@ export default function handler(req: NextRequest) {
                   borderRadius: "25px",
                   opacity: "0.3",
                 }}
-                src="https://storage.googleapis.com/froge-public-bucket/archy.jpg"
+                src={`${randomFroge}`}
               />
 
               <div
