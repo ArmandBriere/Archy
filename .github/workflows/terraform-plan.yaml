@@ -1,42 +1,49 @@
-name: Deploy with terraform
-on: [workflow_dispatch]
-
-permissions:
-  pull-requests: write
+name: Run terraform plan
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  plan:
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./terraform
     steps:
-      - uses: actions/checkout@v3
+      - uses: "actions/checkout@v3"
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          token_format: "access_token"
+          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/github-actions-terraform-pool/providers/github-actions-provider"
+          service_account: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
+
       - uses: hashicorp/setup-terraform@v2
 
-      - name: Terraform fmt
+      - name: Terraform lint
         id: fmt
         run: terraform fmt -check
-        continue-on-error: true
 
       - name: Terraform Init
         id: init
         run: terraform init
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secret.GOOGLE_APPLICATION_CREDENTIALS}}
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secret.GOOGLE_APPLICATION_CREDENTIALS}}
 
       - name: Terraform Plan
         id: plan
         run: terraform plan -no-color
         continue-on-error: true
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{secret.GOOGLE_APPLICATION_CREDENTIALS}}
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'

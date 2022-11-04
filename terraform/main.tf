@@ -35,7 +35,7 @@ variable "http_functions" {
       secrets     = []
     }
     hello : {
-      description = "Simple hello"
+      description = "Template of a function in Python"
       runtime     = "python39"
       entry_point = "hello"
       timeout     = 15
@@ -51,7 +51,7 @@ variable "http_functions" {
       secrets     = []
     }
     js : {
-      description = "Template of a function in javascript"
+      description = "Template of a function in Javascript"
       runtime     = "nodejs16"
       entry_point = "js"
       timeout     = 15
@@ -67,7 +67,7 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     }
     levelfaster : {
-      description = "Return the level of a user using the NextJS route"
+      description = "Return the level of a user using the NextJS function"
       runtime     = "go119"
       entry_point = "Level"
       timeout     = 15
@@ -107,7 +107,7 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     }
     help : {
-      description = "Describe all active command."
+      description = "Describe all active commands"
       runtime     = "python39"
       entry_point = "help"
       timeout     = 15
@@ -115,7 +115,7 @@ variable "http_functions" {
       secrets     = []
     },
     leaderboard : {
-      description = "Return the current server leaderboard url."
+      description = "Return the leaderboard of the server"
       runtime     = "go119"
       entry_point = "GetLeaderboardUrl"
       timeout     = 15
@@ -123,7 +123,7 @@ variable "http_functions" {
       secrets     = []
     },
     warn : {
-      description = "Admin only: Warn a user and take action if needed."
+      description = "Admin only: Warn a user and take action if needed"
       runtime     = "go119"
       entry_point = "WarnUser"
       timeout     = 15
@@ -131,7 +131,7 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     },
     listwarn : {
-      description = "Admin only: List all warn of that server."
+      description = "Admin only: List all warn of that server"
       runtime     = "go119"
       entry_point = "ListWarn"
       timeout     = 15
@@ -139,7 +139,7 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     },
     answer : {
-      description = "Return a random answer based on the game '8 Ball'."
+      description = "Return a random answer based on the game '8 Ball'"
       runtime     = "python39"
       entry_point = "answer"
       timeout     = 15
@@ -147,7 +147,7 @@ variable "http_functions" {
       secrets     = []
     },
     merch : {
-      description = "Return the merch website."
+      description = "Return the merch website"
       runtime     = "go119"
       entry_point = "Merch"
       timeout     = 15
