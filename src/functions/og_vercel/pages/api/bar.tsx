@@ -129,7 +129,7 @@ export default function handler(req: NextRequest) {
                   borderRadius: "25px",
                   opacity: "0.3",
                 }}
-                src="https://cdn.discordapp.com/emojis/1022875335697629246.png"
+                src="https://storage.googleapis.com/froge-public-bucket/archy.jpg"
               />
 
               <div
@@ -254,10 +254,10 @@ export default function handler(req: NextRequest) {
     return new ImageResponse(
       (
         <div style={{ display: "flex", background: "transparent" }}>
-          <img src="https://cdn.discordapp.com/emojis/1022875335697629246.png" />
+          <img src="https://storage.googleapis.com/froge-public-bucket/archy.jpg" />
         </div>
       ),
-      { width: 128, height: 128 }
+      { width: 448, height: 448 }
     );
   }
 }
