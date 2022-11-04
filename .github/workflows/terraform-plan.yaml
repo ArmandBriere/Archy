@@ -1,4 +1,4 @@
-name: Deploy with terraform
+name: Run terraform plan
 on:
   workflow_dispatch:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  plan:
     permissions:
       id-token: write
       contents: read
