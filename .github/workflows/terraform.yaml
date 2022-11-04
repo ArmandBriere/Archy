@@ -1,5 +1,9 @@
 name: Deploy with terraform
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -24,10 +28,9 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v2
 
-      - name: Terraform fmt
+      - name: Terraform lint
         id: fmt
         run: terraform fmt -check
-        continue-on-error: true
 
       - name: Terraform Init
         id: init
