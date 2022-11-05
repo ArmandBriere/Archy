@@ -230,6 +230,35 @@ async def on_message(message: message_type) -> None:
         await ctx.send("> Who Dares Summon Me?")
 
 
+async def treat_command(ctx: Context, command_name: str, data: Dict) -> None:
+    if not is_active_command(data["server_id"], command_name):
+        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
+        return
+
+    function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+    google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+
+    response: Response = requests.post(
+        function_path,
+        headers={
+            "Authorization": f"Bearer {google_auth_token}",
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(data),
+    )
+
+    if response.status_code == 200 and response.content:
+        if re.search("https://*", response.content.decode("utf-8")):
+            await ctx.send(response.content.decode("utf-8"))
+        else:
+            embed: Embed = Embed(
+                description=response.content.decode("utf-8"),
+                color=0x04AA6D,
+            )
+            await ctx.send(embed=embed)
+    increment_command_count(data["server_id"], command_name)
+
+
 @bot.SlashCommand.slash_command(description="answers your question")
 async def answer(ctx: Context, question: str) -> None:
 
@@ -241,36 +270,13 @@ async def answer(ctx: Context, question: str) -> None:
         "server_name": str(ctx.message.guild.name),
         "user_id": str(ctx.author.id),
         "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [question.split(" ")],
     }
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
-        data["channel_id"] = str(ctx.channel.id)
-        data["message_id"] = str(ctx.message.id)
-        data["mentions"] = [str(user_id) for user_id in ctx.message.raw_mentions]
-        data["params"] = [question]
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="ban a user")
@@ -279,41 +285,18 @@ async def ban(ctx: Context, user: Option(User, "user to ban", required=True)) ->
     server_id = str(ctx.guild.id)
     command_name = "ban"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user.id)],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user.id)],
-            "params": [str(user.id)],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="describe a user")
@@ -322,41 +305,18 @@ async def describe(ctx: Context, user: Option(User, "user to describe", required
     server_id = str(ctx.guild.id)
     command_name = "kick"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user.id)],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user.id)],
-            "params": [str(user.id)],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="request a froge")
@@ -365,41 +325,18 @@ async def froge(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "froge"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="request a gif")
@@ -408,41 +345,18 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=False
     server_id = str(ctx.guild.id)
     command_name = "gif"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [query.split(" ")],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [query.split(" ")],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="go")
@@ -451,41 +365,18 @@ async def go_(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "go"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="hello! :)")
@@ -494,41 +385,18 @@ async def hello(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "hello"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="Get help about the bot")
@@ -537,41 +405,18 @@ async def help_(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "help"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="java")
@@ -580,41 +425,18 @@ async def java(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "java"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="js")
@@ -623,41 +445,18 @@ async def js_(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "js"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="show the leaderboard")
@@ -666,41 +465,18 @@ async def leaderboard(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "leaderboard"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="show your level")
@@ -709,41 +485,18 @@ async def level(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "level"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="list warnings")
@@ -752,41 +505,18 @@ async def listwarn(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "listwarn"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="show merch info")
@@ -795,41 +525,18 @@ async def merch(ctx: Context) -> None:
     server_id = str(ctx.guild.id)
     command_name = "merch"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-            "params": [],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 @bot.SlashCommand.slash_command(description="warn user")
@@ -840,41 +547,18 @@ async def warn(
     server_id = str(ctx.guild.id)
     command_name = "warn"
 
-    if not is_active_command(server_id, command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-    else:
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user.id)],
+        "params": [comment.split(" ")],
+    }
 
-        data = {
-            "server_id": server_id,
-            "server_name": str(ctx.message.guild.name),
-            "user_id": str(ctx.author.id),
-            "username": str(ctx.author.name),
-            "channel_id": str(ctx.channel.id),
-            "message_id": str(ctx.message.id),
-            "mentions": [str(user.id)],
-            "params": [comment.split(" ")],
-        }
-
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
+    await treat_command(ctx, command_name, data)
 
 
 if __name__ == "__main__":
