@@ -229,6 +229,7 @@ async def on_message(message: message_type) -> None:
     if message.content == f"<@{bot.user.id}>":
         await ctx.send("> Who Dares Summon Me?")
 
+
 @bot.SlashCommand.slash_command(description="answers your question")
 async def answer(ctx: Context, question: str) -> None:
 
@@ -270,7 +271,7 @@ async def answer(ctx: Context, question: str) -> None:
                     color=0x04AA6D,
                 )
                 await ctx.send(embed=embed)
-            
+
 
 if __name__ == "__main__":
 
