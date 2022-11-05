@@ -703,6 +703,49 @@ async def leaderboard(ctx: Context) -> None:
                 await ctx.send(embed=embed)
 
 
+@bot.SlashCommand.slash_command(description="level")
+async def level(ctx: Context) -> None:
+
+    server_id = str(ctx.guild.id)
+    command_name = "level"
+
+    if not is_active_command(server_id, command_name):
+        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
+    else:
+        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+
+        data = {
+            "server_id": server_id,
+            "server_name": str(ctx.message.guild.name),
+            "user_id": str(ctx.author.id),
+            "username": str(ctx.author.name),
+            "channel_id": str(ctx.channel.id),
+            "message_id": str(ctx.message.id),
+            "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+            "params": [],
+        }
+
+        response: Response = requests.post(
+            function_path,
+            headers={
+                "Authorization": f"Bearer {google_auth_token}",
+                "Content-Type": "application/json",
+            },
+            data=json.dumps(data),
+        )
+
+        if response.status_code == 200 and response.content:
+            if re.search("https://*", response.content.decode("utf-8")):
+                await ctx.send(response.content.decode("utf-8"))
+            else:
+                embed: Embed = Embed(
+                    description=response.content.decode("utf-8"),
+                    color=0x04AA6D,
+                )
+                await ctx.send(embed=embed)
+
+
 if __name__ == "__main__":
 
     cred = credentials.Certificate(KEY_FILE)
