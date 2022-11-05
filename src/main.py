@@ -259,7 +259,7 @@ async def treat_command(ctx: Context, command_name: str, data: Dict) -> None:
     increment_command_count(data["server_id"], command_name)
 
 
-@bot.SlashCommand.slash_command(description="answers your question")
+@bot.slash_command(description="answers your question")
 async def answer(ctx: Context, question: str) -> None:
 
     server_id = str(ctx.guild.id)
@@ -279,7 +279,7 @@ async def answer(ctx: Context, question: str) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="ban a user")
+@bot.slash_command(description="ban a user")
 async def ban(ctx: Context, user: Option(User, "user to ban", required=True)) -> None:
 
     server_id = str(ctx.guild.id)
@@ -299,7 +299,7 @@ async def ban(ctx: Context, user: Option(User, "user to ban", required=True)) ->
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="describe a user")
+@bot.slash_command(description="describe a user")
 async def describe(ctx: Context, user: Option(User, "user to describe", required=False)) -> None:
 
     server_id = str(ctx.guild.id)
@@ -319,7 +319,7 @@ async def describe(ctx: Context, user: Option(User, "user to describe", required
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="request a froge")
+@bot.slash_command(description="request a froge")
 async def froge(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -339,7 +339,7 @@ async def froge(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="request a gif")
+@bot.slash_command(description="request a gif")
 async def gif(ctx: Context, query: Option(str, "query to search", required=False)) -> None:
 
     server_id = str(ctx.guild.id)
@@ -359,7 +359,7 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=False
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="go")
+@bot.slash_command(description="go")
 async def go_(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -379,7 +379,7 @@ async def go_(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="hello! :)")
+@bot.slash_command(description="hello! :)")
 async def hello(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -399,7 +399,7 @@ async def hello(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="Get help about the bot")
+@bot.slash_command(description="Get help about the bot")
 async def help_(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -419,7 +419,7 @@ async def help_(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="java")
+@bot.slash_command(description="java")
 async def java(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -439,7 +439,7 @@ async def java(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="js")
+@bot.slash_command(description="js")
 async def js_(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -459,7 +459,7 @@ async def js_(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="show the leaderboard")
+@bot.slash_command(description="show the leaderboard")
 async def leaderboard(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -479,7 +479,7 @@ async def leaderboard(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="show your level")
+@bot.slash_command(description="show your level")
 async def level(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -499,7 +499,7 @@ async def level(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="list warnings")
+@bot.slash_command(description="list warnings")
 async def listwarn(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -519,7 +519,7 @@ async def listwarn(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="show merch info")
+@bot.slash_command(description="show merch info")
 async def merch(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
@@ -539,7 +539,7 @@ async def merch(ctx: Context) -> None:
     await treat_command(ctx, command_name, data)
 
 
-@bot.SlashCommand.slash_command(description="warn user")
+@bot.slash_command(description="warn user")
 async def warn(
     ctx: Context, user: Option(User, "user to warn", required=True), comment: Option(str, "comment", required=False)
 ) -> None:
