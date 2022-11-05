@@ -360,7 +360,7 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=False
 
 
 @bot.slash_command(description="go")
-async def go_(ctx: Context) -> None:
+async def go(ctx: Context) -> None: # pylint: disable=invalid-name
 
     server_id = str(ctx.guild.id)
     command_name = "go"
@@ -400,7 +400,7 @@ async def hello(ctx: Context) -> None:
 
 
 @bot.slash_command(description="Get help about the bot")
-async def help_(ctx: Context) -> None:
+async def help(ctx: Context) -> None:
 
     server_id = str(ctx.guild.id)
     command_name = "help"
@@ -440,7 +440,7 @@ async def java(ctx: Context) -> None:
 
 
 @bot.slash_command(description="js")
-async def js_(ctx: Context) -> None:
+async def js(ctx: Context) -> None: # pylint: disable=invalid-name
 
     server_id = str(ctx.guild.id)
     command_name = "js"
