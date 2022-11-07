@@ -20,7 +20,7 @@ type PubSubMessage struct {
 	Data []byte `json:"data"`
 }
 
-// `json:"channel_id"`
+// Payload expected format
 type Payload struct {
 	UserId     string `json:"user_id"`
 	Username   string `json:"username"`
@@ -36,10 +36,9 @@ type FirestoreUser struct {
 	AvatarUrl          string `firestore:"avatar_url"`
 	ExpTowardNextLevel int    `firestore:"exp_toward_next_level"`
 	TotalExp           int    `firestore:"total_exp"`
-	LevelExpNeeded     float64
 }
 
-// Data format expected by the 'private_message_discord' function
+// Expected fromat by the 'private_message_discord' function
 type PubsubDataPrivateMessage struct {
 	UserId  string `json:"user_id"`
 	Message string `json:"message"`
@@ -157,8 +156,6 @@ func getAllUserInfo(payload Payload) FirestoreUser {
 		panic(err)
 	}
 
-	user.LevelExpNeeded = (5 * math.Pow(float64(user.Level), 2)) + (50 * float64(user.Level)) + 100
-
 	return user
 }
 
@@ -197,8 +194,10 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 		panic(err)
 	}
 
+	newLevel, newExpTowardNextLevel := getUserLevel(user.TotalExp + addedExp)
 	newUser := FirestoreUser{
-		Level: getUserLevel(user.TotalExp + addedExp),
+		Level:              newLevel,
+		ExpTowardNextLevel: newExpTowardNextLevel,
 	}
 
 	err = client.RunTransaction(ctx, func(ctx context.Context, tx *firestore.Transaction) error {
@@ -208,6 +207,7 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 			"avatar_url":             user.AvatarUrl,
 			"last_message_timestamp": time.Now().UTC().Format(DATETIME_FORMAT_EXAMPLE),
 			"level":                  newUser.Level,
+			"exp_toward_next_level":  newUser.ExpTowardNextLevel,
 		}, firestore.MergeAll)
 	})
 	if err != nil {
@@ -245,117 +245,17 @@ func sendPrivateMessage(userId string, message string) {
 	log.Printf("Message send to user, messageId: " + messageId)
 }
 
-func getUserLevel(userTotalExp int) int {
-	levels := []int{
-		100,
-		255,
-		475,
-		770,
-		1150,
-		1625,
-		2205,
-		2900,
-		3720,
-		4675,
-		5775,
-		7030,
-		8450,
-		10045,
-		11825,
-		13800,
-		15980,
-		18375,
-		20995,
-		23850,
-		26950,
-		30305,
-		33925,
-		37820,
-		42000,
-		46475,
-		51255,
-		56350,
-		61770,
-		67525,
-		73625,
-		80080,
-		86900,
-		94095,
-		101675,
-		109650,
-		118030,
-		126825,
-		136045,
-		145700,
-		155800,
-		166355,
-		177375,
-		188870,
-		200850,
-		213325,
-		226305,
-		239800,
-		253820,
-		268375,
-		283475,
-		299130,
-		315350,
-		332145,
-		349525,
-		367500,
-		386080,
-		405275,
-		425095,
-		445550,
-		466650,
-		488405,
-		510825,
-		533920,
-		557700,
-		582175,
-		607355,
-		633250,
-		659870,
-		687225,
-		715325,
-		744180,
-		773800,
-		804195,
-		835375,
-		867350,
-		900130,
-		933725,
-		968145,
-		1003400,
-		1039500,
-		1076455,
-		1114275,
-		1152970,
-		1192550,
-		1233025,
-		1274405,
-		1316700,
-		1359920,
-		1404075,
-		1449175,
-		1495230,
-		1542250,
-		1590245,
-		1639225,
-		1689200,
-		1740180,
-		1792175,
-		1845195,
-		1899250,
-	}
+// Return (userLevel, expTowardNextLevel)
+func getUserLevel(userTotalExp int) (int, int) {
 
-	var level int
-
-	for i, exp := range levels {
-		if userTotalExp < exp {
-			return i + 1
+	var total float64 = 0
+	level := 0
+	for {
+		expNeededToLevelUp := 5*(math.Pow(float64(level), 2)) + (50 * float64(level)) + 100
+		total += expNeededToLevelUp
+		if float64(userTotalExp) < total {
+			return level, int(total) - userTotalExp
 		}
+		level++
 	}
-
-	return level
 }
