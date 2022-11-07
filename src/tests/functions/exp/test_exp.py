@@ -10,7 +10,13 @@ from functions.exp.main import DATETIME_FORMAT, exp, send_message_to_user, updat
 
 MODULE_PATH = "functions.exp.main"
 
-GOOD_BODY = {"user_id": "123", "username": "Joe", "avatar_url": "url", "server_id": 123456789, "server_name": "Archy"}
+GOOD_BODY = {
+    "user_id": "123",
+    "username": "Joe",
+    "avatar_url": "url",
+    "server_id": 123456789,
+    "server_name": "Archy",
+}
 
 
 def get_good_db_value(param):  # pragma: no cover
@@ -117,20 +123,22 @@ def test_exp_level_up(b64_mock, random_mock, database_mock):
     assert len(database_mock().batch.mock_calls) == 6
 
 
+@patch(f"{MODULE_PATH}.datetime")
 @patch(f"{MODULE_PATH}.Client")
 @patch(f"{MODULE_PATH}.base64")
-def test_exp_new_user(b64_mock, database_mock):
+def test_exp_new_user(b64_mock, database_mock, datetime_mock):
     expected_set_value = {
         "total_exp": 0,
         "exp_toward_next_level": 0,
         "level": 0,
         "message_count": 0,
-        "last_message_timestamp": datetime.now().strftime(DATETIME_FORMAT),
+        "last_message_timestamp": 0,
         "username": GOOD_BODY["username"],
         "avatar_url": GOOD_BODY["avatar_url"],
     }
 
     b64_mock.b64decode().decode.return_value = json.dumps(GOOD_BODY)
+    datetime_mock.now().strftime.return_value = 0
 
     database_mock().collection().document().collection().document().get().exists = False
     database_mock().batch.return_value = MagicMock()
@@ -152,7 +160,10 @@ def test_send_message_to_user(publisher_mock):
 
     send_message_to_user(user_id, message)
 
-    assert publisher_mock().method_calls[0].args == ("archy-f06ed", "private_message_discord")
+    assert publisher_mock().method_calls[0].args == (
+        "archy-f06ed",
+        "private_message_discord",
+    )
     assert publisher_mock().method_calls[1][0] == "publish"
     assert publisher_mock().method_calls[1][1][1] == encoded_data
 

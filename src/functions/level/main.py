@@ -1,5 +1,5 @@
 import json
-from typing import Any, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import flask
 import functions_framework
@@ -63,7 +63,7 @@ def level(request: flask.Request) -> Tuple[str, int]:
     return ":|", 200
 
 
-def publish_generate_image(channel_id: str, payload) -> None:
+def publish_generate_image(channel_id: str, payload: Dict[str, Any]) -> None:
     """Publish image to generate_level_image."""
 
     project_id = "archy-f06ed"

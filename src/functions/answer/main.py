@@ -1,6 +1,7 @@
 import random
 from typing import Tuple
 
+import flask
 import functions_framework
 
 POSSIBLE_ANSWERS = [
@@ -28,7 +29,7 @@ POSSIBLE_ANSWERS = [
 
 
 @functions_framework.http
-def answer(_request) -> Tuple[str, int]:
+def answer(_request: flask.Request) -> Tuple[str, int]:
     """This is a function that returns a random answer from a predefined list based on 8ball."""
 
     return random.choice(POSSIBLE_ANSWERS), 200

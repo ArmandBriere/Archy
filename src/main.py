@@ -110,7 +110,7 @@ def send_message_to_channel(channel_id: str, message: str) -> None:
     publish_message(data, topic_id)
 
 
-def send_welcome_message(channel_id: str, username: str, avatar_url) -> None:
+def send_welcome_message(channel_id: str, username: str, avatar_url: str) -> None:
     """Publish message to generate_welcome_image."""
     topic_id = "generate_welcome_image"
     payload = {"username": username, "avatar_url": avatar_url}

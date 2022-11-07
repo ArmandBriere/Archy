@@ -38,6 +38,13 @@
             ]
         },
         {
+            "name": "java",
+            "description": "Send a message from Java.",
+            "examples": [
+                "!java"
+            ]
+        },
+        {
             "name": "js",
             "description": "Send a message from a JS bot instance.",
             "examples": [
@@ -64,6 +71,14 @@
             "examples": [
                 "!level",
                 "!level @user"
+            ]
+        },
+        {
+            "name": "levelfaster",
+            "description": "Return the level of the author or the mentioned user.",
+            "examples": [
+                "!levelfaster",
+                "!levelfaster @user"
             ]
         },
         {

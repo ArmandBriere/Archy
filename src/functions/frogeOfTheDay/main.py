@@ -5,7 +5,7 @@ import json
 import random
 from email.generator import Generator
 from io import BytesIO
-from typing import Any, List
+from typing import Any, List, Tuple
 
 import requests
 from google.cloud.firestore_v1.client import Client
@@ -17,7 +17,12 @@ from PIL import Image, ImageDraw, ImageFont
 IMAGE_FOLDER = "img/"
 
 
-def auto_scale_text_over_image(img: Image, text: str, shadow=(2, 2), shadow_color=(0, 0, 0)) -> Image:
+def auto_scale_text_over_image(
+    img: Image,
+    text: str,
+    shadow: Tuple[int, int] = (2, 2),
+    shadow_color: Tuple[int, int, int] = (0, 0, 0),
+) -> Image:
     """Resize image and add text over it."""
 
     width = 500
@@ -142,7 +147,7 @@ def publish_message_discord(channels: List[str], image_str: str = "") -> None:
         print(f"Published message to {topic_path}.")
 
 
-def publish_froge_of_the_day(_event, _context):
+def publish_froge_of_the_day(_event: Any, _context: Any) -> None:
     print("Start")
 
     channels = get_all_channels()

@@ -1,10 +1,11 @@
-from typing import Any, Optional
+from typing import Any, Optional, Tuple
 
+import flask
 import functions_framework
 
 
 @functions_framework.http
-def describe(request):
+def describe(request: flask.Request) -> Tuple[str, int]:
     """Describe the user in mentions or the author."""
 
     request_json: Optional[Any] = request.get_json(silent=True)

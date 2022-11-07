@@ -2,6 +2,7 @@ import base64
 import json
 import random
 from datetime import datetime
+from typing import Tuple
 
 from google.cloud.firestore import Increment
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
@@ -17,7 +18,7 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 TMP_FILE_PATH = "/tmp/tmp.json"
 
 
-def exp(event: dict, _context: Context):
+def exp(event: dict, _context: Context) -> Tuple[str, int]:
     """Increase the user experience on firestore."""
 
     pubsub_message = json.loads(base64.b64decode(event["data"]).decode("utf-8"))
@@ -73,10 +74,14 @@ def exp(event: dict, _context: Context):
                 print(f"Update: level up user {user_id} to level {level+1} in {server_name}")
 
                 batch.update(doc_ref, ({"level": Increment(1)}))
-                batch.update(doc_ref, ({"exp_toward_next_level": added_exp - exp_needed_to_level_up}))
+                batch.update(
+                    doc_ref,
+                    ({"exp_toward_next_level": added_exp - exp_needed_to_level_up}),
+                )
 
                 send_message_to_user(
-                    user_id, f"I'm so proud of you... You made it to level {level+1} in {server_name}!"
+                    user_id,
+                    f"I'm so proud of you... You made it to level {level+1} in {server_name}!",
                 )
                 update_user_roles(server_id, user_id)
 
