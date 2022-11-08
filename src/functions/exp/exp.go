@@ -51,6 +51,7 @@ func (m *MissingData) Error() string {
 	return "Missing data from pubsub payload"
 }
 
+const PROJECT_ID = "archy-f06ed"
 const DATETIME_FORMAT_EXAMPLE = "2006-01-02 15:04:05"
 
 // Increase the user experience on firestore
@@ -111,7 +112,7 @@ func verifyTimestamp(lastMessageTimestamp string) bool {
 // Instantiate the Firestore client and context
 func getFirestoreClientCtx() (context.Context, *firestore.Client) {
 	firestoreCtx := context.Background()
-	conf := &firebase.Config{ProjectID: "archy-f06ed"}
+	conf := &firebase.Config{ProjectID: PROJECT_ID}
 	app, err := firebase.NewApp(firestoreCtx, conf)
 
 	if err != nil {
@@ -185,7 +186,6 @@ func createUser(payload Payload) {
 
 // Add exp to user
 func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
-
 	rand.Seed(time.Now().UnixNano())
 
 	addedExp := rand.Intn(75-45) + 45
@@ -222,7 +222,7 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 // Send a private message to the user to inform him
 func sendPrivateMessage(userId string, message string) {
 	firestoreCtx := context.Background()
-	client, err := pubsub.NewClient(firestoreCtx, "archy-f06ed")
+	client, err := pubsub.NewClient(firestoreCtx, PROJECT_ID)
 	if err != nil {
 		panic(err)
 	}
@@ -256,7 +256,7 @@ func getUserLevel(userTotalExp int) (int, int) {
 		expNeededToLevelUp := 5*(math.Pow(float64(level), 2)) + (50 * float64(level)) + 100
 		total += expNeededToLevelUp
 		if float64(userTotalExp) < total {
-			return level, int(total) - userTotalExp
+			return level, int(userTotalExp) + int(expNeededToLevelUp) - int(total)
 		}
 		level++
 	}

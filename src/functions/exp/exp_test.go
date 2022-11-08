@@ -59,35 +59,43 @@ func TestGetUserLevel(t *testing.T) {
 	}{
 		{
 			in:   0,
-			want: []int{0, 100},
+			want: []int{0, 0},
+		},
+		{
+			in:   50,
+			want: []int{0, 50},
 		},
 		{
 			in:   100,
-			want: []int{1, 155},
+			want: []int{1, 0},
+		},
+		{
+			in:   200,
+			want: []int{1, 100},
 		},
 		{
 			in:   10044,
-			want: []int{13, 1},
+			want: []int{13, 1594},
 		},
 		{
 			in:   10045,
-			want: []int{14, 1780},
+			want: []int{14, 0},
 		},
 		{
 			in:   46474,
-			want: []int{25, 1},
+			want: []int{25, 4474},
 		},
 		{
 			in:   46475,
-			want: []int{26, 4780},
+			want: []int{26, 0},
 		},
 		{
-			in:   283475,
-			want: []int{51, 15655},
+			in:   284675,
+			want: []int{51, 1200},
 		},
 		{
 			in:   660000,
-			want: []int{69, 27225},
+			want: []int{69, 130},
 		},
 	}
 
@@ -96,10 +104,10 @@ func TestGetUserLevel(t *testing.T) {
 			first, second := exp.ExportGetUserLevel(tt.in)
 
 			if !reflect.DeepEqual(first, tt.want[0]) {
-				t.Errorf("exp.getUserLevel(%d)=%#v; want %v", tt.in, first, tt.want[0])
+				t.Errorf("exp.getUserLevel(%d)= level %d; want level %v", tt.in, first, tt.want[0])
 			}
 			if !reflect.DeepEqual(second, tt.want[1]) {
-				t.Errorf("exp.getUserLevel(%d)=%#v; want %v", tt.in, second, tt.want[1])
+				t.Errorf("exp.getUserLevel(%d)= exp %d; want exp %v", tt.in, second, tt.want[1])
 			}
 		})
 	}
