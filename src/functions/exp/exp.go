@@ -69,7 +69,7 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 		return &MissingData{}
 	}
 
-	firestoreCtx, client := getFirestoreClientCtx(payload)
+	firestoreCtx, client := getFirestoreClientCtx()
 	_, err = client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(payload.UserId).Get(firestoreCtx)
 	if err != nil {
 		createUser(payload)
@@ -109,7 +109,7 @@ func verifyTimestamp(payload Payload) bool {
 }
 
 // Instantiate the Firestore client and context
-func getFirestoreClientCtx(payload Payload) (context.Context, *firestore.Client) {
+func getFirestoreClientCtx() (context.Context, *firestore.Client) {
 	firestoreCtx := context.Background()
 	conf := &firebase.Config{ProjectID: "archy-f06ed"}
 	app, err := firebase.NewApp(firestoreCtx, conf)
@@ -128,7 +128,7 @@ func getFirestoreClientCtx(payload Payload) (context.Context, *firestore.Client)
 
 // Get last message timestamp of user
 func getLastMessageTimestamp(payload Payload) string {
-	firestoreCtx, client := getFirestoreClientCtx(payload)
+	firestoreCtx, client := getFirestoreClientCtx()
 	userRef, err := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(payload.UserId).Get(firestoreCtx)
 	if err != nil {
 		panic(err)
@@ -144,7 +144,7 @@ func getLastMessageTimestamp(payload Payload) string {
 
 // Get the user info from Firestore
 func getAllUserInfo(payload Payload) FirestoreUser {
-	firestoreCtx, client := getFirestoreClientCtx(payload)
+	firestoreCtx, client := getFirestoreClientCtx()
 
 	userRef, err := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(payload.UserId).Get(firestoreCtx)
 	if err != nil {
@@ -164,7 +164,7 @@ func getAllUserInfo(payload Payload) FirestoreUser {
 func createUser(payload Payload) {
 	fmt.Println("Create new user " + payload.UserId)
 
-	firestoreCtx, client := getFirestoreClientCtx(payload)
+	firestoreCtx, client := getFirestoreClientCtx()
 	userRef := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(payload.UserId)
 
 	err := client.RunTransaction(firestoreCtx, func(ctx context.Context, tx *firestore.Transaction) error {
@@ -190,7 +190,7 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 
 	addedExp := rand.Intn(75-45) + 45
 	fmt.Println("Added exp " + strconv.Itoa(addedExp))
-	ctx, client := getFirestoreClientCtx(payload)
+	ctx, client := getFirestoreClientCtx()
 	userRef, err := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(payload.UserId).Get(ctx)
 	if err != nil {
 		panic(err)
