@@ -177,12 +177,12 @@ variable "pubsub_functions" {
   default = {
     exp : {
       description   = "Increase the experience of a user"
-      runtime       = "python39"
+      runtime       = "go119"
       entry_point   = "exp"
       timeout       = 15
       memory        = 256
       trigger_event = "exp_discord"
-      secrets       = ["DISCORD_TOKEN"]
+      secrets       = []
     },
     privateMessage : {
       description   = "Send a private message to a user"
