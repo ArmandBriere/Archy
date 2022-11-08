@@ -108,6 +108,7 @@ func verifyTimestamp(payload Payload) bool {
 	return true
 }
 
+// Instantiate the Firestore client and context
 func getFirestoreClientCtx(payload Payload) (context.Context, *firestore.Client) {
 	firestoreCtx := context.Background()
 	conf := &firebase.Config{ProjectID: "archy-f06ed"}
@@ -159,6 +160,7 @@ func getAllUserInfo(payload Payload) FirestoreUser {
 	return user
 }
 
+// Create the user in firestore
 func createUser(payload Payload) {
 	fmt.Println("Create new user " + payload.UserId)
 
