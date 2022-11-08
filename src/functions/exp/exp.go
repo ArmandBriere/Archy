@@ -75,7 +75,9 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 		createUser(payload)
 	}
 
-	if verifyTimestamp(payload) {
+	lastMessageTimestamp := getLastMessageTimestamp(payload)
+
+	if verifyTimestamp(lastMessageTimestamp) {
 		user := getAllUserInfo(payload)
 
 		newUser := addExpToUser(user, payload)
@@ -89,9 +91,7 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 }
 
 // Verify that last message was send more than one minute ago
-func verifyTimestamp(payload Payload) bool {
-	lastMessageTimestamp := getLastMessageTimestamp(payload)
-
+func verifyTimestamp(lastMessageTimestamp string) bool {
 	timeStamp, err := time.Parse(DATETIME_FORMAT_EXAMPLE, lastMessageTimestamp)
 
 	if err != nil {
@@ -101,7 +101,7 @@ func verifyTimestamp(payload Payload) bool {
 	timeDiff := time.Since(timeStamp)
 
 	if timeDiff.Seconds() < 60 {
-		fmt.Print("Exit: Too soon - " + timeDiff.String())
+		fmt.Println("Exit: Too soon - " + timeDiff.String())
 		return false
 	}
 
@@ -244,7 +244,7 @@ func sendPrivateMessage(userId string, message string) {
 		panic(err)
 	}
 
-	log.Printf("Message send to user, messageId: " + messageId)
+	log.Println("Message send to user, messageId: " + messageId)
 }
 
 // Return (userLevel, expTowardNextLevel)

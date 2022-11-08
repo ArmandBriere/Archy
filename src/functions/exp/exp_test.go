@@ -3,9 +3,52 @@ package exp_test
 import (
 	"reflect"
 	"testing"
+	"time"
 
 	exp "exp.com/cloudfunction"
 )
+
+func TestVerifyTimestamp(t *testing.T) {
+	tests := []struct {
+		text string
+		in   string
+		want bool
+	}{
+		{
+			text: "Now",
+			in:   time.Now().UTC().Format(exp.DATETIME_FORMAT_EXAMPLE),
+			want: false,
+		},
+		{
+			text: "30 sec ago",
+			in:   time.Now().Add(-time.Second * 30).UTC().Format(exp.DATETIME_FORMAT_EXAMPLE),
+			want: false,
+		},
+		{
+			text: "59 sec ago",
+			in:   time.Now().Add(-time.Second * 59).UTC().Format(exp.DATETIME_FORMAT_EXAMPLE),
+			want: false,
+		},
+		{
+			text: "60 sec ago",
+			in:   time.Now().Add(-time.Second * 60).UTC().Format(exp.DATETIME_FORMAT_EXAMPLE),
+			want: true,
+		},
+		{
+			text: "61 sec ago",
+			in:   time.Now().Add(-time.Second * 61).UTC().Format(exp.DATETIME_FORMAT_EXAMPLE),
+			want: true,
+		},
+	}
+
+	for _, tt := range tests {
+		got := exp.ExportVerifyTimestamp(tt.in)
+
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("exp.verifyTimestamp(%s)=%#v; want %v", tt.text, got, tt.want)
+		}
+	}
+}
 
 // Test that the user level match total exp.
 func TestGetUserLevel(t *testing.T) {
@@ -53,10 +96,10 @@ func TestGetUserLevel(t *testing.T) {
 			first, second := exp.ExportGetUserLevel(tt.in)
 
 			if !reflect.DeepEqual(first, tt.want[0]) {
-				t.Errorf("exp.verifyTimestamp(%d)=%#v; want %v", tt.in, first, tt.want[0])
+				t.Errorf("exp.getUserLevel(%d)=%#v; want %v", tt.in, first, tt.want[0])
 			}
 			if !reflect.DeepEqual(second, tt.want[1]) {
-				t.Errorf("exp.verifyTimestamp(%d)=%#v; want %v", tt.in, second, tt.want[1])
+				t.Errorf("exp.getUserLevel(%d)=%#v; want %v", tt.in, second, tt.want[1])
 			}
 		})
 	}
