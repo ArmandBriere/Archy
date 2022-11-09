@@ -78,7 +78,7 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 
 	lastMessageTimestamp := getLastMessageTimestamp(payload)
 
-	if verifyTimestamp(lastMessageTimestamp) {
+	if VerifyTimestamp(lastMessageTimestamp) {
 		user := getAllUserInfo(payload)
 
 		newUser := addExpToUser(user, payload)
@@ -92,7 +92,7 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 }
 
 // Verify that last message was send more than one minute ago
-func verifyTimestamp(lastMessageTimestamp string) bool {
+func VerifyTimestamp(lastMessageTimestamp string) bool {
 	timeStamp, err := time.Parse(DATETIME_FORMAT_EXAMPLE, lastMessageTimestamp)
 
 	if err != nil {
@@ -196,7 +196,7 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 		panic(err)
 	}
 
-	newLevel, newExpTowardNextLevel := getUserLevel(user.TotalExp + addedExp)
+	newLevel, newExpTowardNextLevel := GetUserLevel(user.TotalExp + addedExp)
 	newUser := FirestoreUser{
 		Level:              newLevel,
 		ExpTowardNextLevel: newExpTowardNextLevel,
@@ -248,7 +248,7 @@ func sendPrivateMessage(userId string, message string) {
 }
 
 // Return (userLevel, expTowardNextLevel)
-func getUserLevel(userTotalExp int) (int, int) {
+func GetUserLevel(userTotalExp int) (int, int) {
 
 	var total float64 = 0
 	level := 0

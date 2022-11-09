@@ -42,7 +42,7 @@ func TestVerifyTimestamp(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		got := exp.ExportVerifyTimestamp(tt.in)
+		got := exp.VerifyTimestamp(tt.in)
 
 		if !reflect.DeepEqual(got, tt.want) {
 			t.Errorf("exp.verifyTimestamp(%s)=%#v; want %v", tt.text, got, tt.want)
@@ -101,7 +101,7 @@ func TestGetUserLevel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run("", func(t *testing.T) {
-			first, second := exp.ExportGetUserLevel(tt.in)
+			first, second := exp.GetUserLevel(tt.in)
 
 			if !reflect.DeepEqual(first, tt.want[0]) {
 				t.Errorf("exp.getUserLevel(%d)= level %d; want level %v", tt.in, first, tt.want[0])
