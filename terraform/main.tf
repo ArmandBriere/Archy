@@ -178,7 +178,7 @@ variable "pubsub_functions" {
     exp : {
       description   = "Increase the experience of a user"
       runtime       = "go119"
-      entry_point   = "exp"
+      entry_point   = "Exp"
       timeout       = 15
       memory        = 256
       trigger_event = "exp_discord"
