@@ -64,7 +64,6 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 
 	if len(payload.UserId) == 0 ||
 		len(payload.Username) == 0 ||
-		len(payload.AvatarUrl) == 0 ||
 		len(payload.ServerId) == 0 ||
 		len(payload.ServerName) == 0 {
 		return &MissingData{}
