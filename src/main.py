@@ -8,7 +8,7 @@ from typing import Dict
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Guild, Intents
+from discord import DMChannel, Embed, Guild, Intents, Option
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -228,6 +228,277 @@ async def on_message(message: message_type) -> None:
 
     if message.content == f"<@{bot.user.id}>":
         await ctx.send("> Who Dares Summon Me?")
+
+
+async def treat_command(ctx: Context, command_name: str, data: Dict) -> None:
+    if not is_active_command(data["server_id"], command_name):
+        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
+        return
+
+    function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+    google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+
+    response: Response = requests.post(
+        function_path,
+        headers={
+            "Authorization": f"Bearer {google_auth_token}",
+            "Content-Type": "application/json",
+        },
+        data=json.dumps(data),
+    )
+
+    if response.status_code == 200 and response.content:
+        if re.search("https://*", response.content.decode("utf-8")):
+            await ctx.send(response.content.decode("utf-8"))
+        else:
+            embed: Embed = Embed(
+                description=response.content.decode("utf-8"),
+                color=0x04AA6D,
+            )
+            await ctx.send(embed=embed)
+    increment_command_count(data["server_id"], command_name)
+
+
+@bot.slash_command(description="answers your question")
+async def answer(ctx: Context, question: Option(str, "your question", required=True)) -> None:
+
+    server_id = str(ctx.guild.id)
+    command_name = "answer"
+
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [question.split(" ")],
+    }
+
+    await treat_command(ctx, command_name, data)
+
+
+# @bot.slash_command(description="request a gif")
+# async def gif(ctx: Context, query: Option(str, "query to search", required=False)) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "gif"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [query.split(" ")],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="go")
+# async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "go"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+
+
+@bot.slash_command(description="hello! :)")
+async def hello(ctx: Context) -> None:
+
+    server_id = str(ctx.guild.id)
+    command_name = "hello"
+
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.message.guild.name),
+        "user_id": str(ctx.author.id),
+        "username": str(ctx.author.name),
+        "channel_id": str(ctx.channel.id),
+        "message_id": str(ctx.message.id),
+        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+        "params": [],
+    }
+
+    await treat_command(ctx, command_name, data)
+
+
+# @bot.slash_command(description="Get help about the bot")
+# async def help_(ctx: Context) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "help"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="java")
+# async def java(ctx: Context) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "java"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="js")
+# async def js(ctx: Context) -> None:  # pylint: disable=invalid-name
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "js"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="show the leaderboard")
+# async def leaderboard(ctx: Context) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "leaderboard"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="show your level")
+# async def level(ctx: Context) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "level"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="list warnings")
+# async def listwarn(ctx: Context) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "listwarn"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="show merch info")
+# async def merch(ctx: Context) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "merch"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
+#        "params": [],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
+#
+#
+# @bot.slash_command(description="warn user")
+# async def warn(
+#    ctx: Context, user: Option(User, "user to warn", required=True), comment: Option(str, "comment", required=False)
+# ) -> None:
+#
+#    server_id = str(ctx.guild.id)
+#    command_name = "warn"
+#
+#    data = {
+#        "server_id": server_id,
+#        "server_name": str(ctx.message.guild.name),
+#        "user_id": str(ctx.author.id),
+#        "username": str(ctx.author.name),
+#        "channel_id": str(ctx.channel.id),
+#        "message_id": str(ctx.message.id),
+#        "mentions": [str(user.id)],
+#        "params": [comment.split(" ")],
+#    }
+#
+#    await treat_command(ctx, command_name, data)
 
 
 if __name__ == "__main__":

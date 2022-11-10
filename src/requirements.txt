@@ -13,7 +13,6 @@ cloudevents==1.2.0
 coverage==6.4.1
 deprecation==2.1.0
 dill==0.3.4
-discord.py==2.0.1
 distlib==0.3.4
 filelock==3.7.0
 firebase-admin==4.5.1
@@ -59,6 +58,7 @@ protobuf==3.20.1
 py==1.11.0
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
+py-cord==2.2.2
 pylint==2.13.9
 pyparsing==3.0.9
 pytest==7.1.2
