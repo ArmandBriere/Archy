@@ -230,10 +230,9 @@ async def on_message(message: message_type) -> None:
         await ctx.send("> Who Dares Summon Me?")
 
 
-async def treat_command(ctx: Context, command_name: str, data: Dict) -> None:
+async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
     if not is_active_command(data["server_id"], command_name):
-        await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-        return
+        return "https://cdn.discordapp.com/emojis/823403768448155648.webp"
 
     function_path = f"{FUNCTION_BASE_RUL}{command_name}"
     google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
@@ -246,37 +245,10 @@ async def treat_command(ctx: Context, command_name: str, data: Dict) -> None:
         },
         data=json.dumps(data),
     )
-
-    if response.status_code == 200 and response.content:
-        if re.search("https://*", response.content.decode("utf-8")):
-            await ctx.send(response.content.decode("utf-8"))
-        else:
-            embed: Embed = Embed(
-                description=response.content.decode("utf-8"),
-                color=0x04AA6D,
-            )
-            await ctx.send(embed=embed)
     increment_command_count(data["server_id"], command_name)
 
-
-@bot.slash_command(description="answers your question")
-async def answer(ctx: Context, question: Option(str, "your question", required=True)) -> None:
-
-    server_id = str(ctx.guild.id)
-    command_name = "answer"
-
-    data = {
-        "server_id": server_id,
-        "server_name": str(ctx.message.guild.name),
-        "user_id": str(ctx.author.id),
-        "username": str(ctx.author.name),
-        "channel_id": str(ctx.channel.id),
-        "message_id": str(ctx.message.id),
-        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-        "params": [question.split(" ")],
-    }
-
-    await treat_command(ctx, command_name, data)
+    if response.status_code == 200 and response.content:
+        return response.content.decode("utf-8")
 
 
 # @bot.slash_command(description="request a gif")
@@ -319,45 +291,60 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
 #    await treat_command(ctx, command_name, data)
 
 
-@bot.slash_command(description="hello! :)")
+@bot.slash_command(description="Hello! :)")
 async def hello(ctx: Context) -> None:
 
-    server_id = str(ctx.guild.id)
     command_name = "hello"
 
     data = {
-        "server_id": server_id,
-        "server_name": str(ctx.message.guild.name),
+        "server_id": str(ctx.guild.id),
         "user_id": str(ctx.author.id),
-        "username": str(ctx.author.name),
-        "channel_id": str(ctx.channel.id),
-        "message_id": str(ctx.message.id),
-        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-        "params": [],
     }
 
-    await treat_command(ctx, command_name, data)
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
+@bot.slash_command(description="Return the leaderboard")
+async def leaderboard(ctx: Context) -> None:
+
+    command_name = "leaderboard"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
+@bot.slash_command(description="answers your question")
+async def answer(ctx: Context, question: Option(str, "your question", required=True)) -> None:
+
+    command_name = "answer"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    response = f"Question: {question}\nAnswer: {await treat_command(ctx, command_name, data)}"
+
+    await ctx.respond(response)
 
 
 # @bot.slash_command(description="Get help about the bot")
-# async def help_(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "help"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
-#
+# async def help(ctx: Context) -> str:
+
+#     command_name = "help"
+
+#     data = {
+#         "server_id": str(ctx.guild.id),
+#         "server_name": str(ctx.guild.name),
+#     }
+
+#     response = await treat_command(ctx, command_name, data)
+
+#     await ctx.respond(embed=response)
+
+
 #
 # @bot.slash_command(description="java")
 # async def java(ctx: Context) -> None:
@@ -399,24 +386,7 @@ async def hello(ctx: Context) -> None:
 #    await treat_command(ctx, command_name, data)
 #
 #
-# @bot.slash_command(description="show the leaderboard")
-# async def leaderboard(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "leaderboard"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
+
 #
 #
 # @bot.slash_command(description="show your level")
