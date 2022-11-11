@@ -5,7 +5,6 @@ import re
 from datetime import datetime
 from typing import Dict
 
-
 import firebase_admin
 import google.oauth2.id_token
 import requests
