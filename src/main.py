@@ -8,7 +8,7 @@ from typing import Dict
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Guild, Intents, Option
+from discord import DMChannel, Embed, Guild, Intents, Option, User
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -387,26 +387,24 @@ async def froge(ctx: Context) -> None:
 #
 #
 
-#
-#
-# @bot.slash_command(description="show your level")
-# async def level(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "level"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
+
+@bot.slash_command(description="Show your level")
+async def level(ctx: Context, mention: Option(User, "wanna check someone else's?", required=False)) -> None:
+
+    server_id = str(ctx.guild.id)
+    command_name = "level"
+
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.guild.name),
+        "user_id": str(ctx.author.id),
+    }
+    if mention:
+        data["mentions"] = [mention.id]
+
+    await ctx.send(await treat_command(ctx, command_name, data))
+
+
 #
 #
 # @bot.slash_command(description="list warnings")
