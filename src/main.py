@@ -259,6 +259,7 @@ async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
 
     data = {
         "server_id": server_id,
+        "channel_id": "Slash_Command",
     }
 
     await ctx.respond(treat_command(ctx, command_name, data)).original_response().add_reaction("🧡")
