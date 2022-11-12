@@ -205,7 +205,7 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 		return tx.Set(userRef.Ref, map[string]interface{}{
 			"total_exp":              firestore.Increment(addedExp),
 			"message_count":          firestore.Increment(1),
-			"avatar_url":             user.AvatarUrl,
+			"avatar_url":             payload.AvatarUrl,
 			"last_message_timestamp": time.Now().UTC().Format(DATETIME_FORMAT_EXAMPLE),
 			"level":                  newUser.Level,
 			"exp_toward_next_level":  newUser.ExpTowardNextLevel,
