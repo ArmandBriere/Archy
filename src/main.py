@@ -400,9 +400,9 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
         "user_id": str(ctx.author.id),
     }
     if mention:
-        data["mentions"] = [mention.id]
+        data["mentions"] = [str(mention.id)]
 
-    await ctx.send(await treat_command(ctx, command_name, data))
+    await ctx.respond(await treat_command(ctx, command_name, data))
 
 
 #
