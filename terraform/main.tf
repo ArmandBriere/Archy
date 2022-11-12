@@ -59,14 +59,6 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     }
     level : {
-      description = "Return the level of a user"
-      runtime     = "python39"
-      entry_point = "level"
-      timeout     = 15
-      memory      = 256
-      secrets     = ["DISCORD_TOKEN"]
-    }
-    levelfaster : {
       description = "Return the level of a user using the NextJS function"
       runtime     = "go119"
       entry_point = "Level"

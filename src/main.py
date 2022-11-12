@@ -8,7 +8,7 @@ from typing import Dict
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Guild, Intents, Option
+from discord import DMChannel, Embed, Guild, Intents, Option, User
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -251,24 +251,6 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
         return response.content.decode("utf-8")
 
 
-# @bot.slash_command(description="request a gif")
-# async def gif(ctx: Context, query: Option(str, "query to search", required=False)) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "gif"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [query.split(" ")],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
 #
 #
 # @bot.slash_command(description="go")
@@ -330,8 +312,45 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
     await ctx.respond(response)
 
 
+@bot.slash_command(description="Request a gif")
+async def gif(ctx: Context, query: Option(str, "query to search", required=True)) -> None:
+
+    command_name = "gif"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+        "params": str([query.split(" ")]),
+    }
+
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
+@bot.slash_command(description="Template function in Java")
+async def java(ctx: Context) -> None:
+
+    command_name = "java"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
+@bot.slash_command(description="Return a random froge")
+async def froge(ctx: Context) -> None:
+
+    command_name = "froge"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
 # @bot.slash_command(description="Get help about the bot")
-# async def help(ctx: Context) -> str:
+# async def help(ctx: Context) -> None:
 
 #     command_name = "help"
 
@@ -345,25 +364,6 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
 #     await ctx.respond(embed=response)
 
 
-#
-# @bot.slash_command(description="java")
-# async def java(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "java"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
 #
 #
 # @bot.slash_command(description="js")
@@ -387,26 +387,24 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
 #
 #
 
-#
-#
-# @bot.slash_command(description="show your level")
-# async def level(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "level"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
+
+@bot.slash_command(description="Show your level")
+async def level(ctx: Context, mention: Option(User, "wanna check someone else's?", required=False)) -> None:
+
+    server_id = str(ctx.guild.id)
+    command_name = "level"
+
+    data = {
+        "server_id": server_id,
+        "server_name": str(ctx.guild.name),
+        "user_id": str(ctx.author.id),
+    }
+    if mention:
+        data["mentions"] = [str(mention.id)]
+
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
 #
 #
 # @bot.slash_command(description="list warnings")

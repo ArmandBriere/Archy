@@ -13,11 +13,10 @@ import (
 )
 
 var Payload struct {
-	ChannelId string `json:"channel_id"`
-	ServerId  string `json:"server_id"`
+	ServerId string `json:"server_id"`
 }
 
-// Send a Random Froge emoji from the server to the selected channel
+// Return a Random Froge emoji from the server
 func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	// Parse body to get Payload
 	var payload = Payload
@@ -32,12 +31,6 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("error creating Discord session: ", err)
 	}
 
-	// Get the channel
-	channel, err := dg.Channel(payload.ChannelId)
-	if err != nil {
-		panic("Unauthorized to create the connection. Verify Discord Token or ChannelID")
-	}
-
 	// Prepare a list to store selected Froge
 	var frogeEmojis []*discordgo.Emoji
 
@@ -45,14 +38,14 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	emojis, _ := dg.GuildEmojis(payload.ServerId)
 	for _, emoji := range emojis {
 		r := regexp.MustCompile("froge")
-		// Select Froge only
+
 		if r.MatchString(emoji.Name) {
 			frogeEmojis = append(frogeEmojis, emoji)
 		}
 	}
 
 	// Select a random Froge
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UnixNano())
 	randomFroge := frogeEmojis[rand.Intn(len(frogeEmojis))]
 
 	// Select extension to enable gif support
@@ -64,8 +57,5 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	// Send the Froge
 	bigFrogeUrl := "https://cdn.discordapp.com/emojis/" + randomFroge.ID + frogeExtension
 
-	_, err = dg.ChannelMessageSend(channel.ID, bigFrogeUrl)
-	if err != nil {
-		panic(err)
-	}
+	fmt.Fprint(w, bigFrogeUrl)
 }

@@ -1,4 +1,4 @@
-package levelFaster
+package level
 
 import (
 	"context"
@@ -72,7 +72,6 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	formatedUrl.WriteString("&level_exp_needed=")
 	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
 
-	print(formatedUrl.String())
 	fmt.Fprint(w, formatedUrl.String())
 }
 
