@@ -262,7 +262,7 @@ async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
         "channel_id": "Slash_Command",
     }
 
-    await ctx.respond(treat_command(ctx, command_name, data)).original_response().add_reaction("🧡")
+    await ctx.respond(await treat_command(ctx, command_name, data)).original_response().add_reaction("🧡")
 
 
 @bot.slash_command(description="Hello! :)")
