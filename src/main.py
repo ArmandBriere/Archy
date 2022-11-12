@@ -251,26 +251,17 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
         return response.content.decode("utf-8")
 
 
-#
-#
-# @bot.slash_command(description="go")
-# async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "go"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
+@bot.slash_command(description="go")
+async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
+
+    server_id = str(ctx.guild.id)
+    command_name = "go"
+
+    data = {
+        "server_id": server_id,
+    }
+
+    await ctx.respond(treat_command(ctx, command_name, data)).original_response().add_reaction("🧡")
 
 
 @bot.slash_command(description="Hello! :)")
