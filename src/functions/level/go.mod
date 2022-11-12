@@ -1,4 +1,4 @@
-module levelFaster.com/cloudfunction
+module level.com/cloudfunction
 
 go 1.19
 
