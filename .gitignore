@@ -133,4 +133,5 @@ key.json
 
 # Terraform files
 .terraform/
+.terraform*
 *.tfstate*
