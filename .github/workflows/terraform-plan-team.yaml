@@ -1,4 +1,4 @@
-name: Run terraform plan for development
+name: Hackathon - Run terraform plan for a team
 
 on:
   workflow_dispatch:
