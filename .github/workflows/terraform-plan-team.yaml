@@ -6,6 +6,7 @@ on:
       team-name:
         type: choice
         description: Team name
+        required: true
         options:
           - team_a
           - team_b
