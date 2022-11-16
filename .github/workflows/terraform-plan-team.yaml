@@ -6,13 +6,13 @@ on:
       team-name:
         type: choice
         description: Team name
-        options: 
-        - team_a
-        - team_b
-        - team_c
-        - team_d
-        - team_e
-        - team_f
+        options:
+          - team_a
+          - team_b
+          - team_c
+          - team_d
+          - team_e
+          - team_f
 
 jobs:
   plan:
