@@ -13,6 +13,9 @@ on:
           - team_d
           - team_e
           - team_f
+  pull_request:
+    branches:
+      - dev
 
 jobs:
   plan:
