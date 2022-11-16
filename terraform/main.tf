@@ -82,6 +82,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN", "TENOR_API_TOKEN"]
     }
+    video : {
+      description = "Return the requested youtube video"
+      runtime     = "python39"
+      entry_point = "video"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN", "YOUTUBE_API_TOKEN"]
+    }
     go : {
       description = "Template of a function in Golang"
       runtime     = "go119"
