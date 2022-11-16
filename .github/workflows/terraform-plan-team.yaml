@@ -1,9 +1,18 @@
-name: Run terraform plan
+name: Hackathon - Run terraform plan for a team
+
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
+    inputs:
+      team-name:
+        type: choice
+        description: Team name
+        options:
+          - team_a
+          - team_b
+          - team_c
+          - team_d
+          - team_e
+          - team_f
 
 jobs:
   plan:
@@ -14,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: ./terraform/environments/${{ github.event.inputs.name }}
     steps:
       - uses: "actions/checkout@v3"
 

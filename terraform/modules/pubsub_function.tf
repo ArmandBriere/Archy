@@ -4,7 +4,7 @@ data "archive_file" "pubsub_function_source" {
   for_each = var.pubsub_functions
 
   type        = "zip"
-  source_dir  = "../src/functions/${each.key}"
+  source_dir  = "${var.src_dir}/functions/${each.key}"
   output_path = "/tmp/${each.key}.zip"
   excludes    = ["node_modules", "__pycache__", "cmd", "go.sum", "env"]
 }
@@ -28,7 +28,7 @@ resource "google_cloudfunctions_function" "pubsub_function" {
 
   description = each.value.description
 
-  name    = each.key
+  name    = "${var.environment}_${each.key}"
   runtime = each.value.runtime
 
   # Get the source code of the cloud function as a Zip compression
