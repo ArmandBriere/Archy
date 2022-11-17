@@ -2,6 +2,7 @@
 
 import base64
 import json
+import os
 import random
 from email.generator import Generator
 from io import BytesIO
@@ -130,7 +131,10 @@ def publish_message_discord(channels: List[str], image_str: str = "") -> None:
         return
 
     project_id = "archy-f06ed"
-    topic_id = "channel_message_discord"
+
+    environment = os.getenv("K_SERVICE").split("_")[0]
+    topic_id = f"{environment}_channel_message_discord"
+
     publisher = PublisherClient()
     topic_path: str = publisher.topic_path(project_id, topic_id)
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 
@@ -10,12 +11,13 @@ import (
 
 func main() {
 	// Add custom channel_id to test
-	body := []byte(`{"channel_id": "<CHANNEL_ID>"}`)
+	body := []byte(`{}`)
 	reader := bytes.NewReader(body)
 
 	req := httptest.NewRequest(http.MethodGet, "/test", reader)
 	w := httptest.NewRecorder()
 
 	// Call function
-	_go.SendMessageWithReaction(w, req)
+	_go.SendMessage(w, req)
+	fmt.Print(w.Body)
 }

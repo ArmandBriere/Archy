@@ -7,7 +7,9 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -53,6 +55,8 @@ func (m *MissingData) Error() string {
 
 const PROJECT_ID = "archy-f06ed"
 const DATETIME_FORMAT_EXAMPLE = "2006-01-02 15:04:05"
+
+var ENVIRONMENT = strings.Split(os.Getenv("K_SERVICE"), "_")[0]
 
 // Increase the user experience on firestore
 func Exp(ctx context.Context, m PubSubMessage) error {
@@ -227,7 +231,7 @@ func sendPrivateMessage(userId string, message string) {
 	}
 	defer client.Close()
 
-	topicClient := client.Topic("private_message_discord")
+	topicClient := client.Topic(ENVIRONMENT + "_private_message_discord")
 
 	pubsubData, err := json.Marshal(PubsubDataPrivateMessage{UserId: userId, Message: message})
 	if err != nil {
