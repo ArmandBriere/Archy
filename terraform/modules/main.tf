@@ -15,8 +15,16 @@ variable "service_account_email" {
   default = "archyapi@archy-f06ed.iam.gserviceaccount.com"
 }
 
+variable "environment" {
+}
+
+variable "src_dir" {
+  type = string
+  default = "../../../src"
+}
+
 variable "secrets" {
-  type = list(any)
+  type = list(string)
   default = [
     "DISCORD_TOKEN",
     "TENOR_API_TOKEN",
@@ -157,9 +165,8 @@ variable "http_functions" {
   }
 }
 
-
 variable "pubsub_topics" {
-  type = list(any)
+  type = list(string)
   default = [
     "channel_message_discord",
     "cloud_function_error_log",
@@ -254,15 +261,4 @@ variable "pubsub_functions" {
 provider "google" {
   project = var.project_id
   region  = var.region
-}
-
-# Bucket to store the function code
-resource "google_storage_bucket" "function_bucket" {
-  name     = "${var.project_id}-function"
-  location = var.region
-}
-
-resource "google_storage_bucket" "input_bucket" {
-  name     = "${var.project_id}-input"
-  location = var.region
 }
