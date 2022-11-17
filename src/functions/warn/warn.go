@@ -37,6 +37,8 @@ type Warning struct {
 var ServerName string
 var Dg *discordgo.Session
 
+var ENVIRONMENT = strings.Split(os.Getenv("K_SERVICE"), "_")[0]
+
 // Admin only: Warn a user
 func WarnUser(w http.ResponseWriter, r *http.Request) {
 
@@ -136,7 +138,7 @@ func sendWarnToUser(warnCount int, warn Warning) {
 	}
 	defer client.Close()
 
-	topicClient := client.Topic("private_message_discord")
+	topicClient := client.Topic(ENVIRONMENT + "_private_message_discord")
 
 	message := "Hi, this message is a warning from this server: **" + ServerName + "**.\n" +
 		"*Please follow the code of conduct.*\n\n" +
