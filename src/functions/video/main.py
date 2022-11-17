@@ -28,10 +28,9 @@ def video(request: flask.Request) -> Tuple[str, int]:
         response: requests.Response = requests.get(
             f"https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet&type=video&maxResults=1"
         )
-        print("we good")
+
         return extract_data_from_response(response.status_code, response.content), 200
 
-    print("oof")
     return DEFAULT_VIDEO, 200
 
 
@@ -47,5 +46,4 @@ def extract_data_from_response(response_status: int, response_content: bytes) ->
         except (KeyError, IndexError):
             return NOT_FOUND_VID
 
-    print("big yikes")
     return UNKNOWN_VIDEO
