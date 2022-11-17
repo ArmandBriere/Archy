@@ -6,7 +6,7 @@ import flask
 import functions_framework
 import requests
 
-DEFAULT_VIDEO = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+DEFAULT_VIDEO = "<https://www.youtube.com/watch?v=dQw4w9WgXcQ>"
 UNKNOWN_VIDEO = "https://www.youtube.com/watch?v=bnmAi53H520"
 NOT_FOUND_VID = "https://www.youtube.com/watch?v=TSXXi2kvl_0"
 
