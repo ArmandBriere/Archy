@@ -96,7 +96,7 @@ variable "http_functions" {
       entry_point = "video"
       timeout     = 15
       memory      = 256
-      secrets     = ["DISCORD_TOKEN", "YOUTUBE_API_TOKEN"]
+      secrets     = ["YOUTUBE_API_TOKEN"]
     }
     go : {
       description = "Template of a function in Golang"
