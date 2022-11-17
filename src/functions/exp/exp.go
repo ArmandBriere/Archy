@@ -46,7 +46,7 @@ type PubsubDataPrivateMessage struct {
 	Message string `json:"message"`
 }
 
-// Expected fromat by the 'update_user_role' function
+// Expected format by the 'update_user_role' function
 type PubsubDataUserRole struct {
 	UserId   string `json:"user_id"`
 	ServerId string `json:"server_id"`
