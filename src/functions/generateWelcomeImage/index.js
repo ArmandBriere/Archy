@@ -2,6 +2,8 @@ const nunjucks = require('nunjucks');
 const puppeteer = require('puppeteer');
 const { PubSub } = require('@google-cloud/pubsub');
 
+const ENVIRONMENT = process.env.K_SERVICE.split("_")[0]
+
 exports.generateImage = async function (html = "") {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -18,10 +20,10 @@ exports.generateImage = async function (html = "") {
 };
 
 async function publishMessage(
-  projectId = 'archy-f06ed',
-  topicName = 'channel_message_discord',
   payloadData
 ) {
+  const projectId = 'archy-f06ed';
+  const topicName = `${ENVIRONMENT}_channel_message_discord`;
   const pubsub = new PubSub({ projectId });
 
   const dataBuffer = Buffer.from(JSON.stringify(payloadData));
@@ -55,8 +57,6 @@ exports.generateWelcomeImage = async (event, context) => {
   const messageData = { "channel_id": channelId, "image": imageBuffer.toString('base64') }
 
   await publishMessage(
-    projectId = 'archy-f06ed',
-    topicName = 'channel_message_discord',
     payloadData = messageData
   );
 
