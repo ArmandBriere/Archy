@@ -4,13 +4,13 @@ prod: build push restart
 dev: build-dev push-dev restart
 
 build:
-	docker build -t us.gcr.io/archy-f06ed/archy Dockerfile.prod
+	docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
 
 push:
-	docker push us.gcr.io/archy-f06ed/archy
+	docker push us.gcr.io/archy-f06ed/archy-prod
 
 build-dev:
-	docker build -t us.gcr.io/archy-f06ed/archy-dev Dockerfile.dev
+	docker build -t us.gcr.io/archy-f06ed/archy-dev -f Dockerfile.dev .
 
 push-dev:
 	docker push us.gcr.io/archy-f06ed/archy-dev

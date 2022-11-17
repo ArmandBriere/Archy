@@ -129,7 +129,7 @@ def publish_message(data: Dict[str, str], topic_id: str) -> None:
     """Publish message to the selected topic."""
 
     publisher = PublisherClient()
-    topic_path = publisher.topic_path(PROJECT_ID, f"{topic_id}")
+    topic_path = publisher.topic_path(PROJECT_ID, f"{ENVIRONMENT}_{topic_id}")
 
     user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
     publisher.publish(topic_path, user_encode_data)
