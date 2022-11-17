@@ -28,6 +28,7 @@ variable "secrets" {
   default = [
     "DISCORD_TOKEN",
     "TENOR_API_TOKEN",
+    "YOUTUBE_API_TOKEN"
   ]
 }
 
