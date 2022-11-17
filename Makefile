@@ -1,7 +1,7 @@
 default:
 
-prod: build push restart
-dev: build-dev push-dev restart
+prod: build push
+dev: build-dev push-dev
 
 build:
 	docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .

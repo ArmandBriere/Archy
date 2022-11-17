@@ -25,12 +25,12 @@ from requests import Response
 
 load_dotenv()
 
+ENVIRONMENT = os.getenv("ENVIRONMENT")
+
 LOGGER: logging.Logger = logging.getLogger(__name__)
-DISCORD_API_TOKEN = os.getenv("DISCORD_API_TOKEN")
 FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-
-ENVIRONMENT = os.getenv("ENVIRONMENT")
+DISCORD_API_TOKEN = os.getenv(f"DISCORD_API_TOKEN_{ENVIRONMENT.upper()}")
 COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 
 # Discord bot settings
