@@ -47,7 +47,7 @@ resource "google_cloudfunctions_function" "pubsub_function" {
   # Trigger
   event_trigger {
     event_type = "google.pubsub.topic.publish"
-    resource   = "projects/${var.project_id}/topics/${each.value.trigger_event}"
+    resource   = "projects/${var.project_id}/topics/${var.environment}_${each.value.trigger_event}"
   }
 
   # Instances count
