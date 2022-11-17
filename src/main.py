@@ -25,23 +25,27 @@ from requests import Response
 
 load_dotenv()
 
+ENVIRONMENT = os.getenv("ENVIRONMENT")
+
 LOGGER: logging.Logger = logging.getLogger(__name__)
-DISCORD_API_TOKEN = os.getenv("DISCORD_API_TOKEN")
 FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DISCORD_API_TOKEN = os.getenv(f"DISCORD_API_TOKEN_{ENVIRONMENT.upper()}")
+COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 
 # Discord bot settings
 intents = Intents.all()
 
-bot: Bot = Bot(command_prefix="!", description="Serverless commands discord bot", intents=intents)
-
-# Gcloud auth settings
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./key.json"
-request = Request()
+bot: Bot = Bot(command_prefix=COMMAND_PREFIX, description="Serverless commands discord bot", intents=intents)
 
 # Firestore
 PROJECT_ID = "archy-f06ed"
 KEY_FILE = "./key.json"
+
+
+# Gcloud auth settings
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = KEY_FILE
+request = Request()
 
 
 @bot.event
@@ -66,6 +70,9 @@ async def on_guild_join(guild: Guild) -> None:
 
 def is_active_command(server_id: str, command_name: str) -> bool:
     """Check if a command is active in the firestore db."""
+    if (command_name.startswith(("dev_", "team_"))) and server_id == "964701887540645908":
+        return True
+
     function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
     doc_ref: DocumentReference = function_collection.document(command_name)
     doc: DocumentSnapshot = doc_ref.get()
@@ -122,7 +129,7 @@ def publish_message(data: Dict[str, str], topic_id: str) -> None:
     """Publish message to the selected topic."""
 
     publisher = PublisherClient()
-    topic_path = publisher.topic_path(PROJECT_ID, topic_id)
+    topic_path = publisher.topic_path(PROJECT_ID, f"{ENVIRONMENT}_{topic_id}")
 
     user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
     publisher.publish(topic_path, user_encode_data)
@@ -182,6 +189,7 @@ async def on_message(message: message_type) -> None:
         "server_name": str(ctx.message.guild.name),
         "user_id": str(ctx.author.id),
         "username": str(ctx.author.name),
+        "environment": ENVIRONMENT,
     }
     if ctx.invoked_with and not ctx.author.bot:
         command_name = str(ctx.invoked_with)
@@ -231,6 +239,8 @@ async def on_message(message: message_type) -> None:
 
 
 async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
+    data["environment"] = ENVIRONMENT
+
     if not is_active_command(data["server_id"], command_name):
         return "https://cdn.discordapp.com/emojis/823403768448155648.webp"
 
@@ -249,28 +259,6 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
 
     if response.status_code == 200 and response.content:
         return response.content.decode("utf-8")
-
-
-#
-#
-# @bot.slash_command(description="go")
-# async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "go"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
 
 
 @bot.slash_command(description="Hello! :)")
@@ -319,7 +307,7 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=True)
 
     data = {
         "server_id": str(ctx.guild.id),
-        "params": str([query.split(" ")]),
+        "params": str(query.split(" ")),
     }
 
     await ctx.respond(await treat_command(ctx, command_name, data))
@@ -349,45 +337,6 @@ async def froge(ctx: Context) -> None:
     await ctx.respond(await treat_command(ctx, command_name, data))
 
 
-# @bot.slash_command(description="Get help about the bot")
-# async def help(ctx: Context) -> None:
-
-#     command_name = "help"
-
-#     data = {
-#         "server_id": str(ctx.guild.id),
-#         "server_name": str(ctx.guild.name),
-#     }
-
-#     response = await treat_command(ctx, command_name, data)
-
-#     await ctx.respond(embed=response)
-
-
-#
-#
-# @bot.slash_command(description="js")
-# async def js(ctx: Context) -> None:  # pylint: disable=invalid-name
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "js"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
-#
-#
-
-
 @bot.slash_command(description="Show your level")
 async def level(ctx: Context, mention: Option(User, "wanna check someone else's?", required=False)) -> None:
 
@@ -403,70 +352,6 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
         data["mentions"] = [str(mention.id)]
 
     await ctx.respond(await treat_command(ctx, command_name, data))
-
-
-#
-#
-# @bot.slash_command(description="list warnings")
-# async def listwarn(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "listwarn"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
-#
-#
-# @bot.slash_command(description="show merch info")
-# async def merch(ctx: Context) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "merch"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user_id) for user_id in ctx.message.raw_mentions],
-#        "params": [],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
-#
-#
-# @bot.slash_command(description="warn user")
-# async def warn(
-#    ctx: Context, user: Option(User, "user to warn", required=True), comment: Option(str, "comment", required=False)
-# ) -> None:
-#
-#    server_id = str(ctx.guild.id)
-#    command_name = "warn"
-#
-#    data = {
-#        "server_id": server_id,
-#        "server_name": str(ctx.message.guild.name),
-#        "user_id": str(ctx.author.id),
-#        "username": str(ctx.author.name),
-#        "channel_id": str(ctx.channel.id),
-#        "message_id": str(ctx.message.id),
-#        "mentions": [str(user.id)],
-#        "params": [comment.split(" ")],
-#    }
-#
-#    await treat_command(ctx, command_name, data)
 
 
 if __name__ == "__main__":
