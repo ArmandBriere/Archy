@@ -66,6 +66,9 @@ async def on_guild_join(guild: Guild) -> None:
 
 def is_active_command(server_id: str, command_name: str) -> bool:
     """Check if a command is active in the firestore db."""
+    if (command_name.startswith(("dev_", "team_"))) and server_id == "964701887540645908":
+        return True
+
     function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
     doc_ref: DocumentReference = function_collection.document(command_name)
     doc: DocumentSnapshot = doc_ref.get()
@@ -319,7 +322,7 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=True)
 
     data = {
         "server_id": str(ctx.guild.id),
-        "params": str([query.split(" ")]),
+        "params": str(query.split(" ")),
     }
 
     await ctx.respond(await treat_command(ctx, command_name, data))
