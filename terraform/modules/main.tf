@@ -19,7 +19,7 @@ variable "environment" {
 }
 
 variable "src_dir" {
-  type = string
+  type    = string
   default = "../../../src"
 }
 
@@ -93,10 +93,10 @@ variable "http_functions" {
     go : {
       description = "Template of a function in Golang"
       runtime     = "go119"
-      entry_point = "SendMessageWithReaction"
+      entry_point = "SendMessage"
       timeout     = 15
       memory      = 256
-      secrets     = ["DISCORD_TOKEN"]
+      secrets     = []
     },
     ban : {
       description = "Admin only: Ban a user"
