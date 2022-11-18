@@ -9,7 +9,7 @@
         },
         {
             "name": "describe",
-            "description": "Ask Archy to describe the author or the mentioned user.",
+            "description": "Describe the author or the mentioned user.",
             "examples": [
                 "!describe",
                 "!describe @user"
@@ -24,7 +24,7 @@
         },
         {
             "name": "gif",
-            "description": "Return the best gif found with the Tenor API.",
+            "description": "Return the best gif from Tenor.",
             "examples": [
                 "!gif",
                 "!gif cute cats"
@@ -32,7 +32,7 @@
         },
         {
             "name": "go",
-            "description": "Send a message from a Golang bot instance.",
+            "description": "Send a message from a Go.",
             "examples": [
                 "!go"
             ]
@@ -46,14 +46,14 @@
         },
         {
             "name": "js",
-            "description": "Send a message from a JS bot instance.",
+            "description": "Send a message from JS.",
             "examples": [
                 "!js"
             ]
         },
         {
             "name": "help",
-            "description": "Describe all active commands with example.",
+            "description": "Describe all active commands.",
             "examples": [
                 "!help"
             ]
@@ -106,6 +106,13 @@
             "description": "Return the merch website.",
             "examples": [
                 "!merch"
+            ]
+        },
+        {
+            "name": "video",
+            "description": "Return the requested youtube video.",
+            "examples": [
+                "!video"
             ]
         }
     ]

@@ -5,7 +5,13 @@ resource "google_storage_bucket_access_control" "public_rule" {
 }
 
 resource "google_storage_bucket" "froge" {
-  name          = "froge-public-bucket"
+  name          = "froge-public-bucket-${var.environment}"
   location      = var.region
+  storage_class = "STANDARD"
+}
+
+resource "google_storage_bucket" "function_bucket" {
+  name     = "${var.project_id}-function-${var.environment}"
+  location = var.region
   storage_class = "STANDARD"
 }

@@ -7,7 +7,9 @@ import (
 	"log"
 	"math"
 	"math/rand"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -38,10 +40,16 @@ type FirestoreUser struct {
 	TotalExp           int    `firestore:"total_exp"`
 }
 
-// Expected fromat by the 'private_message_discord' function
+// Expected format by the 'private_message_discord' function
 type PubsubDataPrivateMessage struct {
 	UserId  string `json:"user_id"`
 	Message string `json:"message"`
+}
+
+// Expected format by the 'update_user_role' function
+type PubsubDataUserRole struct {
+	UserId   string `json:"user_id"`
+	ServerId string `json:"server_id"`
 }
 
 // Custom error for missing data in payload
@@ -53,6 +61,8 @@ func (m *MissingData) Error() string {
 
 const PROJECT_ID = "archy-f06ed"
 const DATETIME_FORMAT_EXAMPLE = "2006-01-02 15:04:05"
+
+var ENVIRONMENT = strings.Split(os.Getenv("K_SERVICE"), "_")[0]
 
 // Increase the user experience on firestore
 func Exp(ctx context.Context, m PubSubMessage) error {
@@ -84,6 +94,7 @@ func Exp(ctx context.Context, m PubSubMessage) error {
 
 		if user.Level != newUser.Level {
 			sendPrivateMessage(payload.UserId, "I'm so proud of you... You made it to level "+strconv.Itoa(newUser.Level)+" in "+payload.ServerName+"!")
+			updateUserRoles(payload.UserId, payload.ServerId)
 		}
 	}
 
@@ -205,7 +216,7 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 		return tx.Set(userRef.Ref, map[string]interface{}{
 			"total_exp":              firestore.Increment(addedExp),
 			"message_count":          firestore.Increment(1),
-			"avatar_url":             user.AvatarUrl,
+			"avatar_url":             payload.AvatarUrl,
 			"last_message_timestamp": time.Now().UTC().Format(DATETIME_FORMAT_EXAMPLE),
 			"level":                  newUser.Level,
 			"exp_toward_next_level":  newUser.ExpTowardNextLevel,
@@ -218,6 +229,21 @@ func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
 	return newUser
 }
 
+// Return (userLevel, expTowardNextLevel)
+func GetUserLevel(userTotalExp int) (int, int) {
+
+	var total float64 = 0
+	level := 0
+	for {
+		expNeededToLevelUp := 5*(math.Pow(float64(level), 2)) + (50 * float64(level)) + 100
+		total += expNeededToLevelUp
+		if float64(userTotalExp) < total {
+			return level, int(userTotalExp) + int(expNeededToLevelUp) - int(total)
+		}
+		level++
+	}
+}
+
 // Send a private message to the user to inform him
 func sendPrivateMessage(userId string, message string) {
 	firestoreCtx := context.Background()
@@ -227,7 +253,7 @@ func sendPrivateMessage(userId string, message string) {
 	}
 	defer client.Close()
 
-	topicClient := client.Topic("private_message_discord")
+	topicClient := client.Topic(ENVIRONMENT + "_private_message_discord")
 
 	pubsubData, err := json.Marshal(PubsubDataPrivateMessage{UserId: userId, Message: message})
 	if err != nil {
@@ -246,17 +272,30 @@ func sendPrivateMessage(userId string, message string) {
 	log.Println("Message send to user, messageId: " + messageId)
 }
 
-// Return (userLevel, expTowardNextLevel)
-func GetUserLevel(userTotalExp int) (int, int) {
-
-	var total float64 = 0
-	level := 0
-	for {
-		expNeededToLevelUp := 5*(math.Pow(float64(level), 2)) + (50 * float64(level)) + 100
-		total += expNeededToLevelUp
-		if float64(userTotalExp) < total {
-			return level, int(userTotalExp) + int(expNeededToLevelUp) - int(total)
-		}
-		level++
+// Update the user roles
+func updateUserRoles(userId string, serverId string) {
+	firestoreCtx := context.Background()
+	client, err := pubsub.NewClient(firestoreCtx, PROJECT_ID)
+	if err != nil {
+		panic(err)
 	}
+	defer client.Close()
+
+	topicClient := client.Topic(ENVIRONMENT + "_update_user_role")
+
+	pubsubData, err := json.Marshal(PubsubDataUserRole{UserId: userId, ServerId: serverId})
+	if err != nil {
+		panic(err)
+	}
+
+	result := topicClient.Publish(firestoreCtx, &pubsub.Message{
+		Data: []byte(pubsubData),
+	})
+
+	messageId, err := result.Get(firestoreCtx)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("Update user roles, userId: " + userId + ", messageId: " + messageId)
 }

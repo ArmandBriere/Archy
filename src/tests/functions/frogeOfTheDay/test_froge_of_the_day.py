@@ -1,4 +1,8 @@
+import os
+from unittest import mock
 from unittest.mock import MagicMock, patch
+
+from pytest import fixture
 
 from functions.frogeOfTheDay.main import get_all_channels, publish_froge_of_the_day, publish_message_discord
 
@@ -19,6 +23,12 @@ def get_inactive_channel_id(param):  # pragma: no cover
     if param == "channel_id":
         return "123456789"
     return 0
+
+
+@fixture(autouse=True)
+def run_around_tests():  # pragma: no cover
+    with mock.patch.dict(os.environ, {"K_SERVICE": "dev_test"}):
+        yield
 
 
 @patch(f"{MODULE_PATH}.print")
@@ -58,7 +68,7 @@ def test_publish_message_discord(publisher_mock):
     assert not publish_message_discord(channels, "image")
     assert len(publisher_mock().topic_path.call_args_list[0]) == 2
     assert publisher_mock().topic_path.call_args_list[0][0][0] == "archy-f06ed"
-    assert publisher_mock().topic_path.call_args_list[0][0][1] == "channel_message_discord"
+    assert publisher_mock().topic_path.call_args_list[0][0][1] == "dev_channel_message_discord"
     assert publisher_mock().publish.call_count == len(channels)
 
 
