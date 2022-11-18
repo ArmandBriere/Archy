@@ -9,4 +9,3 @@ import (
 func SendMessage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Golang is faster!")
 }
-
