@@ -22,11 +22,6 @@ resource "google_compute_instance" "default" {
             stdin: false
             tty: false
             volumeMounts: []
-          - image: us.gcr.io/archy-f06ed/archy-dev
-            name: archy-dev
-            stdin: false
-            tty: false
-            volumeMounts: []
           restartPolicy: Always
           volumes: []
     EOT

@@ -169,7 +169,7 @@ async def on_member_remove(member: member_type) -> None:
 
 
 @bot.event
-async def on_message(message: message_type) -> None:
+async def on_message(message: message_type) -> None:  # pylint: disable=too-many-branches
     if message.author.bot:
         return
 
@@ -199,7 +199,6 @@ async def on_message(message: message_type) -> None:
             return
 
         if command_name.startswith(("dev_", "team_")):
-
             function_path = f"{FUNCTION_BASE_RUL}{command_name}"
         else:
             function_path = f"{FUNCTION_BASE_RUL}{ENVIRONMENT}_{command_name}"
