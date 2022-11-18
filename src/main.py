@@ -198,7 +198,12 @@ async def on_message(message: message_type) -> None:
             await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
             return
 
-        function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+        if command_name.startswith(("dev_", "team_")):
+
+            function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+        else:
+            function_path = f"{FUNCTION_BASE_RUL}{ENVIRONMENT}_{command_name}"
+
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
         data["channel_id"] = str(message.channel.id)
