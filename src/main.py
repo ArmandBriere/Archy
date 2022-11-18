@@ -169,7 +169,7 @@ async def on_member_remove(member: member_type) -> None:
 
 
 @bot.event
-async def on_message(message: message_type) -> None:  # pylint: disable=too-many-branches
+async def on_message(message: message_type) -> None:
     if message.author.bot:
         return
 
@@ -198,10 +198,7 @@ async def on_message(message: message_type) -> None:  # pylint: disable=too-many
             await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
             return
 
-        if command_name.startswith(("dev_", "team_")):
-            function_path = f"{FUNCTION_BASE_URL}{command_name}"
-        else:
-            function_path = f"{FUNCTION_BASE_URL}{ENVIRONMENT}_{command_name}"
+        function_path = get_function_path(command_name)
 
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
@@ -264,6 +261,7 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
 
     if response.status_code == 200 and response.content:
         return response.content.decode("utf-8")
+
 
 def get_function_path(command_name: str) -> str:
     if command_name.startswith(("dev_", "team_")):
