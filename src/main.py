@@ -28,7 +28,7 @@ load_dotenv()
 ENVIRONMENT = os.getenv("ENVIRONMENT")
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
-FUNCTION_BASE_RUL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
+FUNCTION_BASE_URL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 DISCORD_API_TOKEN = os.getenv(f"DISCORD_API_TOKEN_{ENVIRONMENT.upper()}")
 COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
@@ -199,9 +199,9 @@ async def on_message(message: message_type) -> None:  # pylint: disable=too-many
             return
 
         if command_name.startswith(("dev_", "team_")):
-            function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+            function_path = f"{FUNCTION_BASE_URL}{command_name}"
         else:
-            function_path = f"{FUNCTION_BASE_RUL}{ENVIRONMENT}_{command_name}"
+            function_path = f"{FUNCTION_BASE_URL}{ENVIRONMENT}_{command_name}"
 
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
@@ -248,7 +248,8 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
     if not is_active_command(data["server_id"], command_name):
         return "https://cdn.discordapp.com/emojis/823403768448155648.webp"
 
-    function_path = f"{FUNCTION_BASE_RUL}{command_name}"
+    function_path = get_function_path(command_name)
+
     google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
     response: Response = requests.post(
@@ -263,6 +264,11 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
 
     if response.status_code == 200 and response.content:
         return response.content.decode("utf-8")
+
+def get_function_path(command_name: str) -> str:
+    if command_name.startswith(("dev_", "team_")):
+        return f"{FUNCTION_BASE_URL}{command_name}"
+    return f"{FUNCTION_BASE_URL}{ENVIRONMENT}_{command_name}"
 
 
 @bot.slash_command(description="Hello! :)")
