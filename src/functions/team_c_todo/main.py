@@ -15,15 +15,15 @@ Enter a new value for the aspect you are modifying instead of <value>, collabs *
 
 
 class Todo:
-    def __init__(self, who, date=None, title=None, associates=None, description=None):
+    def __init__(self, who, date=None, title=None, collabs=None, description=None):
         self.createDate = datetime.datetime.now()
         self.who = who
         self.date = date
         self.title = title
         self.description = description
-        self.associates = associates
+        self.collabs = collabs
 
-    def update(self, date=None, title=None, description=None, collabs=[]):
+    def update(self, date=None, title=None, description=None, collabs=None):
         if date:
             self.date = date
         if title:
@@ -50,22 +50,10 @@ def todo(request: flask.Request) -> Tuple[str, int]:
     request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
         user_id = request_json["user_id"]
-        text = request_json["content"]
+        text = request_json["params"]
+        collabs = request_json["mentions"]
         if not text:  # !todo
             return USAGE, 200
-        else:
-            date = dateparser.parse(text.split("%")[1][2:].split("@")[0].split('"')[0])
-            title = text.split("%")[0]
-            collabs = []
-            for i in text.split('"')[0].split(" "):
-                if i[0] == "@":
-                    collabs.append(i)
+        elif
 
-            new_todo = Todo(user_id,)
 
-"""
-- Comment acceder a l'entrée d'un utilisateur
-- Comment sont passés les entrées (avec ou sans arg[0] ?)
-- Comment faire tourner un while qui capture l'entrée
-
-"""

@@ -362,6 +362,14 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     await ctx.respond(await treat_command(ctx, command_name, data))
 
 
+@bot.slash_command(description="Create or list Todos")
+async def team_c_todo(ctx: Context):
+    command_name = "team_c_todo"
+    data = {
+        "server_id":str(ctx.guild.id)
+    }
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
 if __name__ == "__main__":
 
     cred = credentials.Certificate(KEY_FILE)
