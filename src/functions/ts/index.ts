@@ -7,5 +7,5 @@ import { Request, Response } from 'express'
  * @param res HTTP response context.
  */
 exports.js = (req: Request, res: Response) => {
-  res.status(200).send("JS is slow!")
+  res.status(200).send("TypeScript has a good type system!")
 };
