@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform/environments/${{ github.event.inputs.name }}
+        working-directory: ./terraform/environments/${{ github.event.inputs.team-name }}
     steps:
       - uses: "actions/checkout@v3"
 
