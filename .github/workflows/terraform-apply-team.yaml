@@ -1,4 +1,4 @@
-name: Deploy with terraform for production
+name: Hackathon - Run terraform apply for a team
 
 on:
   workflow_dispatch:
