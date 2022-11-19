@@ -1,2 +1,2 @@
-*.js
-!jest.config.js
+build/
+jest.config.js

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { dtoToPayload, Payload, PayloadDto } from './types/Payload';
-import { yesNoUseCase } from './useCases/yesNoUseCase';
+import { dtoToPayload, Payload, PayloadDto } from './types/Payload'
+import { yesNoUseCase } from './useCases/yesNoUseCase'
 
 /**
  * Responds to any HTTP request.

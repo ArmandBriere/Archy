@@ -2,11 +2,12 @@
   "name": "ts",
   "version": "1.0.0",
   "description": "The TypeScript code for Archy",
-  "main": "index.ts",
+  "main": "build/index.js",
   "scripts": {
-    "start": "nodemon index-local.ts",
+    "start": "nodemon src/index-local.ts",
     "test": "jest --watch",
-    "tsc": "tsc"
+    "build": "tsc",
+    "clean": "rm -rf build"
   },
   "author": "",
   "license": "ISC",
