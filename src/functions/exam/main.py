@@ -1,7 +1,6 @@
-import flask
 import functions_framework
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import date
 from typing import Any, Optional
@@ -14,7 +13,7 @@ def examens_scraper(course, semester):
         soup = BeautifulSoup(result, "html.parser")
         name_box = soup.find(lambda tag: tag.name == "li" and "Examens" in tag.text)
         name = name_box.text.strip()  # strip() is used to remove starting and trailing
-    except:
+    except AttributeError:
         return None
 
     if name is None:
@@ -30,17 +29,16 @@ def get_semester():
     summer = ["01-05-" + current_year, "08-30-" + current_year]
     fall = ["01-09-" + current_year, "12-21-" + current_year]
 
-    d = date.today()
-    current_date = datetime(d.year, d.month, d.day)
+    date_today = date.today()
+    current_date = datetime(date_today.year, date_today.month, date_today.day)
 
-    if datetime.strptime(winter[0], '%m-%d-%Y') <= current_date <= datetime.strptime(winter[1], '%m-%d-%Y'):
+    if datetime.strptime(winter[0], "m-%d-%Y") <= current_date <= datetime.strptime(winter[1], "%m-%d-%Y"):
         return 2
-    elif datetime.strptime(summer[0], '%m-%d-%Y') <= current_date <= datetime.strptime(summer[1], '%m-%d-%Y'):
+    if datetime.strptime(summer[0], "%m-%d-%Y") <= current_date <= datetime.strptime(summer[1], "%m-%d-%Y"):
         return 3
-    elif datetime.strptime(fall[0], '%m-%d-%Y') <= current_date <= datetime.strptime(fall[1], '%m-%d-%Y'):
+    if datetime.strptime(fall[0], "%m-%d-%Y") <= current_date <= datetime.strptime(fall[1], "%m-%d-%Y"):
         return 1
-    else:
-        return 0
+    return 0
 
 def get_channel_name(request_json):
     channel_name = request_json.get("channel_name", None)
