@@ -1,5 +1,9 @@
-import dateparser
-import datetime
+import dateparser, datetime
+
+from typing import Any, Optional, Tuple
+
+import flask
+import functions_framework
 
 
 class Todo:
@@ -30,3 +34,9 @@ class Todo:
 
     def whenCreated(self):
         return self.createDate
+
+@functions_framework.http
+def todo(request: flask.Request) -> Tuple[str, int]:
+    request_json: Optional[Any] = request.get_json(silent=True)
+    return str(request_json), 200
+
