@@ -35,11 +35,11 @@ def get_semester() -> str:
     current_date = datetime(date_today.year, date_today.month, date_today.day)
 
     if datetime.strptime(winter[0], "%m-%d-%Y") <= current_date <= datetime.strptime(winter[1], "%m-%d-%Y"):
-        return "2"
-    if datetime.strptime(summer[0], "%m-%d-%Y") <= current_date <= datetime.strptime(summer[1], "%m-%d-%Y"):
-        return "3"
-    if datetime.strptime(fall[0], "%m-%d-%Y") <= current_date <= datetime.strptime(fall[1], "%m-%d-%Y"):
         return "1"
+    if datetime.strptime(summer[0], "%m-%d-%Y") <= current_date <= datetime.strptime(summer[1], "%m-%d-%Y"):
+        return "2"
+    if datetime.strptime(fall[0], "%m-%d-%Y") <= current_date <= datetime.strptime(fall[1], "%m-%d-%Y"):
+        return "3"
     return "0"
 
 
