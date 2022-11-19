@@ -28,6 +28,32 @@ jobs:
     steps:
       - uses: "actions/checkout@v3"
 
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+
+        with:
+          node-version: 18.x
+
+      - name: ts - NPM Install
+        working-directory: ./src/functions/ts
+        run: npm ci
+      - name: ts - Test
+        working-directory: ./src/functions/ts
+        run: npm test
+      - name: ts - Build
+        working-directory: ./src/functions/ts
+        run: npm run build
+
+      - name: poll - NPM Install
+        working-directory: ./src/functions/poll
+        run: npm ci
+      - name: poll - Test
+        working-directory: ./src/functions/poll
+        run: npm test
+      - name: poll - Build
+        working-directory: ./src/functions/poll
+        run: npm run build
+
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v0"
