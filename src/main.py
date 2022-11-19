@@ -200,7 +200,7 @@ async def on_message(message: message_type) -> None:
         data["params"] = message.content.split()[1:]
 
         response = treat_command(ctx, command_name, data)
-        
+
         if re.search("https://*", response):
             await ctx.send(response)
         else:
