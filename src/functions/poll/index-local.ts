@@ -1,8 +1,9 @@
-import express from 'express'
+import express, { json } from 'express'
 
 const index = require('./index')
 
 const server = express()
+server.use(json())
 
 server.post('*', index.js)
 
