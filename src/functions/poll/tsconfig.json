@@ -47,7 +47,7 @@
     // "emitDeclarationOnly": true,
     // "sourceMap": true,
     // "outFile": "./",
-    "outDir": "./build",
+    "outDir": "./dist",
     // "removeComments": true,
     // "noEmit": true,
     // "importHelpers": true,
