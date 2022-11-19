@@ -3,9 +3,11 @@ import functions_framework
 from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
+from datetime import date
 
-def examensScraper(course, semester, year):
-    url_link = f"https://etudier.uqam.ca/wshoraire/cours/{course}/{year}{semester}/7316"
+def examensScraper(course, semester):
+    currentYear = str(date.today().year)
+    url_link = f"https://etudier.uqam.ca/wshoraire/cours/{course}/{currentYear}{semester}/7316"
     try:
         result = requests.get(url_link).text
         soup = BeautifulSoup(result, "html.parser")
@@ -22,7 +24,6 @@ def examensScraper(course, semester, year):
     return dates
 
 def getSemester():
-    from datetime import date
     currentYear = str(date.today().year)
     winter = ["01-01-" + currentYear, "04-30-" + currentYear]
     summer = ["01-05-" + currentYear, "08-30-" + currentYear]
@@ -47,17 +48,31 @@ def getChannelName(request):
         channelName.replace("#", "")
     return channelName.lower()
 
-@functions_framework.http
-def infoCours(request):
-    """This is a template function that show how to send back message."""
+def displayExams(course, semester):
+    exams = examensScraper(course, semester)
 
+    if not exams:
+        return "Je n'ai rien trouvé"
+    else:
+        message = "Vos exams: \n"
+        message += "Intra: " + exams[0] + "\n"
+        message += "Finale: " + exams[1] + "\n"
+
+
+@functions_framework.http
+def examen(request):
+    """Function to return exam info for a channel"""
 
     request_json: Optional[Any] = request.get_json(silent=True)
 
     if request_json:
-        user_id = request_json.get("user_id", None)
-        if user_id:
-            return f"Hello Monsieur <@{user_id}>!", 200
+        request_json: Optional[Any] = request.get_json(silent=True)
 
-    return "Hello Monsieur!", 200
+        semester = getSemester()
+        course = getChannelName(request)
 
+        message = displayExams(course, semester)
+
+        return message
+    else:
+        return "Je n'ai rien trouvé"
