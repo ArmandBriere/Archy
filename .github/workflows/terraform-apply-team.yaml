@@ -1,0 +1,78 @@
+name: Deploy with terraform for production
+
+on:
+  workflow_dispatch:
+    inputs:
+      team-name:
+        type: choice
+        description: Team name
+        required: true
+        options:
+          - team_a
+          - team_b
+          - team_c
+          - team_d
+          - team_e
+          - team_f
+
+jobs:
+  plan:
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform/environments/${{ github.event.inputs.team-name }}
+    steps:
+      - uses: "actions/checkout@v3"
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+
+        with:
+          node-version: 18.x
+
+      - name: ts - NPM Install
+        working-directory: ./src/functions/ts
+        run: npm ci
+      - name: ts - Build
+        working-directory: ./src/functions/ts
+        run: npm run build
+
+      - name: poll - NPM Install
+        working-directory: ./src/functions/poll
+        run: npm ci
+      - name: poll - Test
+        working-directory: ./src/functions/poll
+        run: npm run test:ci
+      - name: poll - Build
+        working-directory: ./src/functions/poll
+        run: npm run build
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          token_format: "access_token"
+          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/github-actions-terraform-pool/providers/github-actions-provider"
+          service_account: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
+
+      - uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform lint
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve -no-color
