@@ -1,10 +1,11 @@
-from datetime import datetime
-from datetime import date
+from datetime import date, datetime
 from typing import Any, Optional
-from bs4 import BeautifulSoup
+
+import flask
 import functions_framework
 import requests
-import flask
+from bs4 import BeautifulSoup
+
 
 def examens_scraper(course: str, semester: str) -> list[str]:
     current_year = str(date.today().year)
@@ -15,14 +16,14 @@ def examens_scraper(course: str, semester: str) -> list[str]:
         name_box = soup.find(lambda tag: tag.name == "li" and "Examens" in tag.text)
         name = name_box.text.strip()  # strip() is used to remove starting and trailing
     except AttributeError:
-        return ""
+        return []
 
     if name is None:
-        return ""
-
+        return []
     name = name.replace("Examens: ", "")
     dates = name.split("et")
     return dates
+
 
 def get_semester() -> str:
     current_year = str(date.today().year)
@@ -41,6 +42,7 @@ def get_semester() -> str:
         return "1"
     return "0"
 
+
 def get_channel_name(request_json: Optional[Any]) -> str:
     channel_name = request_json.get("channel_name", None)
     if channel_name.include("#"):
@@ -48,6 +50,7 @@ def get_channel_name(request_json: Optional[Any]) -> str:
     if not channel_name:
         return ""
     return channel_name.lower()
+
 
 def display_exams(course: str, semester: str) -> str:
     exams = examens_scraper(course, semester)
@@ -62,6 +65,7 @@ def display_exams(course: str, semester: str) -> str:
         message += "Intra: " + exams[0] + "\n"
         message += "Finale: " + exams[1] + "\n"
     return message
+
 
 @functions_framework.http
 def exam(request: flask.Request) -> str:
