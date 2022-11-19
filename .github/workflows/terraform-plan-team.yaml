@@ -37,9 +37,6 @@ jobs:
       - name: ts - NPM Install
         working-directory: ./src/functions/ts
         run: npm ci
-      - name: ts - Test
-        working-directory: ./src/functions/ts
-        run: npm test
       - name: ts - Build
         working-directory: ./src/functions/ts
         run: npm run build
