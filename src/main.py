@@ -194,39 +194,21 @@ async def on_message(message: message_type) -> None:
     if ctx.invoked_with and not ctx.author.bot:
         command_name = str(ctx.invoked_with)
 
-        if not is_active_command(server_id, command_name):
-            await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-            return
-
-        function_path = get_function_path(command_name)
-
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
-
         data["channel_id"] = str(message.channel.id)
         data["message_id"] = str(message.id)
         data["mentions"] = [str(user_id) for user_id in ctx.message.raw_mentions]
         data["params"] = message.content.split()[1:]
 
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
-
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
-
-        increment_command_count(server_id, command_name)
+        response = treat_command(ctx, command_name, data)
+        
+        if re.search("https://*", response):
+            await ctx.send(response)
+        else:
+            embed: Embed = Embed(
+                description=response,
+                color=0x04AA6D,
+            )
+            await ctx.send(embed=embed)
 
     elif not message.author.bot:
 
