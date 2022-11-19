@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon src/index-local.ts",
     "test": "jest --watch",
+    "test:ci": "jest --ci",
     "build": "tsc",
     "clean": "rm -rf build"
   },
