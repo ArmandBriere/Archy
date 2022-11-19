@@ -29,5 +29,33 @@ describe('Payload', () => {
 
       expect(result.params).toEqual(expected)
     })
+
+    it('should leave a single param alone', () => {
+      const expected = ['message_id']
+
+      const params = ['message_id']
+
+      const dto: PayloadDto = {
+        params,
+      }
+
+      const result = dtoToPayload(dto)
+
+      expect(result.params).toEqual(expected)
+    })
+
+    it('should work with multiple non-quoted params', () => {
+      const expected = ['message_id hello world']
+
+      const params = ['message_id', 'hello', 'world']
+
+      const dto: PayloadDto = {
+        params,
+      }
+
+      const result = dtoToPayload(dto)
+
+      expect(result.params).toEqual(expected)
+    })
   })
 })

@@ -35,16 +35,26 @@ const dtoToParams = (dto: string[]): string[] => {
         remaining = remaining.substring(indexOfDelimiter + 1)
 
         segments.push(segment)
-        results.push(segments.join(' '))
 
         opened = false
-        segments = []
       } else {
+        opened = true
+
+        // Flush the current segments and start anew.
+        if (segments.length > 0) {
+          results.push(segments.join(' '))
+          segments = []
+        }
+
         // Start to process segments.
         remaining = remaining.substring(indexOfDelimiter + 1)
-        opened = true
       }
     }
+  }
+
+  if (segments.length > 0) {
+    // We have a non-closed param.
+    results.push(segments.join(' '))
   }
 
   return results
