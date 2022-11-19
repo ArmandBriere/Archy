@@ -1,8 +1,25 @@
 import flask
 import functions_framework
-
+from bs4 import BeautifulSoup
+import requests
 from datetime import datetime
 
+def examensScraper(course, semester, year):
+    url_link = f"https://etudier.uqam.ca/wshoraire/cours/{course}/{year}{semester}/7316"
+    try:
+        result = requests.get(url_link).text
+        soup = BeautifulSoup(result, "html.parser")
+        name_box = soup.find(lambda tag: tag.name == "li" and "Examens" in tag.text)
+        name = name_box.text.strip()  # strip() is used to remove starting and trailing
+    except:
+        return None
+
+    if name is None:
+        return None
+
+    name = name.replace("Examens: ", "")
+    dates = name.split("et")
+    return dates
 
 def getSemester():
     from datetime import date
@@ -43,3 +60,4 @@ def infoCours(request):
             return f"Hello Monsieur <@{user_id}>!", 200
 
     return "Hello Monsieur!", 200
+
