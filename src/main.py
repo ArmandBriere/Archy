@@ -138,7 +138,8 @@ def publish_message(data: Dict[str, str], topic_id: str) -> None:
 def increment_command_count(server_id: str, command_name: str) -> None:
     function_collection: CollectionReference = db.collection("servers").document(server_id).collection("functions")
     doc_ref: DocumentReference = function_collection.document(command_name)
-    doc_ref.update({"count": Increment(1)})
+    if doc_ref.get().exists:
+        doc_ref.update({"count": Increment(1)})
 
 
 @bot.event
