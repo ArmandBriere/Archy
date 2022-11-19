@@ -74,7 +74,7 @@ def createTodo(text, mentions, user_id):
 
 
 def getTodo(todoId, title):
-    pass
+
 
 def getAllTodo(user_id):
     pass
@@ -100,14 +100,18 @@ def todo(request: flask.Request) -> Tuple[str, int]:
         mentions = request_json["mentions"]
         if not text:  # !todo
             return USAGE, 200
-        elif text[0].lower() == "create":
-            return createTodo(user_id, text[1:], mentions, user_id)
-        elif text[0].lower() == "update":
-            return updateTodo(text[1:], mentions, user_id)
-        elif text[0].lower() == "list":
-            return listTodos(text[1:], mentions, user_id)
-        else:
+        try:
+            if text[0].lower() == "create":
+                return str(createTodo(text[1:], mentions, user_id)), 200
+            elif text[0].lower() == "update":
+                return str(updateTodo(text[1:], mentions, user_id)), 200
+            elif text[0].lower() == "list":
+                return str(listTodos(text[1:], mentions, user_id)), 200
+            else:
+                return USAGE, 200
+        except:
             return USAGE, 200
+
 
 
 
