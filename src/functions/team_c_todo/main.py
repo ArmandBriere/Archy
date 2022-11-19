@@ -23,15 +23,6 @@ class Todo:
         self.description = description
         self.collabs = collabs
 
-    def update(self, date=None, title=None, description=None, collabs=None):
-        if date:
-            self.date = date
-        if title:
-            self.title =title
-        if description:
-            self.description = description
-        if collabs:
-            self.collabs = collabs
 
     def __repr__(self):
         return """
@@ -40,7 +31,8 @@ class Todo:
         To do before : {2}
         By user : {3}
         Collabs : {4}
-        """.format(self.title, self.createDate, self.date, self.who, str(self.collabs))
+        Description : {5}
+        """.format(self.title, self.createDate, self.date, self.who, str(self.collabs), self.description)
 
     def whenCreated(self):
         return self.createDate
@@ -49,12 +41,43 @@ class Todo:
 def createTodo(text, mentions, user_id):
     title = ""
     for i in range(len(text)):
-        title += text[i]+" "
+        if i+1 == len(text) and "%" not in text[i]:
+            raise ValueError # Pas de date ou quoi que ce soit après le titre
         if "%" in text[i]:
             text = text[i:]
             break
-    if
+        title += text[i] + " "
+    if "%" not in text[0]:
+        raise ValueError # pas d'indicateur de date dans les arguments
+    date_string= ""
+    for i in range(len(text)):
+        if '"' in text[i]:
+            text = text[i:]
+            break
+        date_string += text[i] + " "
+    date = dateparser.parse(date_string.strip("%"))
+    if date is None:
+        raise ValueError # la date n'est pas correcte
 
+    if '"' not in str(text):
+        return str(Todo(user_id, title=title, date=date, collabs=mentions))
+    else:
+        description = text[0].strip('"')
+        if len(text)>0:
+            text = text[1:]
+        for i in range(len(text)):
+            if '"' in text[i]:
+                description += text.strip('"')
+                break
+            description += text[i] + " "
+        return str(Todo(user_id, title=title, date=date, description=description, collabs=mentions))
+
+
+def getTodo(todoId, title):
+    pass
+
+def getAllTodo(user_id):
+    pass
 
 def updateTodo(text, mentions, user_id):
     pass
@@ -78,7 +101,7 @@ def todo(request: flask.Request) -> Tuple[str, int]:
         if not text:  # !todo
             return USAGE, 200
         elif text[0].lower() == "create":
-            return createTodo(text[1:], mentions, user_id)
+            return createTodo(user_id, text[1:], mentions, user_id)
         elif text[0].lower() == "update":
             return updateTodo(text[1:], mentions, user_id)
         elif text[0].lower() == "list":
