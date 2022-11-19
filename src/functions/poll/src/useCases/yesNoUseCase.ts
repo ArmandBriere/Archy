@@ -1,12 +1,8 @@
-import { promptify } from '../utils/promptify'
-import { Payload } from '../types/Payload'
-import { readYesNoPrompt } from '../types/YesNoPrompt'
+import { promptifyYesNo } from '../utils/promptify'
+import { YesNoPrompt } from '../types/prompts/YesNoPrompt'
 
-const yesNoUseCase = (payload: Payload): string | null => {
-  const prompt = readYesNoPrompt(payload)
-  if (!prompt) return null
-
-  const result = promptify(prompt.prompt)
+const yesNoUseCase = (prompt: YesNoPrompt): string => {
+  const result = promptifyYesNo(prompt.prompt)
 
   return result
 }

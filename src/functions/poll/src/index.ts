@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
+import { handlePrompt } from './handlers/promptHandler'
+import { parseToPrompt } from './parsers/PayloadParser'
 import { dtoToPayload, Payload, PayloadDto } from './types/Payload'
-import { yesNoUseCase } from './useCases/yesNoUseCase'
+import { promptTypes } from './types/PromptType'
 
 /**
  * Responds to any HTTP request.
@@ -23,7 +25,13 @@ exports.poll = (request: Request, res: Response) => {
     return
   }
 
-  const result = yesNoUseCase(payload)
+  const prompt = parseToPrompt(payload)
+  if (prompt.type === promptTypes.invalid) {
+    res.status(400).send(prompt.message)
+    return
+  }
+
+  const result = handlePrompt(prompt)
 
   res.status(200).send(result)
 };
