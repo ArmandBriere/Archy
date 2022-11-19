@@ -46,7 +46,7 @@ jobs:
         run: npm ci
       - name: poll - Test
         working-directory: ./src/functions/poll
-        run: npm test
+        run: npm test:ci
       - name: poll - Build
         working-directory: ./src/functions/poll
         run: npm run build
