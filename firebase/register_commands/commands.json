@@ -115,6 +115,14 @@
                 "!video",
                 "!video cute cats"
             ]
+        },
+        {
+            "name" : "todo",
+            "description": "Creates or lists todos.",
+            "examples": [
+                "!todo",
+                "!todo 'Faire la vaisselle' demain à 18h00 "
+            ]
         }
     ]
 }
