@@ -45,15 +45,49 @@ class Todo:
     def whenCreated(self):
         return self.createDate
 
+
+def createTodo(text, mentions, user_id):
+    title = ""
+    for i in range(len(text)):
+        title += text[i]+" "
+        if "%" in text[i]:
+            text = text[i:]
+            break
+    if
+
+
+def updateTodo(text, mentions, user_id):
+    pass
+
+
+def deleteTodo(text, mentions, user_id):
+    pass
+
+
+def listTodos(text, mentions, user_id):
+    pass
+
+
 @functions_framework.http
 def todo(request: flask.Request) -> Tuple[str, int]:
     request_json: Optional[Any] = request.get_json(silent=True)
     if request_json:
         user_id = request_json["user_id"]
         text = request_json["params"]
-        collabs = request_json["mentions"]
+        mentions = request_json["mentions"]
         if not text:  # !todo
             return USAGE, 200
-        elif
+        elif text[0].lower() == "create":
+            return createTodo(text[1:], mentions, user_id)
+        elif text[0].lower() == "update":
+            return updateTodo(text[1:], mentions, user_id)
+        elif text[0].lower() == "list":
+            return listTodos(text[1:], mentions, user_id)
+        else:
+            return USAGE, 200
+
+
+
+
 
 
