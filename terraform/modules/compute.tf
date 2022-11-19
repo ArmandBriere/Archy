@@ -9,6 +9,7 @@ resource "google_compute_instance" "default" {
   zone         = "us-central1-a"
 
   metadata = {
+    "google-logging-enabled"    = true
     "gce-container-declaration" = <<-EOT
         # DISCLAIMER:
         # This container declaration format is not a public API and may change without
@@ -19,11 +20,6 @@ resource "google_compute_instance" "default" {
           containers:
           - image: us.gcr.io/archy-f06ed/archy-prod
             name: archy-prod
-            stdin: false
-            tty: false
-            volumeMounts: []
-          - image: us.gcr.io/archy-f06ed/archy-dev
-            name: archy-dev
             stdin: false
             tty: false
             volumeMounts: []

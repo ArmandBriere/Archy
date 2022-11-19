@@ -112,7 +112,8 @@
             "name": "video",
             "description": "Return the requested youtube video.",
             "examples": [
-                "!video"
+                "!video",
+                "!video cute cats"
             ]
         }
     ]

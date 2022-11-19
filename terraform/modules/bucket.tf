@@ -11,7 +11,7 @@ resource "google_storage_bucket" "froge" {
 }
 
 resource "google_storage_bucket" "function_bucket" {
-  name     = "${var.project_id}-function-${var.environment}"
-  location = var.region
+  name          = "${var.project_id}-function-${var.environment}"
+  location      = var.region
   storage_class = "STANDARD"
 }

@@ -96,7 +96,7 @@ export default function handler(req: NextRequest) {
     const expFormatted = kFormatter(+exp!);
     const expNeededFormatted = kFormatter(+expNeeded!);
 
-    let randomFroge = `https://storage.googleapis.com/froge-public-bucket/${getRandomFroge()}`;
+    let randomFroge = `https://storage.googleapis.com/froge-public-bucket-prod/${getRandomFroge()}`;
 
     return new ImageResponse(
       (
@@ -302,7 +302,7 @@ export default function handler(req: NextRequest) {
     return new ImageResponse(
       (
         <div style={{ display: "flex", background: "transparent" }}>
-          <img src="https://storage.googleapis.com/froge-public-bucket/archy.jpg" />
+          <img src="https://storage.googleapis.com/froge-public-bucket-prod/archy.jpg" />
         </div>
       ),
       { width: 448, height: 448 }
