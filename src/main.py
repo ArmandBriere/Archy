@@ -204,6 +204,7 @@ async def on_message(message: message_type) -> None:
         google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
 
         data["channel_id"] = str(message.channel.id)
+        data["channel_name"] = str(message.channel.name)
         data["message_id"] = str(message.id)
         data["mentions"] = [str(user_id) for user_id in ctx.message.raw_mentions]
         data["params"] = message.content.split()[1:]
