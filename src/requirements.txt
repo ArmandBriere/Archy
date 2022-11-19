@@ -78,3 +78,4 @@ watchdog==1.0.2
 Werkzeug==2.1.2
 wrapt==1.14.1
 yarl==1.7.2
+beautifulsoup4==4.11.1
