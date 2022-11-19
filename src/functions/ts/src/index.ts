@@ -6,6 +6,6 @@ import { Request, Response } from 'express'
  * @param _ HTTP request context.
  * @param res HTTP response context.
  */
-exports.js = (_: Request, res: Response) => {
+exports.ts = (_: Request, res: Response) => {
   res.status(200).send("TypeScript has a good type system!")
 };

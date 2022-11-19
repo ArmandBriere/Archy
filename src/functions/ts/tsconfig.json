@@ -24,7 +24,7 @@
 
     /* Modules */
     "module": "commonjs",
-    // "rootDir": "./",
+    "rootDir": "./src",
     // "moduleResolution": "node",
     // "baseUrl": "./",
     // "paths": {},
@@ -47,7 +47,7 @@
     // "emitDeclarationOnly": true,
     // "sourceMap": true,
     // "outFile": "./",
-    // "outDir": "./",
+    "outDir": "./build",
     // "removeComments": true,
     // "noEmit": true,
     // "importHelpers": true,

@@ -8,7 +8,7 @@ import { yesNoUseCase } from './useCases/yesNoUseCase'
  * @param _ HTTP request context.
  * @param res HTTP response context.
  */
-exports.js = (request: Request, res: Response) => {
+exports.poll = (request: Request, res: Response) => {
   if (request.body === null || request.body === undefined) {
     res.status(400).send('Il vous manque des paramètres, le bon format est : `!poll &lt;question&gt;`')
     return
