@@ -9,6 +9,7 @@ resource "google_compute_instance" "default" {
   zone         = "us-central1-a"
 
   metadata = {
+    "google-logging-enabled"    = true
     "gce-container-declaration" = <<-EOT
         # DISCLAIMER:
         # This container declaration format is not a public API and may change without
