@@ -12,7 +12,7 @@ import { promptTypes } from './types/PromptType'
  */
 exports.poll = (request: Request, res: Response) => {
   if (request.body === null || request.body === undefined) {
-    res.status(400).send('Il vous manque des paramètres, le bon format est : `!poll &lt;question&gt;`')
+    res.status(200).send('Il vous manque des paramètres, le bon format est : `!poll &lt;question&gt;`')
     return
   }
 
@@ -21,13 +21,13 @@ exports.poll = (request: Request, res: Response) => {
     const dto = request.body as PayloadDto
     payload = dtoToPayload(dto)
   } catch {
-    res.status(400).send('Erreur de lecture, le bon format de la commande est : `!poll &lt;question&gt;')
+    res.status(200).send('Erreur de lecture, le bon format de la commande est : `!poll &lt;question&gt;')
     return
   }
 
   const prompt = parseToPrompt(payload)
   if (prompt.type === promptTypes.invalid) {
-    res.status(400).send(prompt.message)
+    res.status(200).send(prompt.message)
     return
   }
 
