@@ -163,6 +163,22 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
     },
+    ts : {
+      description = "Template of a function in TypeScript"
+      runtime     = "nodejs18"
+      entry_point = "ts"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
+    poll : {
+      description = "Poll command"
+      runtime     = "nodejs18"
+      entry_point = "poll"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    }
   }
 }
 
