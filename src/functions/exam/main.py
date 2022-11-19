@@ -4,9 +4,9 @@ from typing import Any, Optional
 from bs4 import BeautifulSoup
 import functions_framework
 import requests
+import flask
 
-
-def examens_scraper(course, semester):
+def examens_scraper(course: str, semester: str) -> list[str]:
     current_year = str(date.today().year)
     url_link = f"https://etudier.uqam.ca/wshoraire/cours/{course}/{current_year}{semester}/7316"
     try:
@@ -15,16 +15,16 @@ def examens_scraper(course, semester):
         name_box = soup.find(lambda tag: tag.name == "li" and "Examens" in tag.text)
         name = name_box.text.strip()  # strip() is used to remove starting and trailing
     except AttributeError:
-        return None
+        return ""
 
     if name is None:
-        return None
+        return ""
 
     name = name.replace("Examens: ", "")
     dates = name.split("et")
     return dates
 
-def get_semester():
+def get_semester() -> str:
     current_year = str(date.today().year)
     winter = ["01-01-" + current_year, "04-30-" + current_year]
     summer = ["01-05-" + current_year, "08-30-" + current_year]
@@ -34,14 +34,14 @@ def get_semester():
     current_date = datetime(date_today.year, date_today.month, date_today.day)
 
     if datetime.strptime(winter[0], "%m-%d-%Y") <= current_date <= datetime.strptime(winter[1], "%m-%d-%Y"):
-        return 2
+        return "2"
     if datetime.strptime(summer[0], "%m-%d-%Y") <= current_date <= datetime.strptime(summer[1], "%m-%d-%Y"):
-        return 3
+        return "3"
     if datetime.strptime(fall[0], "%m-%d-%Y") <= current_date <= datetime.strptime(fall[1], "%m-%d-%Y"):
-        return 1
-    return 0
+        return "1"
+    return "0"
 
-def get_channel_name(request_json):
+def get_channel_name(request_json: Optional[Any]) -> str:
     channel_name = request_json.get("channel_name", None)
     if channel_name.include("#"):
         channel_name.replace("#", "")
@@ -49,7 +49,7 @@ def get_channel_name(request_json):
         return ""
     return channel_name.lower()
 
-def display_exams(course, semester):
+def display_exams(course: str, semester: str) -> str:
     exams = examens_scraper(course, semester)
     message = ""
 
@@ -64,7 +64,7 @@ def display_exams(course, semester):
     return message
 
 @functions_framework.http
-def exam(request):
+def exam(request: flask.Request) -> str:
     """Function to return exam info for a channel"""
 
     request_json: Optional[Any] = request.get_json(silent=True)
