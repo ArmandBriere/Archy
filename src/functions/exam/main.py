@@ -1,9 +1,9 @@
-import functions_framework
-import requests
-from bs4 import BeautifulSoup
 from datetime import datetime
 from datetime import date
 from typing import Any, Optional
+from bs4 import BeautifulSoup
+import functions_framework
+import requests
 
 def examens_scraper(course, semester):
     current_year = str(date.today().year)
@@ -54,7 +54,7 @@ def display_exams(course, semester):
 
     if not exams:
         return "Je n'ai rien trouvé"
-    elif len(exams) == 1:
+    if len(exams) == 1:
         message += "Exam finale: " + exams[0] + "\n"
     else:
         message += "Vos exams: \n"
@@ -71,9 +71,6 @@ def exam(request):
     if request_json:
         semester = get_semester()
         course = get_channel_name(request_json)
-
         message = display_exams(course, semester)
-
         return message
-    else:
-        return "Je n'ai rien trouvé"
+    return "Je n'ai rien trouvé"
