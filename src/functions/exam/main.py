@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import functions_framework
 import requests
 
+
 def examens_scraper(course, semester):
     current_year = str(date.today().year)
     url_link = f"https://etudier.uqam.ca/wshoraire/cours/{course}/{current_year}{semester}/7316"
@@ -74,3 +75,4 @@ def exam(request):
         message = display_exams(course, semester)
         return message
     return "Je n'ai rien trouvé"
+
