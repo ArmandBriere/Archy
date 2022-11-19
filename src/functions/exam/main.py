@@ -44,9 +44,7 @@ def get_semester() -> str:
 
 
 def get_channel_name(request_json: Optional[Any]) -> str:
-    channel_name = request_json.get("channel_name", None)
-    if channel_name.include("#"):
-        channel_name.replace("#", "")
+    channel_name: str = request_json.get("channel_name", None)
     if not channel_name:
         return ""
     return channel_name.lower()
