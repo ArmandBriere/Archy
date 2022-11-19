@@ -43,6 +43,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     }
+    exam : {
+      description = "Get exam information"
+      runtime     = "python39"
+      entry_point = "exam"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    }
     hello : {
       description = "Template of a function in Python"
       runtime     = "python39"
