@@ -75,4 +75,3 @@ def exam(request):
         message = display_exams(course, semester)
         return message
     return "Je n'ai rien trouvé"
-
