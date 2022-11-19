@@ -199,7 +199,7 @@ async def on_message(message: message_type) -> None:
         data["mentions"] = [str(user_id) for user_id in ctx.message.raw_mentions]
         data["params"] = message.content.split()[1:]
 
-        response = treat_command(ctx, command_name, data)
+        response = await treat_command(ctx, command_name, data)
 
         if re.search("https://*", response):
             await ctx.send(response)
