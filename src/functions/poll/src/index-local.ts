@@ -5,6 +5,6 @@ const index = require('./index')
 const server = express()
 server.use(json())
 
-server.post('*', index.js)
+server.post('*', index.poll)
 
 server.listen(8888)

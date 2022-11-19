@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
+import { handlePrompt } from './handlers/promptHandler'
+import { parseToPrompt } from './parsers/PayloadParser'
 import { dtoToPayload, Payload, PayloadDto } from './types/Payload'
-import { yesNoUseCase } from './useCases/yesNoUseCase'
+import { promptTypes } from './types/PromptType'
 
 /**
  * Responds to any HTTP request.
@@ -10,7 +12,7 @@ import { yesNoUseCase } from './useCases/yesNoUseCase'
  */
 exports.poll = (request: Request, res: Response) => {
   if (request.body === null || request.body === undefined) {
-    res.status(400).send('Il vous manque des paramètres, le bon format est : `!poll &lt;question&gt;`')
+    res.status(200).send('Il vous manque des paramètres, le bon format est : `!poll &lt;question&gt;`')
     return
   }
 
@@ -19,11 +21,17 @@ exports.poll = (request: Request, res: Response) => {
     const dto = request.body as PayloadDto
     payload = dtoToPayload(dto)
   } catch {
-    res.status(400).send('Erreur de lecture, le bon format de la commande est : `!poll &lt;question&gt;')
+    res.status(200).send('Erreur de lecture, le bon format de la commande est : `!poll &lt;question&gt;')
     return
   }
 
-  const result = yesNoUseCase(payload)
+  const prompt = parseToPrompt(payload)
+  if (prompt.type === promptTypes.invalid) {
+    res.status(200).send(prompt.message)
+    return
+  }
+
+  const result = handlePrompt(prompt)
 
   res.status(200).send(result)
 };
