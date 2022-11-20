@@ -178,6 +178,14 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
+    },
+    pollCheck : {
+      description = "Poll (check) command"
+      runtime     = "nodejs18"
+      entry_point = "pollCheck"
+      timeout     = 15
+      memory      = 256
+      secrets     = ["DISCORD_TOKEN"]
     }
   }
 }
