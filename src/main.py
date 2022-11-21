@@ -361,8 +361,11 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     if mention:
         data["mentions"] = [str(mention.id)]
 
+    interaction = ctx.respond("Loading...")
     response = await treat_command(ctx, command_name, data)
-    await ctx.respond(file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"))
+    await interaction.edit_original_response(
+        content=None, file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png")
+    )
 
 
 if __name__ == "__main__":
