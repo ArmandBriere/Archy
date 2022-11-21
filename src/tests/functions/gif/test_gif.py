@@ -1,6 +1,9 @@
+import base64
 import json
 import os
 from unittest.mock import MagicMock, patch
+
+import requests
 
 from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, extract_data_from_response, gif
 
@@ -58,13 +61,15 @@ def test_gif_empty_string_params():
 
 
 def test_extract_data_correct_tenor_response():
-    expected_result = "https://c.tenor.com/HvtIOMNuwhYAAAAC/wat-what.gif"
+    url = "https://c.tenor.com/HvtIOMNuwhYAAAAC/wat-what.gif"
+    request = requests.get(url=url)
+    expected_result = f"data:image/gif;base64,{str(base64.b64encode(request.content))}"
     response_content_dict = {
         "results": [
             {
                 "media_formats": {
                     "gif": {
-                        "url": expected_result,
+                        "url": url,
                     }
                 }
             }

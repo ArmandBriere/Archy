@@ -42,7 +42,8 @@ def extract_data_from_response(response_status: int, response_content: bytes) ->
 
         try:
             gif_data = requests.get(url=top_gifs["results"][0]["media_formats"]["gif"]["url"])
-            response = f"data:image/gif;base64,{base64.b64encode(gif_data.content)}"
+            response = f"data:image/gif;base64,{str(base64.b64encode(gif_data.content))}"
+            return response
         except (KeyError, IndexError):
             return "https://tenor.com/view/404-not-found-error-20th-century-fox-gif-24907780"
 
