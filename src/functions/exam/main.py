@@ -16,35 +16,39 @@ def examens_scraper(course: str, semester: str) -> list[str]:
         result = requests.get(url_link).text
         soup = BeautifulSoup(result, "html.parser")
         name_box = soup.find(lambda tag: tag.name == "li" and "Examens" in tag.text)
-        name = name_box.text.strip()  # strip() is used to remove starting and trailing
+        name = name_box.text.strip()
     except AttributeError:
         return []
-
     if name is None:
         return []
-    name = name.replace("Examens: ", "")
-    dates = name.split("et")
-    return dates
+    return name.replace("Examens: ", "").split("et")
+
+
+semester_id = {
+    "not_found": "0",
+    "winter": "1",
+    "summer": "2",
+    "fall": "3",
+}
 
 
 def get_semester() -> str:
     """Function that returns the current semester"""
 
     current_year = str(date.today().year)
-    winter = ["01-01-" + current_year, "04-30-" + current_year]
-    summer = ["01-05-" + current_year, "08-30-" + current_year]
-    fall = ["01-09-" + current_year, "12-21-" + current_year]
-
+    fall_start, fall_end = f"01-09-{current_year}", f"12-21-{current_year}"
+    winter_start, winter_end = f"01-01-{current_year}", f"04-30-{current_year}"
+    summer_start, summer_end = f"01-05-{current_year}", f"08-30-{current_year}"
     date_today = date.today()
     current_date = datetime(date_today.year, date_today.month, date_today.day)
 
-    if datetime.strptime(winter[0], "%m-%d-%Y") <= current_date <= datetime.strptime(winter[1], "%m-%d-%Y"):
-        return "1"
-    if datetime.strptime(summer[0], "%m-%d-%Y") <= current_date <= datetime.strptime(summer[1], "%m-%d-%Y"):
-        return "2"
-    if datetime.strptime(fall[0], "%m-%d-%Y") <= current_date <= datetime.strptime(fall[1], "%m-%d-%Y"):
-        return "3"
-    return "0"
+    if datetime.strptime(winter_start, "%m-%d-%Y") <= current_date <= datetime.strptime(winter_end, "%m-%d-%Y"):
+        return semester_id["winter"]
+    if datetime.strptime(summer_start, "%m-%d-%Y") <= current_date <= datetime.strptime(summer_end, "%m-%d-%Y"):
+        return semester_id["summer"]
+    if datetime.strptime(fall_start, "%m-%d-%Y") <= current_date <= datetime.strptime(fall_end, "%m-%d-%Y"):
+        return semester_id["fall"]
+    return semester_id["not_found"]
 
 
 def get_channel_name(request_json: Optional[Any]) -> str:
@@ -68,8 +72,8 @@ def display_exams(course: str, semester: str) -> str:
         message += "Exam finale: " + exams[0] + "\n"
     else:
         message += "Vos exams: \n"
-        message += "Intra: " + exams[0] + "\n"
-        message += "Finale: " + exams[1] + "\n"
+        message += f"Intra: {exams[0]}\n"
+        message += f"Final: {exams[1]}\n"
     return message
 
 
@@ -84,4 +88,4 @@ def exam(request: flask.Request) -> str:
         course = get_channel_name(request_json)
         message = display_exams(course, semester)
         return message
-    return "Je n'ai rien trouvé"
+    return "Sorry, I didn't find anything"
