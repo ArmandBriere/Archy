@@ -3,6 +3,7 @@ package level
 import (
 	"context"
 	"encoding/json"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"math"
@@ -72,7 +73,7 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	formatedUrl.WriteString("&level_exp_needed=")
 	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
 
-	res, err := http.Get(formatedUrl)
+	res, err := http.Get(formatedUrl.String())
 	if err != nil {
 		log.Fatalln(err)
 	}
