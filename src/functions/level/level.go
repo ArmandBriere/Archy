@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -81,7 +81,7 @@ func Level(w http.ResponseWriter, r *http.Request) {
 
 	defer res.Body.Close()
 
-	image, err := ioutil.ReadAll(res.Body)
+	image, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatalln(err)
 	}
