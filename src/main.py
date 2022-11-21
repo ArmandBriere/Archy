@@ -209,6 +209,8 @@ async def on_message(message: message_type) -> None:
             await ctx.send(response)
         elif re.search("data:image/png;base64,*", response):
             await ctx.send(file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"))
+        elif re.search("data:image/gif;base64,*", response):
+            await ctx.send(file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.gif"))
         else:
             embed: Embed = Embed(
                 description=response,
@@ -320,7 +322,11 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=True)
         "params": str(query.split(" ")),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    response = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(
+        content=None, file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png")
+    )
 
 
 @bot.slash_command(description="Template function in Java")
