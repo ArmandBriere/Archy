@@ -67,9 +67,9 @@ def display_exams(course: str, semester: str) -> str:
     message = ""
 
     if not exams:
-        return "Je n'ai rien trouvé"
+        return "Sorry, I didn't find anything"
     if len(exams) == 1:
-        message += "Exam finale: " + exams[0] + "\n"
+        message += f"Final: {exams[0]}\n"
     else:
         message += "Vos exams: \n"
         message += f"Intra: {exams[0]}\n"
