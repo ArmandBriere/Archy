@@ -3,7 +3,9 @@ package level
 import (
 	"context"
 	"encoding/json"
+	"encoding/base64"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -72,7 +74,25 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	formatedUrl.WriteString("&level_exp_needed=")
 	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
 
-	fmt.Fprint(w, formatedUrl.String())
+	res, err := http.Get(formatedUrl.String())
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer res.Body.Close()
+
+	image, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var base64img string
+
+	base64img += "data:image/png;base64,"
+
+	base64img += base64.StdEncoding.EncodeToString(image)
+
+	fmt.Fprint(w, base64img)
 }
 
 // Get the user info from Firestore
