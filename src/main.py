@@ -253,6 +253,20 @@ def get_function_path(command_name: str) -> str:
     return f"{FUNCTION_BASE_URL}{ENVIRONMENT}_{command_name}"
 
 
+@bot.slash_command(description="go")
+async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
+
+    server_id = str(ctx.guild.id)
+    command_name = "go"
+
+    data = {
+        "server_id": server_id,
+        "channel_id": "Slash_Command",
+    }
+
+    await ctx.respond(await treat_command(ctx, command_name, data))
+
+
 @bot.slash_command(description="Hello! :)")
 async def hello(ctx: Context) -> None:
 
