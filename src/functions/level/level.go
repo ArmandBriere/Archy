@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"encoding/base64"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -78,7 +79,12 @@ func Level(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err)
 	}
 
-	image := res.Body
+	defer res.Body.Close()
+
+	image, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	var base64img string
 
