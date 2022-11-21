@@ -19,10 +19,10 @@ def examens_scraper(course: str, semester: str) -> list[str]:
         name = name_box.text.strip()
     except AttributeError:
         return []
-
     if name is None:
         return []
     return name.replace("Examens: ", "").split("et")
+
 
 semester_id = {
     "not_found": "0",
@@ -30,6 +30,8 @@ semester_id = {
     "summer": "2",
     "fall": "3",
 }
+
+
 def get_semester() -> str:
     """Function that returns the current semester"""
 
@@ -40,11 +42,23 @@ def get_semester() -> str:
     date_today = date.today()
     current_date = datetime(date_today.year, date_today.month, date_today.day)
 
-    if datetime.strptime(winter_start, "%m-%d-%Y") <= current_date <= datetime.strptime(winter_end, "%m-%d-%Y"):
+    if (
+        datetime.strptime(winter_start, "%m-%d-%Y")
+        <= current_date
+        <= datetime.strptime(winter_end, "%m-%d-%Y")
+    ):
         return semester_id["winter"]
-    if datetime.strptime(summer_start, "%m-%d-%Y") <= current_date <= datetime.strptime(summer_end, "%m-%d-%Y"):
+    if (
+        datetime.strptime(summer_start, "%m-%d-%Y")
+        <= current_date
+        <= datetime.strptime(summer_end, "%m-%d-%Y")
+    ):
         return semester_id["summer"]
-    if datetime.strptime(fall_start, "%m-%d-%Y") <= current_date <= datetime.strptime(fall_end, "%m-%d-%Y"):
+    if (
+        datetime.strptime(fall_start, "%m-%d-%Y")
+        <= current_date
+        <= datetime.strptime(fall_end, "%m-%d-%Y")
+    ):
         return semester_id["fall"]
     return semester_id["not_found"]
 
