@@ -72,7 +72,20 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	formatedUrl.WriteString("&level_exp_needed=")
 	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
 
-	fmt.Fprint(w, formatedUrl.String())
+	res, err := http.Get(formatedUrl)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	image := res.Body
+
+	var base64img string
+
+	base64img += "data:image/png;base64,"
+
+	base64img += base64.StdEncoding.EncodeToString(image)
+
+	fmt.Fprint(w, base64img)
 }
 
 // Get the user info from Firestore

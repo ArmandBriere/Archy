@@ -1,14 +1,16 @@
+import base64
 import json
 import logging
 import os
 import re
 from datetime import datetime
+from io import BytesIO
 from typing import Dict
 
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Guild, Intents, Option, User
+from discord import DMChannel, Embed, File, Guild, Intents, Option, User
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -205,6 +207,8 @@ async def on_message(message: message_type) -> None:
 
         if re.search("https://*", response):
             await ctx.send(response)
+        elif re.search("data:image/png;base64,*", response):
+            await ctx.send(file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"))
         else:
             embed: Embed = Embed(
                 description=response,
@@ -357,7 +361,8 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     if mention:
         data["mentions"] = [str(mention.id)]
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    response = await treat_command(ctx, command_name, data)
+    await ctx.respond(file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"))
 
 
 if __name__ == "__main__":
