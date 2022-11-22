@@ -1,9 +1,6 @@
-import base64
 import json
 import os
 from unittest.mock import MagicMock, patch
-
-import requests
 
 from functions.gif.main import DEFAULT_GIF, UNKNOWN_GIF, extract_data_from_response, gif
 
