@@ -61,15 +61,13 @@ def test_gif_empty_string_params():
 
 
 def test_extract_data_correct_tenor_response():
-    url = "https://c.tenor.com/HvtIOMNuwhYAAAAC/wat-what.gif"
-    request = requests.get(url=url)
-    expected_result = f"data:image/gif;base64,{str(base64.b64encode(request.content))}"
+    expected_result = "https://c.tenor.com/HvtIOMNuwhYAAAAC/wat-what.gif"
     response_content_dict = {
         "results": [
             {
                 "media_formats": {
                     "gif": {
-                        "url": url,
+                        "url": expected_result,
                     }
                 }
             }

@@ -29,7 +29,9 @@ def gif(request: flask.Request) -> Tuple[str, int]:
             f"https://tenor.googleapis.com/v2/search?q={query}&key={api_key}&client_key=Archy&limit=1"
         )
 
-        return extract_data_from_response(response.status_code, response.content), 200
+        url = extract_data_from_response(response.status_code, response.content)
+        gif_data = requests.get(url=url).content
+        return f"data:iamge/gif;base64,{base64.b64encode(gif_data)}", 200
 
     return DEFAULT_GIF, 200
 
@@ -41,9 +43,7 @@ def extract_data_from_response(response_status: int, response_content: bytes) ->
         top_gifs = json.loads(response_content)
 
         try:
-            gif_data = requests.get(url=top_gifs["results"][0]["media_formats"]["gif"]["url"])
-            response = f"data:image/gif;base64,{str(base64.b64encode(gif_data.content))}"
-            return response
+            return requests.get(url=top_gifs["results"][0]["media_formats"]["gif"]["url"])
         except (KeyError, IndexError):
             return "https://tenor.com/view/404-not-found-error-20th-century-fox-gif-24907780"
 
