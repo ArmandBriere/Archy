@@ -38,7 +38,11 @@ COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 # Discord bot settings
 intents = Intents.all()
 
-bot: Bot = Bot(command_prefix=COMMAND_PREFIX, description="Serverless commands discord bot", intents=intents)
+bot: Bot = Bot(
+    command_prefix=COMMAND_PREFIX,
+    description="Serverless commands discord bot",
+    intents=intents,
+)
 
 # Firestore
 PROJECT_ID = "archy-f06ed"
@@ -267,8 +271,9 @@ async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
         "server_id": server_id,
         "channel_id": "Slash_Command",
     }
-
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Hello! :)")
@@ -280,8 +285,9 @@ async def hello(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
         "user_id": str(ctx.author.id),
     }
-
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Return the leaderboard")
@@ -293,7 +299,9 @@ async def leaderboard(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="answers your question")
@@ -307,7 +315,8 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
 
     response = f"Question: {question}\nAnswer: {await treat_command(ctx, command_name, data)}"
 
-    await ctx.respond(response)
+    interaction = await ctx.respond("Loading...")
+    await interaction.edit_original_response(content=response)
 
 
 @bot.slash_command(description="Request a gif")
@@ -320,7 +329,9 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=True)
         "params": str(query.split(" ")),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Template function in Java")
@@ -332,7 +343,9 @@ async def java(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Return a random froge")
@@ -344,7 +357,9 @@ async def froge(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Show your level")
@@ -364,7 +379,8 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     interaction = await ctx.respond("Loading...")
     response = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(
-        content=None, file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png")
+        content=None,
+        file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"),
     )
 
 
