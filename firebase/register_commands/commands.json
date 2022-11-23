@@ -115,6 +115,13 @@
                 "!video",
                 "!video cute cats"
             ]
+        },
+        {
+            "name": "exam",
+            "description": "Return the exams for the current class.",
+            "examples": [
+                "!exam"
+            ]
         }
     ]
 }
