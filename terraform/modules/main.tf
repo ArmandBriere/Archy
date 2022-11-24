@@ -35,22 +35,6 @@ variable "secrets" {
 variable "http_functions" {
   type = map(any)
   default = {
-    describe : {
-      description = "Describe a user"
-      runtime     = "python39"
-      entry_point = "describe"
-      timeout     = 15
-      memory      = 256
-      secrets     = []
-    }
-    exam : {
-      description = "Get exam information"
-      runtime     = "python39"
-      entry_point = "exam"
-      timeout     = 15
-      memory      = 256
-      secrets     = []
-    }
     hello : {
       description = "Template of a function in Python"
       runtime     = "python39"
@@ -74,6 +58,30 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
+    }
+    ts : {
+      description = "Template of a function in Typescript"
+      runtime     = "nodejs16"
+      entry_point = "ts"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    }
+    describe : {
+      description = "Describe a user"
+      runtime     = "python39"
+      entry_point = "describe"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    }
+    exam : {
+      description = "Get exam information"
+      runtime     = "python39"
+      entry_point = "exam"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
     }
     level : {
       description = "Return the level of a user using the NextJS function"
@@ -114,7 +122,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     ban : {
       description = "Admin only: Ban a user"
       runtime     = "go119"
@@ -130,7 +138,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     leaderboard : {
       description = "Return the leaderboard of the server"
       runtime     = "go119"
@@ -138,7 +146,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     warn : {
       description = "Admin only: Warn a user and take action if needed"
       runtime     = "go119"
@@ -146,7 +154,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
-    },
+    }
     listwarn : {
       description = "Admin only: List all warn of that server"
       runtime     = "go119"
@@ -154,7 +162,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
-    },
+    }
     answer : {
       description = "Return a random answer based on the game '8 Ball'"
       runtime     = "python39"
@@ -162,7 +170,7 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
+    }
     merch : {
       description = "Return the merch website"
       runtime     = "go119"
@@ -170,7 +178,15 @@ variable "http_functions" {
       timeout     = 15
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
-    },
+    }
+    og_vercel : {
+      description = "NextJs app use to generate level template"
+      runtime     = "nodejs16"
+      entry_point = "handler"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    }
   }
 }
 
