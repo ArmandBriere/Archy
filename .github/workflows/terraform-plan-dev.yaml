@@ -1,4 +1,4 @@
-name: Run terraform plan for development
+name: Terraform plan dev
 
 on:
   workflow_dispatch:

@@ -1,0 +1,46 @@
+name: Build ts
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  matrix_prep:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: install jq
+        run: |
+          apt-get update
+          apt-get install -y jq python
+      - id: set-matrix
+        run: |
+          ts_folder=$(find src/ -name tsconfig.json -exec jq -n --arg path {} '$path' \;)
+          clean_paths=$(echo $ts_folder | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('tsconfig.json\"', '\"', tmp))")
+          json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
+          echo "::set-output name=matrix::$(echo $json_data)"
+  build_ts:
+    name: Build typescript
+    needs: matrix_prep
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
+    steps:
+      - name: Function folder
+        run: echo ${{ matrix.items }}
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - uses: actions/checkout@v3
+      - name: Yarn install
+        run: yarn
+        working-directory: ${{ matrix.items }}
+      - name: Yarn build
+        working-directory: ${{ matrix.items }}
+        run: yarn build
