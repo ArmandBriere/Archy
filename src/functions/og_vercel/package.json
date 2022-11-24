@@ -2,9 +2,10 @@
   "name": "nextjs-og-image",
   "version": "0.1.0",
   "private": true,
+  "main": "index.js",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && cp index.js dist/",
     "start": "next start",
     "lint": "next lint"
   },

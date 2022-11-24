@@ -2,8 +2,8 @@ package level
 
 import (
 	"context"
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	firebase "firebase.google.com/go"
+	"google.golang.org/api/idtoken"
 )
 
 // Payload struct that is expected
@@ -54,7 +55,7 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	user := getUserInfo(payload)
 
 	var formatedUrl strings.Builder
-	formatedUrl.WriteString("https://us-central1-archy-f06ed.cloudfunctions.net/nextjs/api/bar?")
+	formatedUrl.WriteString("https://us-central1-archy-f06ed.cloudfunctions.net/dev_og_vercel/api/bar?")
 
 	formatedUrl.WriteString("username=")
 	formatedUrl.WriteString(url.QueryEscape(user.Username))
@@ -74,11 +75,16 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	formatedUrl.WriteString("&level_exp_needed=")
 	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
 
-	res, err := http.Get(formatedUrl.String())
+	ctx := context.Background()
+	client, err := idtoken.NewClient(ctx, "https://us-central1-archy-f06ed.cloudfunctions.net/dev_og_vercel")
 	if err != nil {
-		log.Fatalln(err)
+		panic(err)
 	}
 
+	res, err := client.Get(formatedUrl.String())
+	if err != nil {
+		panic(err)
+	}
 	defer res.Body.Close()
 
 	image, err := io.ReadAll(res.Body)

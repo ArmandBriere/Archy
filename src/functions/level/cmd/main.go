@@ -10,8 +10,8 @@ import (
 
 func main() {
 	body := []byte(`{
-		"server_id": "<SERVER_ID>", 
-		"user_id": "<USER_ID>"
+		"server_id": "964701887540645908", 
+		"user_id": "135048445097410560"
 	}`)
 	reader := bytes.NewReader(body)
 
