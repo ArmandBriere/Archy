@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 from pytest import fixture
 
-from functions.frogeOfTheDay.main import get_all_channels, publish_froge_of_the_day, publish_message_discord
+from functions.frogeOfTheDay.main import get_all_channels, get_quote, publish_froge_of_the_day, publish_message_discord
 
 MODULE_PATH = "functions.frogeOfTheDay.main"
 
@@ -107,3 +107,13 @@ def test_publish_froge_of_the_day_no_channels(get_all_channels_mock, print_mock)
     assert print_mock.call_count == 2
     assert print_mock.call_args_list[0][0][0] == "Start"
     assert print_mock.call_args_list[1][0][0] == "Exit: No channel found"
+
+
+@patch("random.choice")
+def test_get_quote(choice_mock):
+    expected_quote = {"quote": "All my homies hate javascript", "author": "zactrixo#8903"}
+    choice_mock.return_value = expected_quote
+
+    result = get_quote()
+
+    assert result == expected_quote
