@@ -103,7 +103,7 @@ def get_all_channels() -> List[str]:
     return channels
 
 
-def get_quote() -> str:
+def get_quote() -> dict:
     """Return a random quote."""
     quotes = [
         {"quote": "All my homies hate javascript", "author": "zactrixo#8903"},
@@ -144,9 +144,8 @@ def get_quote() -> str:
             "author": "opdelta#1665",
         },
     ]
-    quote = random.choice(quotes)
 
-    return quote
+    return random.choice(quotes)
 
 
 def generate_froge_of_the_day() -> str:
