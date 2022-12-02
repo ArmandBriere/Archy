@@ -8,7 +8,6 @@ from email.generator import Generator
 from io import BytesIO
 from typing import Any, List, Tuple
 
-import requests
 from google.cloud.firestore_v1.client import Client
 from google.cloud.firestore_v1.document import DocumentReference, DocumentSnapshot
 from google.cloud.pubsub_v1 import PublisherClient
@@ -104,18 +103,61 @@ def get_all_channels() -> List[str]:
     return channels
 
 
+def get_quote() -> str:
+    """Return a random quote."""
+    quotes = [
+        {"quote": "All my homies hate javascript", "author": "zactrixo#8903"},
+        {"quote": "Throw sh*t at the wall until it sticks", "author": "zactrixo#8903"},
+        {"quote": "BlueJ is actually underrated", "author": "Jay Cee#5430"},
+        {"quote": "Rust is love, Rust is life.", "author": "FireLexFtw#8683"},
+        {"quote": "C# is like java, but its better", "author": "zactrixo#8903"},
+        {"quote": "Fais ton TP", "author": "Hannibal119#3744"},
+        {"quote": "Code it", "author": "Hannibal119#3744"},
+        {"quote": "Git gud", "author": "Hannibal119#3744"},
+        {"quote": "damn archy is down again", "author": "FireLexFtw#8683"},
+        {"quote": "rakabicyk katredmi ?", "author": "moonscrub#5366"},
+        {"quote": "entRE Quote PleaSe sinON Je PreNDs pas LeS meSsagES", "author": "FireLexFtw#8683"},
+        {"quote": "My love for you is stronger than an infinite loop", "author": "coder4life#4678"},
+        {"quote": "je suis juste ici pour les bidoux", "author": "arth-e#0399"},
+        {"quote": "..... how did everything broke", "author": "Grisamah#2143"},
+        {"quote": "j'comprends pas les pointeurs", "author": "Grisamah#2143"},
+        {"quote": "why are we using javasript again?", "author": "Grisamah#2143"},
+        {
+            "quote": "With C it doesn't work and you don't know why. With python it works but you don't know why!"
+            + " So C is better.",
+            "author": "moonscrub#5366",
+        },
+        {
+            "quote": "Programming is like sex: One mistake and you have to support it for the rest of your life.",
+            "author": "arth-e#0399",
+        },
+        {"quote": "Fun fact: Archy is the greatest discord bot in the world", "author": "moonscrub#5366"},
+        {
+            "quote": "Ouais ben tsé, j'expérimentais la semaine passée sur un microprocesseur à cycle unique x86...",
+            "author": "moonscrub#5366",
+        },
+        {"quote": "Le serveur du bot serverless est down", "author": "Yannick#5937"},
+        {"quote": "?.... it works", "author": "Grisamah#2143"},
+        {
+            "quote": "There are two hard things in computer science: cache invalidation, naming things,"
+            + " and off-by-one errors.",
+            "author": "opdelta#1665",
+        },
+    ]
+    quote = random.choice(quotes)
+
+    return quote
+
+
 def generate_froge_of_the_day() -> str:
     """Generate the froge of the day with quote."""
 
     random_image = f"{random.randint(1, 54):04.0f}.jpg"
-    random_text = ""
-    while len(random_text) > 120 or len(random_text) < 10:
-        random_text_request = requests.get("https://programming-quotes-api.herokuapp.com/quotes/random")
-        random_text = json.loads(random_text_request.content.decode("utf-8"))["en"].replace("’", "'")
+    quote = get_quote()
 
-    print(f"Quote of the day is: {random_text}")
+    print(f"Quote of the day is: {quote['quote']}")
 
-    froge_of_the_day = auto_scale_text_over_image(Image.open(f"{IMAGE_FOLDER}{random_image}"), text=random_text)
+    froge_of_the_day = auto_scale_text_over_image(Image.open(f"{IMAGE_FOLDER}{random_image}"), text=quote["quote"])
 
     buffered = BytesIO()
     froge_of_the_day.save(buffered, format="JPEG")
