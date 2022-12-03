@@ -313,9 +313,9 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
         "server_id": str(ctx.guild.id),
     }
 
+    interaction = await ctx.respond("Loading...")
     response = f"Question: {question}\nAnswer: {await treat_command(ctx, command_name, data)}"
 
-    interaction = await ctx.respond("Loading...")
     await interaction.edit_original_response(content=response)
 
 
