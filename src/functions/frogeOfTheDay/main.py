@@ -161,6 +161,10 @@ def get_quote() -> dict:
             "quote": "TBH, c'est une meilleure tentative de phishing que les séminaires Excel de Patrice Roy.",
             "author": "EDav1123#7479",
         },
+        {
+            "quote": "Click the little star on https://github.com/ArmandBriere/archy (Top right)",
+            "author": "Hannibal119#3744",
+        },
         {"quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.", "author": "EDav1123#7479"},
     ]
 
