@@ -183,7 +183,8 @@ variable "pubsub_topics" {
     "private_message_discord",
     "update_user_role",
     "exp_discord",
-    "generate_welcome_image"
+    "generate_welcome_image",
+    "stm_status"
   ]
 }
 
@@ -251,6 +252,15 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 1024
       trigger_event = "generate_welcome_image"
+      secrets       = []
+    },
+    stmStatus : {
+      description   = "Check metro and bus line status with official STM api"
+      runtime       = "go119"
+      entry_point   = "CheckStmStatus"
+      timeout       = 15
+      memory        = 1024
+      trigger_event = "stm_status"
       secrets       = []
     },
   }
