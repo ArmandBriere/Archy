@@ -143,6 +143,29 @@ def get_quote() -> dict:
             + " and off-by-one errors.",
             "author": "opdelta#1665",
         },
+        {"quote": "Http/1.1 Service Unavailable", "author": "Yannick#5937"},
+        {"quote": "déppartement", "author": "Grisamah#2143"},
+        {"quote": "Plannet", "author": "Jay Cee#5430"},
+        {"quote": "Bon Fuck it, we need more quotes...", "author": "Hannibal119#3744"},
+        {"quote": "Exp", "author": "EDav1123#7479"},
+        {"quote": "And that's why we need a NSFW channel", "author": "opdelta#1665"},
+        {"quote": "JayCee got beaten by a 5yo kid", "author": "FireLexFtw#8683"},
+        {
+            "quote": "There is only 10 kinds of people in the world."
+            + " Those who understand binary, those who don't and those who expected this to be in binary",
+            "author": "osmiumpeach#1127",
+        },
+        {"quote": "It works on my machine.", "author": "Yannick#5937"},
+        {"quote": "Just type !merch to find some nice things", "author": "Hannibal119#3744"},
+        {
+            "quote": "TBH, c'est une meilleure tentative de phishing que les séminaires Excel de Patrice Roy.",
+            "author": "EDav1123#7479",
+        },
+        {
+            "quote": "Click the little star on https://github.com/ArmandBriere/archy (Top right)",
+            "author": "Hannibal119#3744",
+        },
+        {"quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.", "author": "EDav1123#7479"},
     ]
 
     return random.choice(quotes)
