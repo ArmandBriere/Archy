@@ -254,7 +254,7 @@ variable "pubsub_functions" {
       trigger_event = "generate_welcome_image"
       secrets       = []
     },
-    stmStatus : {
+    stm : {
       description   = "Check metro and bus line status with official STM api"
       runtime       = "go119"
       entry_point   = "CheckStmStatus"
