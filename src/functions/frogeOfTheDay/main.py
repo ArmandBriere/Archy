@@ -136,7 +136,10 @@ def get_quote() -> dict:
         {"quote": "Tokébakicitte", "author": "moonscrub#5366"},
         {"quote": "Faites vos noeuds en 8 comme il faut avant de faire la voie !", "author": "moonscrub#5366"},
         {"quote": "Oubliez pas de regarder si ya un tour de friction avant d'assurer !", "author": "moonscrub#5366"},
-        {"quote": "Si j'peux faire une injection sql sur ton app, tu vas avoir un beau 0 !", "author": "moonscrub#5366"},
+        {
+            "quote": "Si j'peux faire une injection sql sur ton app, tu vas avoir un beau 0 !",
+            "author": "moonscrub#5366",
+        },
         {"quote": "Haskell is actually underrated!", "author": "moonscrub#5366"},
         {"quote": "Come contribute to my code and add some new features !", "author": "moonscrub#5366"},
         {"quote": "Come check my source code on github", "author": "moonscrub#5366"},
