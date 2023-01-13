@@ -1,14 +1,16 @@
+import base64
 import json
 import logging
 import os
 import re
 from datetime import datetime
+from io import BytesIO
 from typing import Dict
 
 import firebase_admin
 import google.oauth2.id_token
 import requests
-from discord import DMChannel, Embed, Guild, Intents, Option, User
+from discord import DMChannel, Embed, File, Guild, Intents, Option, User
 from discord.abc import GuildChannel
 from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
@@ -36,7 +38,11 @@ COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 # Discord bot settings
 intents = Intents.all()
 
-bot: Bot = Bot(command_prefix=COMMAND_PREFIX, description="Serverless commands discord bot", intents=intents)
+bot: Bot = Bot(
+    command_prefix=COMMAND_PREFIX,
+    description="Serverless commands discord bot",
+    intents=intents,
+)
 
 # Firestore
 PROJECT_ID = "archy-f06ed"
@@ -195,39 +201,24 @@ async def on_message(message: message_type) -> None:
     if ctx.invoked_with and not ctx.author.bot:
         command_name = str(ctx.invoked_with)
 
-        if not is_active_command(server_id, command_name):
-            await ctx.send("https://cdn.discordapp.com/emojis/823403768448155648.webp")
-            return
-
-        function_path = get_function_path(command_name)
-
-        google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
-
         data["channel_id"] = str(message.channel.id)
+        data["channel_name"] = str(message.channel.name)
         data["message_id"] = str(message.id)
         data["mentions"] = [str(user_id) for user_id in ctx.message.raw_mentions]
         data["params"] = message.content.split()[1:]
 
-        response: Response = requests.post(
-            function_path,
-            headers={
-                "Authorization": f"Bearer {google_auth_token}",
-                "Content-Type": "application/json",
-            },
-            data=json.dumps(data),
-        )
+        response = await treat_command(ctx, command_name, data)
 
-        if response.status_code == 200 and response.content:
-            if re.search("https://*", response.content.decode("utf-8")):
-                await ctx.send(response.content.decode("utf-8"))
-            else:
-                embed: Embed = Embed(
-                    description=response.content.decode("utf-8"),
-                    color=0x04AA6D,
-                )
-                await ctx.send(embed=embed)
-
-        increment_command_count(server_id, command_name)
+        if re.search("https://*", response):
+            await ctx.send(response)
+        elif re.search("data:image/png;base64,*", response):
+            await ctx.send(file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"))
+        else:
+            embed: Embed = Embed(
+                description=response,
+                color=0x04AA6D,
+            )
+            await ctx.send(embed=embed)
 
     elif not message.author.bot:
 
@@ -270,6 +261,21 @@ def get_function_path(command_name: str) -> str:
     return f"{FUNCTION_BASE_URL}{ENVIRONMENT}_{command_name}"
 
 
+@bot.slash_command(description="go")
+async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
+
+    server_id = str(ctx.guild.id)
+    command_name = "go"
+
+    data = {
+        "server_id": server_id,
+        "channel_id": "Slash_Command",
+    }
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
+
+
 @bot.slash_command(description="Hello! :)")
 async def hello(ctx: Context) -> None:
 
@@ -279,8 +285,9 @@ async def hello(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
         "user_id": str(ctx.author.id),
     }
-
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Return the leaderboard")
@@ -292,7 +299,9 @@ async def leaderboard(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="answers your question")
@@ -304,9 +313,10 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
         "server_id": str(ctx.guild.id),
     }
 
+    interaction = await ctx.respond("Loading...")
     response = f"Question: {question}\nAnswer: {await treat_command(ctx, command_name, data)}"
 
-    await ctx.respond(response)
+    await interaction.edit_original_response(content=response)
 
 
 @bot.slash_command(description="Request a gif")
@@ -319,7 +329,9 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=True)
         "params": str(query.split(" ")),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Template function in Java")
@@ -331,7 +343,9 @@ async def java(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Return a random froge")
@@ -343,7 +357,9 @@ async def froge(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
 
 
 @bot.slash_command(description="Show your level")
@@ -360,7 +376,12 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     if mention:
         data["mentions"] = [str(mention.id)]
 
-    await ctx.respond(await treat_command(ctx, command_name, data))
+    interaction = await ctx.respond("Loading...")
+    response = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(
+        content=None,
+        file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"),
+    )
 
 
 if __name__ == "__main__":

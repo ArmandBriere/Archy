@@ -2,8 +2,10 @@ package level
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"math"
 	"net/http"
@@ -49,7 +51,11 @@ func Level(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := getUserInfo(payload)
+	user, err := getUserInfo(payload)
+	if err != nil {
+		fmt.Fprint(w, "Seems like we have some issues with this user")
+		return
+	}
 
 	var formatedUrl strings.Builder
 	formatedUrl.WriteString("https://us-central1-archy-f06ed.cloudfunctions.net/nextjs/api/bar?")
@@ -72,14 +78,34 @@ func Level(w http.ResponseWriter, r *http.Request) {
 	formatedUrl.WriteString("&level_exp_needed=")
 	formatedUrl.WriteString(url.QueryEscape(strconv.FormatInt(int64(user.LevelExpNeeded), 10)))
 
-	fmt.Fprint(w, formatedUrl.String())
+	res, err := http.Get(formatedUrl.String())
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer res.Body.Close()
+
+	image, err := io.ReadAll(res.Body)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	var base64img string
+
+	base64img += "data:image/png;base64,"
+
+	base64img += base64.StdEncoding.EncodeToString(image)
+
+	fmt.Fprint(w, base64img)
 }
 
 // Get the user info from Firestore
-func getUserInfo(payload Payload) FirestoreUser {
+func getUserInfo(payload Payload) (FirestoreUser, error) {
 	ctx := context.Background()
 	conf := &firebase.Config{ProjectID: "archy-f06ed"}
 	app, err := firebase.NewApp(ctx, conf)
+
+	var user FirestoreUser
 
 	if err != nil {
 		log.Fatalln(err)
@@ -88,6 +114,7 @@ func getUserInfo(payload Payload) FirestoreUser {
 	client, err := app.Firestore(ctx)
 	if err != nil {
 		log.Fatalln(err)
+		return user, err
 	}
 
 	var userId string = payload.UserId
@@ -97,13 +124,14 @@ func getUserInfo(payload Payload) FirestoreUser {
 
 	userRef, err := client.Collection("servers").Doc(payload.ServerId).Collection("users").Doc(userId).Get(ctx)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return user, err
 	}
-	var user FirestoreUser
 
 	err = userRef.DataTo(&user)
 	if err != nil {
-		panic(err)
+		log.Println(err)
+		return user, err
 	}
 
 	higherExpUserCount, _ := client.Collection("servers").Doc(payload.ServerId).Collection("users").Where("total_exp", ">", user.TotalExp).Documents(ctx).GetAll()
@@ -120,5 +148,5 @@ func getUserInfo(payload Payload) FirestoreUser {
 
 	user.LevelExpNeeded = (5 * math.Pow(float64(user.Level), 2)) + (50 * float64(user.Level)) + 100
 
-	return user
+	return user, nil
 }
