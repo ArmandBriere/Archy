@@ -123,11 +123,11 @@ def get_quote() -> dict:
         {"quote": "j'comprends pas les pointeurs", "author": "Grisamah#2143"},
         {"quote": "why are we using javasript again?", "author": "Grisamah#2143"},
         {
-            "quote": "À l'ÉTS ya assez de prises pour tout le monde " + "dans les salles de cours!",
+            "quote": "À l'ÉTS ya assez de prises pour tout le monde dans les salles de cours!",
             "author": "moonscrub#5366",
         },
         {
-            "quote": "Si vous avez besoin d'aide en INF3105, " + "regardez les capsules d'Hannibal",
+            "quote": "Si vous avez besoin d'aide en INF3105, regardez les capsules d'Hannibal",
             "author": "moonscrub#5366",
         },
         {"quote": "Froge Jesus will save us all! Amen!", "author": "moonscrub#5366"},
@@ -135,13 +135,13 @@ def get_quote() -> dict:
         {"quote": "You all need Froge Jesus!", "author": "moonscrub#5366"},
         {"quote": "Tokébakicitte", "author": "moonscrub#5366"},
         {"quote": "Faites vos noeuds en 8 comme il faut avant de faire la voie!", "author": "moonscrub#5366"},
-        {"quote": "Ouliez pas de regarder si ya un tour de friction avant d'assurer!", "author": "moonscrub#5366"},
+        {"quote": "Oubliez pas de regarder si ya un tour de friction avant d'assurer!", "author": "moonscrub#5366"},
         {"quote": "Si j'peux faire une injection sql sur ton app, tu vas avoir un beau 0!", "author": "moonscrub#5366"},
         {"quote": "Haskell is actually underrated!", "author": "moonscrub#5366"},
         {"quote": "Come contribute to my code and add some new features!", "author": "moonscrub#5366"},
         {"quote": "Come check my source code on github", "author": "moonscrub#5366"},
         {
-            "quote": "Il semble que les services informatiques de l'UQÀM ont besoins" + "de financement supplémentaire",
+            "quote": "Il semble que les services informatiques de l'UQÀM ont besoin de financement supplémentaire",
             "author": "moonscrub#5366",
         },
         {"quote": "Http/1.1 Service Unavailable - Portail UQÀM Janvier 2023", "author": "Yannick#5937"},
@@ -149,7 +149,7 @@ def get_quote() -> dict:
         {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "opdelta#1665"},
         {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "moonscrub#5366"},
         {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "Hannibal119#3744"},
-        {"quote": "Je vous conseille de pas utiliser TikTok.", "author": "moonscrub#5366"},
+        {"quote": "Je vous conseille de ne pas utiliser TikTok.", "author": "moonscrub#5366"},
         {
             "quote": "With C it doesn't work and you don't know why. With python it works but you don't know why!"
             + " So C is better.",
