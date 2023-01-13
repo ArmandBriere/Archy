@@ -67,11 +67,11 @@ def display_exams(course: str, semester: str) -> str:
     message = ""
 
     if not exams:
-        return "Sorry, I didn't find anything"
+        return "Sorry, this class doesn't have a shared exam"
     if len(exams) == 1:
         message += f"Final: {exams[0]}\n"
     else:
-        message += "Vos exams: \n"
+        message += "Your exams: \n"
         message += f"Intra: {exams[0]}\n"
         message += f"Final: {exams[1]}\n"
     return message
