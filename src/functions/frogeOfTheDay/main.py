@@ -122,8 +122,14 @@ def get_quote() -> dict:
         {"quote": "..... how did everything broke", "author": "Grisamah#2143"},
         {"quote": "j'comprends pas les pointeurs", "author": "Grisamah#2143"},
         {"quote": "why are we using javasript again?", "author": "Grisamah#2143"},
-        {"quote": "À l'ÉTS ya assez de prises pour tout le monde dans les salles de cours!", "author": "moonscrub#5366"},
-        {"quote": "Si vous avez besoin d'aide en INF3105, regardez les capsules d'Hannibal", "author": "moonscrub#5366"},
+        {
+            "quote": "À l'ÉTS ya assez de prises pour tout le monde " + "dans les salles de cours!",
+            "author": "moonscrub#5366",
+        },
+        {
+            "quote": "Si vous avez besoin d'aide en INF3105, " + "regardez les capsules d'Hannibal",
+            "author": "moonscrub#5366",
+        },
         {"quote": "Froge Jesus will save us all! Amen!", "author": "moonscrub#5366"},
         {"quote": "Alex a en fait un grand cœur!", "author": "moonscrub#5366"},
         {"quote": "You all need Froge Jesus!", "author": "moonscrub#5366"},
@@ -134,7 +140,10 @@ def get_quote() -> dict:
         {"quote": "Haskell is actually underrated!", "author": "moonscrub#5366"},
         {"quote": "Come contribute to my code and add some new features!", "author": "moonscrub#5366"},
         {"quote": "Come check my source code on github", "author": "moonscrub#5366"},
-        {"quote": "Il semble que les services informatiques de l'UQÀM ont besoins de financement supplémentaire", "author": "moonscrub#5366"},
+        {
+            "quote": "Il semble que les services informatiques de l'UQÀM ont besoins" + "de financement supplémentaire",
+            "author": "moonscrub#5366",
+        },
         {"quote": "Http/1.1 Service Unavailable - Portail UQÀM Janvier 2023", "author": "Yannick#5937"},
         {"quote": "Shrodinger's portail étudiant", "author": "opdelta#1665"},
         {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "opdelta#1665"},
