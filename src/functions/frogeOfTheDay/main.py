@@ -146,9 +146,7 @@ def get_quote() -> dict:
         },
         {"quote": "Http/1.1 Service Unavailable - Portail UQÀM Janvier 2023", "author": "Yannick#5937"},
         {"quote": "Shrodinger's portail étudiant", "author": "opdelta#1665"},
-        {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "opdelta#1665"},
         {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "moonscrub#5366"},
-        {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois!", "author": "Hannibal119#3744"},
         {"quote": "Je vous conseille de ne pas utiliser TikTok.", "author": "moonscrub#5366"},
         {
             "quote": "With C it doesn't work and you don't know why. With python it works but you don't know why!"
