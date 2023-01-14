@@ -132,7 +132,7 @@ def get_quote() -> dict:
         },
         {"quote": "Froge Jesus will save us all! Amen!", "author": "moonscrub#5366"},
         {"quote": "Alex a en fait un grand cœur !", "author": "moonscrub#5366"},
-        {"quote": "You all need Froge Jesus !", "author": "moonscrub#5366"},
+        {"quote": "You all need Froge Jesus!", "author": "moonscrub#5366"},
         {"quote": "Tokébakicitte", "author": "moonscrub#5366"},
         {"quote": "Faites vos noeuds en 8 comme il faut avant de faire la voie !", "author": "moonscrub#5366"},
         {"quote": "Oubliez pas de regarder si ya un tour de friction avant d'assurer !", "author": "moonscrub#5366"},
@@ -141,7 +141,7 @@ def get_quote() -> dict:
             "author": "moonscrub#5366",
         },
         {"quote": "Haskell is actually underrated!", "author": "moonscrub#5366"},
-        {"quote": "Come contribute to my code and add some new features !", "author": "moonscrub#5366"},
+        {"quote": "Come contribute to my code and add some new features!", "author": "moonscrub#5366"},
         {"quote": "Come check my source code on github", "author": "moonscrub#5366"},
         {
             "quote": "Il semble que les services informatiques de l'UQÀM ont besoin de financement supplémentaire",
