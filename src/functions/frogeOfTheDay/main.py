@@ -108,7 +108,7 @@ def get_quote() -> dict:
     quotes = [
         {"quote": "All my homies hate javascript", "author": "zactrixo#8903"},
         {"quote": "Throw sh*t at the wall until it sticks", "author": "zactrixo#8903"},
-        {"quote": "BlueJ is actually underrated", "author": "Jay Cee#5430"},
+        {"quote": "BlueJ is actually NOT underrated! It's really not good...", "author": "Jay Cee#5430"},
         {"quote": "Rust is love, Rust is life.", "author": "FireLexFtw#8683"},
         {"quote": "C# is like java, but its better", "author": "zactrixo#8903"},
         {"quote": "Fais ton TP", "author": "Hannibal119#3744"},
@@ -122,6 +122,35 @@ def get_quote() -> dict:
         {"quote": "..... how did everything broke", "author": "Grisamah#2143"},
         {"quote": "j'comprends pas les pointeurs", "author": "Grisamah#2143"},
         {"quote": "why are we using javasript again?", "author": "Grisamah#2143"},
+        {
+            "quote": "À l'ÉTS ya assez de prises pour tout le monde dans les salles de cours !",
+            "author": "moonscrub#5366",
+        },
+        {
+            "quote": "Si vous avez besoin d'aide en INF3105, regardez les capsules d'Hannibal",
+            "author": "moonscrub#5366",
+        },
+        {"quote": "Froge Jesus will save us all! Amen!", "author": "moonscrub#5366"},
+        {"quote": "Alex a en fait un grand cœur !", "author": "moonscrub#5366"},
+        {"quote": "You all need Froge Jesus!", "author": "moonscrub#5366"},
+        {"quote": "Tokébakicitte", "author": "moonscrub#5366"},
+        {"quote": "Faites vos noeuds en 8 comme il faut avant de faire la voie !", "author": "moonscrub#5366"},
+        {"quote": "Oubliez pas de regarder si ya un tour de friction avant d'assurer !", "author": "moonscrub#5366"},
+        {
+            "quote": "Si j'peux faire une injection sql sur ton app, tu vas avoir un beau 0 !",
+            "author": "moonscrub#5366",
+        },
+        {"quote": "Haskell is actually underrated!", "author": "moonscrub#5366"},
+        {"quote": "Come contribute to my code and add some new features!", "author": "moonscrub#5366"},
+        {"quote": "Come check my source code on github", "author": "moonscrub#5366"},
+        {
+            "quote": "Il semble que les services informatiques de l'UQÀM ont besoin de financement supplémentaire",
+            "author": "moonscrub#5366",
+        },
+        {"quote": "Http/1.1 Service Unavailable - Portail UQÀM Janvier 2023", "author": "Yannick#5937"},
+        {"quote": "Shrodinger's portail étudiant", "author": "opdelta#1665"},
+        {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois !", "author": "moonscrub#5366"},
+        {"quote": "Je vous conseille de ne pas utiliser TikTok.", "author": "moonscrub#5366"},
         {
             "quote": "With C it doesn't work and you don't know why. With python it works but you don't know why!"
             + " So C is better.",
@@ -143,6 +172,29 @@ def get_quote() -> dict:
             + " and off-by-one errors.",
             "author": "opdelta#1665",
         },
+        {"quote": "Http/1.1 Service Unavailable", "author": "Yannick#5937"},
+        {"quote": "déppartement", "author": "Grisamah#2143"},
+        {"quote": "Plannet", "author": "Jay Cee#5430"},
+        {"quote": "Bon Fuck it, we need more quotes...", "author": "Hannibal119#3744"},
+        {"quote": "Exp", "author": "EDav1123#7479"},
+        {"quote": "And that's why we need a NSFW channel", "author": "opdelta#1665"},
+        {"quote": "JayCee got beaten by a 5yo kid", "author": "FireLexFtw#8683"},
+        {
+            "quote": "There is only 10 kinds of people in the world."
+            + " Those who understand binary, those who don't and those who expected this to be in binary",
+            "author": "osmiumpeach#1127",
+        },
+        {"quote": "It works on my machine.", "author": "Yannick#5937"},
+        {"quote": "Just type !merch to find some nice things", "author": "Hannibal119#3744"},
+        {
+            "quote": "TBH, c'est une meilleure tentative de phishing que les séminaires Excel de Patrice Roy.",
+            "author": "EDav1123#7479",
+        },
+        {
+            "quote": "Click the little star on https://github.com/ArmandBriere/archy (Top right)",
+            "author": "Hannibal119#3744",
+        },
+        {"quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.", "author": "EDav1123#7479"},
     ]
 
     return random.choice(quotes)
