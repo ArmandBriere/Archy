@@ -260,7 +260,7 @@ variable "pubsub_functions" {
       runtime       = "go119"
       entry_point   = "CheckStmStatus"
       timeout       = 15
-      memory        = 1024
+      memory        = 256
       trigger_event = "stm_status"
       secrets       = ["STM_API_KEY"]
     },
