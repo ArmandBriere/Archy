@@ -28,7 +28,8 @@ variable "secrets" {
   default = [
     "DISCORD_TOKEN",
     "TENOR_API_TOKEN",
-    "YOUTUBE_API_TOKEN"
+    "YOUTUBE_API_TOKEN",
+    "STM_API_KEY"
   ]
 }
 
@@ -183,7 +184,8 @@ variable "pubsub_topics" {
     "private_message_discord",
     "update_user_role",
     "exp_discord",
-    "generate_welcome_image"
+    "generate_welcome_image",
+    "stm_status"
   ]
 }
 
@@ -252,6 +254,15 @@ variable "pubsub_functions" {
       memory        = 1024
       trigger_event = "generate_welcome_image"
       secrets       = []
+    },
+    stm : {
+      description   = "Check metro and bus line status with official STM api"
+      runtime       = "go119"
+      entry_point   = "CheckStmStatus"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "stm_status"
+      secrets       = ["STM_API_KEY"]
     },
   }
 }
