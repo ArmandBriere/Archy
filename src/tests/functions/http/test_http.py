@@ -14,6 +14,17 @@ def test_http_with_empty_body():
     assert result == (ERROR_URL, 200)
 
 
+def test_http_bad_code():
+    body = {"params": ["jfdhs2sd287ydfsu"]}
+
+    request_mock = MagicMock()
+    request_mock.get_json.return_value = body
+
+    result = http(request_mock)
+
+    assert result == (ERROR_URL, 200)
+
+
 def test_http_good_code():
     body = {"params": ["200"]}
 

@@ -2,6 +2,7 @@ from typing import Any, Optional, Tuple
 
 import flask
 import functions_framework
+import requests
 
 DEFAULT_IMG = "https://http.cat/418"
 BASE_URL = "https://http.cat/"
@@ -20,5 +21,10 @@ def http(request: flask.Request) -> Tuple[str, int]:
             return DEFAULT_IMG, 200
 
         url_result = f"{BASE_URL}{params[0]}"
+
+        response: requests.Response = requests.get(url_result)
+        if response.status_code == 404:
+            return ERROR_URL, 200
+
         return url_result, 200
     return ERROR_URL, 200
