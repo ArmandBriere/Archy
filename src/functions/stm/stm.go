@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 
 	firestore "cloud.google.com/go/firestore"
@@ -58,8 +59,11 @@ type StmLine struct {
 	Status string `firestore:"status"`
 }
 
-// var ENVIRONMENT = strings.Split(os.Getenv("K_SERVICE"), "_")[0]
-var ENVIRONMENT = "dev"
+type Channels struct {
+	ChannelsId []string `firestore:"channels_id"`
+}
+
+var ENVIRONMENT = strings.Split(os.Getenv("K_SERVICE"), "_")[0]
 var STM_API_KEY = os.Getenv("STM_API_KEY")
 
 const PROJECT_ID = "archy-f06ed"
@@ -81,10 +85,6 @@ var STM_LINES = []StmLine{
 	{
 		Name: "Blue",
 		Id:   5,
-	},
-	{
-		Name: "18",
-		Id:   18,
 	},
 }
 
@@ -187,8 +187,10 @@ func updateStatus(newStmStatus StmStatus, lineIndex int, wg *sync.WaitGroup) {
 
 			newStmStatusText = "**STM update for the " + currentLine.Name + " line**\n" + newStmStatusText
 
-			// Will be changed if this feature works
-			publishChannelMessage("1062876614687457300", newStmStatusText)
+			channels := getChannels()
+			if channels != nil {
+				publishChannelMessage(channels.ChannelsId, newStmStatusText)
+			}
 		}
 	}
 
@@ -213,8 +215,24 @@ func getFirestoreClientCtx() (context.Context, *firestore.Client) {
 	return firestoreCtx, client
 }
 
+// Get all stm status channel from firebase
+func getChannels() *Channels {
+	firestoreCtx, client := getFirestoreClientCtx()
+	channelsRef := client.Collection("stm").Doc("channel")
+	channelsDoc, err := channelsRef.Get(firestoreCtx)
+	if err != nil {
+		fmt.Println("No stm channel were found")
+		return nil
+	}
+
+	var channelsId Channels
+	channelsDoc.DataTo(&channelsId)
+
+	return &channelsId
+}
+
 // Publish a message to channel_message_discord
-func publishChannelMessage(channelId string, message string) {
+func publishChannelMessage(channels []string, message string) {
 	firestoreCtx := context.Background()
 	client, err := pubsub.NewClient(firestoreCtx, PROJECT_ID)
 	if err != nil {
@@ -224,19 +242,21 @@ func publishChannelMessage(channelId string, message string) {
 
 	topicClient := client.Topic(ENVIRONMENT + "_channel_message_discord")
 
-	pubsubData, err := json.Marshal(PubsubDataChannelMessage{ChannelId: channelId, Message: message})
-	if err != nil {
-		panic(err)
+	for _, channelId := range channels {
+		pubsubData, err := json.Marshal(PubsubDataChannelMessage{ChannelId: channelId, Message: message})
+		if err != nil {
+			panic(err)
+		}
+
+		result := topicClient.Publish(firestoreCtx, &pubsub.Message{
+			Data: []byte(pubsubData),
+		})
+
+		messageId, err := result.Get(firestoreCtx)
+		if err != nil {
+			panic(err)
+		}
+
+		log.Println("Message send to topic, messageId: " + messageId)
 	}
-
-	result := topicClient.Publish(firestoreCtx, &pubsub.Message{
-		Data: []byte(pubsubData),
-	})
-
-	messageId, err := result.Get(firestoreCtx)
-	if err != nil {
-		panic(err)
-	}
-
-	log.Println("Message send to topic, messageId: " + messageId)
 }
