@@ -122,6 +122,14 @@
             "examples": [
                 "!exam"
             ]
+        },
+        {
+            "name": "http",
+            "description": "Return an image describing the given http code.",
+            "examples": [
+                "!http 404",
+                "!http 200"
+            ]
         }
     ]
 }

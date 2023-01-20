@@ -100,6 +100,14 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN", "TENOR_API_TOKEN"]
     }
+    http : {
+      description = "Return an image describing the given http code"
+      runtime     = "python39"
+      entry_point = "http"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    }
     video : {
       description = "Return the requested youtube video"
       runtime     = "python39"
