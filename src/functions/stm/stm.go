@@ -226,7 +226,9 @@ func getChannels() *Channels {
 	}
 
 	var channelsId Channels
-	channelsDoc.DataTo(&channelsId)
+	if err = channelsDoc.DataTo(&channelsId); err != nil {
+		panic(err)
+	}
 
 	return &channelsId
 }
