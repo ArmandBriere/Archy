@@ -384,6 +384,21 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     )
 
 
+@bot.slash_command(description="Request a gif")
+async def http(ctx: Context, query: Option(int, "http code", required=True)) -> None:
+
+    command_name = "http"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+        "params": str(query.split(" ")),
+    }
+
+    interaction = await ctx.respond("Loading...")
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
+
+
 if __name__ == "__main__":
 
     cred = credentials.Certificate(KEY_FILE)
