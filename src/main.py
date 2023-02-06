@@ -384,8 +384,8 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     )
 
 
-@bot.slash_command(description="Request a gif")
-async def http(ctx: Context, query: Option(int, "http code", required=True)) -> None:
+@bot.slash_command(description="You give me a HTTP code, I give you something nice in return")
+async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> None:
 
     command_name = "http"
 
