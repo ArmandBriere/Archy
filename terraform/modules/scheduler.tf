@@ -15,7 +15,7 @@ resource "google_cloud_scheduler_job" "froge_of_the_day_scheduler" {
 
 
 resource "google_cloud_scheduler_job" "stm_status_scheduler" {
-  count = var.environment == "dev" ? 1 : 0
+  count = var.environment == "prod" ? 1 : 0
 
   name        = "stm_status"
   description = "Trigger the stm status check"
@@ -24,7 +24,7 @@ resource "google_cloud_scheduler_job" "stm_status_scheduler" {
 
 
   pubsub_target {
-    topic_name = "projects/${var.project_id}/topics/dev_stm_status"
-    data       = base64encode("dev_stm_status")
+    topic_name = "projects/${var.project_id}/topics/prod_stm_status"
+    data       = base64encode("prod_stm_status")
   }
 }
