@@ -185,7 +185,7 @@ func updateStatus(newStmStatus StmStatus, lineIndex int, wg *sync.WaitGroup) {
 				panic(err)
 			}
 
-			newStmStatusText = "**STM update for the " + currentLine.Name + " line**\n" + newStmStatusText
+			newStmStatusText = "**STM update for the " + currentLine.Name + " line**\n" + newStmStatusText + "\n🎵 too doo doo 🎵"
 
 			channels := getChannels()
 			if channels != nil {
