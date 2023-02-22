@@ -194,7 +194,10 @@ def get_quote() -> dict:
             "quote": "Click the little star on https://github.com/ArmandBriere/archy (Top right)",
             "author": "Hannibal119#3744",
         },
-        {"quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.", "author": "EDav1123#7479"},
+        {
+            "quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.",
+            "author": "EDav1123#7479"
+        },
         {"quote": "Comment est votre blanquette?", "author": "BièreAuGibier Brigand#2022"},
         {"quote": "J'aime me beurrer la biscotte.", "author": "BièreAuGibier Brigand#2022"},
         {"quote": "Où est Heinrich Von Zimmel ?", "author": "BièreAuGibier Brigand#2022"},
