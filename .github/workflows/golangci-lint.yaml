@@ -19,7 +19,7 @@ jobs:
           json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
           echo "::set-output name=matrix::$(echo $json_data)"
   golangci:
-    name: lint
+    name: Golangci lint
     needs: matrix_prep
     runs-on: ubuntu-latest
     strategy:
