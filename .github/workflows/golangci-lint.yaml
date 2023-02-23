@@ -25,7 +25,7 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
     steps:
-      - name: test
+      - name: Show working directory
         run: echo ${{ matrix.items }}
       - uses: actions/setup-go@v3
         with:
