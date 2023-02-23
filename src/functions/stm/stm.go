@@ -127,6 +127,7 @@ func fetchStmStatus() StmStatus {
 		log.Fatalln(err)
 	}
 
+	resp.Body.Close()
 	return stmStatus
 }
 

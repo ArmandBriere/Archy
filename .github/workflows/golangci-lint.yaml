@@ -14,7 +14,7 @@ jobs:
         uses: actions/checkout@v2
       - id: set-matrix
         run: |
-          go_folder=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
+          go_folder=$(find . -type f -name "*.go" -not -path "*/cmd/*.go" -exec jq -n --arg path {} '$path' \;)
           clean_paths=$( echo $go_folder | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('[^/]*.go\"', '\"', tmp))")
           json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
           echo "::set-output name=matrix::$(echo $json_data)"
