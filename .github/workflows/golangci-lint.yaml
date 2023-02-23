@@ -37,3 +37,14 @@ jobs:
           version: latest
           args: --config=../../.golangci.yml
           working-directory: ${{ matrix.items }}
+  all-golangci-passed:
+    if: always()
+    name: All golangci passed
+    runs-on: ubuntu-latest
+    needs:
+      - golangci
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}
