@@ -96,7 +96,7 @@ func generateWarnList(serverId string) string {
 		}
 
 		data.WriteString("**")
-		data.WriteString(warn.Timestamp.Format("2006-02-01"))
+		data.WriteString(warn.Timestamp.Format("2006-01-02"))
 		data.WriteString("**\n")
 		data.WriteString("User: <@")
 		data.WriteString(warn.UserId)
