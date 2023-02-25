@@ -11,29 +11,40 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: set-matrix
         run: |
-          go_folder=$(find . -type f -name "*.go" -exec jq -n --arg path {} '$path' \;)
+          go_folder=$(find . -type f -name "*.go" -not -path "*/cmd/*.go" -exec jq -n --arg path {} '$path' \;)
           clean_paths=$( echo $go_folder | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('[^/]*.go\"', '\"', tmp))")
           json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
           echo "::set-output name=matrix::$(echo $json_data)"
   golangci:
-    name: lint
+    name: Golangci lint
     needs: matrix_prep
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
     steps:
-      - name: test
+      - name: Show working directory
         run: echo ${{ matrix.items }}
       - uses: actions/setup-go@v3
         with:
-          go-version: 1.19
+          go-version: 1.18
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: latest
-          args: --timeout 3m0s
+          args: --config=../../.golangci.yml
           working-directory: ${{ matrix.items }}
+  all-golangci-passed:
+    if: always()
+    name: All golangci passed
+    runs-on: ubuntu-latest
+    needs:
+      - golangci
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@v1.2.2
+        with:
+          jobs: ${{ toJSON(needs) }}

@@ -1,6 +1,6 @@
 <div align="center">
   <br>
-  <img alt="Archy" style="border-radius: 15px;" src="https://cdn.discordapp.com/app-icons/964693548396068916/9f6194753dba6ed1eaa4ee989deae149.png?size=512" width="300px">
+  <img alt="Archy" style="border-radius: 15px;" src="https://storage.googleapis.com/froge-public-bucket-prod/archy.jpg" width="300px">
   <h1>🐸 Archy 🐸</h1>
   <strong>Open source serverless bot!</strong>
 </div>

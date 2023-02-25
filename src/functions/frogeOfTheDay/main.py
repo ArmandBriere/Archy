@@ -195,6 +195,18 @@ def get_quote() -> dict:
             "author": "Hannibal119#3744",
         },
         {"quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.", "author": "EDav1123#7479"},
+        {"quote": "Comment est votre blanquette ?", "author": "BièreAuGibier Brigand#2022"},
+        {"quote": "J'aime me beurrer la biscotte.", "author": "BièreAuGibier Brigand#2022"},
+        {"quote": "Où est Heinrich Von Zimmel ?", "author": "BièreAuGibier Brigand#2022"},
+        {
+            "quote": "Une dictature c'est quand les gens sont communistes, déjà. Ils ont froid, "
+            + "des chapeaux gris et des chaussures à fermeture éclair.",
+            "author": "BièreAuGibier Brigand#2022",
+        },
+        {
+            "quote": "On va toujours trop loin pour les gens qui ne vont nulle part.",
+            "author": "BièreAuGibier Brigand#2022",
+        },
     ]
 
     return random.choice(quotes)
