@@ -17,7 +17,7 @@ jobs:
           go_folder=$(find . -type f -name "*.go" -not -path "*/cmd/*.go" -exec jq -n --arg path {} '$path' \;)
           clean_paths=$( echo $go_folder | python -c "import sys;import re; tmp=sys.stdin.read(); print(re.sub('[^/]*.go\"', '\"', tmp))")
           json_data=$(echo $clean_paths | jq -n -s '{ items: inputs }')
-          echo "matrix::$(echo $json_data)" >> $GITHUB_OUTPUT
+          echo "matrix=$(echo $json_data)" >> $GITHUB_OUTPUT
 
   golangci:
     name: Golangci lint
