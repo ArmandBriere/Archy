@@ -1,4 +1,4 @@
-name: Run terraform plan for production
+name: Terraform plan prod
 
 on:
   workflow_dispatch:
