@@ -34,6 +34,10 @@ jobs:
           version: ">= 363.0.0"
       
       - name: Docker - Build the main node
+        env:
+          DISCORD_API_TOKEN_PROD: ${{ secrets.DISCORD_API_TOKEN_PROD }}
+          UQAM_PASSPHRASE: ${{ secrets.UQAM_PASSPHRASE }}
+          UQAM_FLAG: ${{ secrets.UQAM_FLAG }}
         run: docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
 
       - name: Docker - Push to GCR
