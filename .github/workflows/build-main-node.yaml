@@ -1,11 +1,10 @@
 name: Build main node
 
 on:
-  workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-  push:
+  workflow_run:
+    workflows: ["Python tox", "Terraform apply prod", "Golangci lint"]
+    types:
+      - completed
 
 jobs:
   build:
@@ -14,6 +13,10 @@ jobs:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
+    if: |
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_branch == 'main' }}
     defaults:
       run:
         working-directory: ./
@@ -32,7 +35,7 @@ jobs:
         uses: "google-github-actions/setup-gcloud@v1"
         with:
           version: ">= 363.0.0"
-      
+
       - name: Docker - Build the main node
         env:
           DISCORD_API_TOKEN_PROD: ${{ secrets.DISCORD_API_TOKEN_PROD }}
@@ -40,9 +43,9 @@ jobs:
           UQAM_FLAG: ${{ secrets.UQAM_FLAG }}
           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         run: docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
-      
+
       - name: Docker - Login to GCR
-        run: gcloud auth configure-docker us.gcr.io -q 
+        run: gcloud auth configure-docker us.gcr.io -q
 
       - name: Docker - Push to GCR
         run: docker push us.gcr.io/archy-f06ed/archy-prod
