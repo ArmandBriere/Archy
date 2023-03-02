@@ -1,15 +1,14 @@
-name: Deploy with terraform for development
+name: Build main node
 
 on:
   workflow_dispatch:
   pull_request:
     branches:
-      - dev
-    types: [closed]
+      - main
+  push:
 
 jobs:
-  deploy:
-    if: ${{ github.event.pull_request.merged }}
+  build:
     permissions:
       id-token: write
       contents: read
@@ -17,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform/environments/dev
+        working-directory: ./
     steps:
       - uses: "actions/checkout@v3"
 
@@ -29,20 +28,13 @@ jobs:
           workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/github-actions-terraform-pool/providers/github-actions-provider"
           service_account: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
 
-      - uses: hashicorp/setup-terraform@v2
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          version: ">= 363.0.0"
+      
+      - name: Docker - Build the main node
+        run: docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
 
-      - name: Terraform lint
-        id: fmt
-        run: terraform fmt -check
-
-      - name: Terraform Init
-        id: init
-        run: terraform init
-
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-
-      - name: Terraform Apply
-        id: apply
-        run: terraform apply -auto-approve -no-color
+      - name: Docker - Push to GCR
+        run: docker push us.gcr.io/archy-f06ed/archy-prod
