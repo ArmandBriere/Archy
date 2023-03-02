@@ -38,10 +38,11 @@ jobs:
           DISCORD_API_TOKEN_PROD: ${{ secrets.DISCORD_API_TOKEN_PROD }}
           UQAM_PASSPHRASE: ${{ secrets.UQAM_PASSPHRASE }}
           UQAM_FLAG: ${{ secrets.UQAM_FLAG }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
         run: docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
       
       - name: Docker - Login to GCR
-        run: gcloud auth configure-docker -q 
+        run: gcloud auth configure-docker us.gcr.io -q 
 
       - name: Docker - Push to GCR
         run: docker push us.gcr.io/archy-f06ed/archy-prod
