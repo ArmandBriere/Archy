@@ -39,6 +39,9 @@ jobs:
           UQAM_PASSPHRASE: ${{ secrets.UQAM_PASSPHRASE }}
           UQAM_FLAG: ${{ secrets.UQAM_FLAG }}
         run: docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
+      
+      - name: Docker - Login to GCR
+        run: gcloud auth configure-docker -q 
 
       - name: Docker - Push to GCR
         run: docker push us.gcr.io/archy-f06ed/archy-prod
