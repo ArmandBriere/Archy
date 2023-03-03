@@ -5,11 +5,15 @@ WORKDIR /usr/src/bot
 
 COPY ./src/main.py .
 COPY ./src/requirements.txt .
-COPY ./src/.env .
-COPY ./src/key.json .
+# COPY ./src/.env .
+# COPY ./src/key.json .
 
 ENV ENVIRONMENT="prod"
 ENV COMMAND_PREFIX="!"
+ENV DISCORD_API_TOKEN_PROD=${DISCORD_API_TOKEN_PROD}
+ENV UQAM_PASSPHRASE=${UQAM_PASSPHRASE}
+ENV UQAM_FLAG=${UQAM_FLAG}
+ENV GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS}
 
 RUN pip install -r requirements.txt
 

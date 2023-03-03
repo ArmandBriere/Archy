@@ -1,4 +1,4 @@
-name: Python linting and testing
+name: Python tox
 on:
   - push
   - pull_request
