@@ -23,6 +23,7 @@ from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.pubsub_v1 import PublisherClient
 from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials
 from requests import Response
 
 load_dotenv()
@@ -132,7 +133,8 @@ def send_welcome_message(channel_id: str, username: str, avatar_url: str) -> Non
 def publish_message(data: Dict[str, str], topic_id: str) -> None:
     """Publish message to the selected topic."""
 
-    publisher = PublisherClient()
+    credentials = Credentials.from_service_account_info(GOOGLE_APPLICATION_CREDENTIALS)
+    publisher = PublisherClient(credentials=credentials)
     topic_path = publisher.topic_path(PROJECT_ID, f"{ENVIRONMENT}_{topic_id}")
 
     user_encode_data: bytes = json.dumps(data, indent=2).encode("utf-8")
