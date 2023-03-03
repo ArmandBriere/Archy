@@ -2,7 +2,7 @@ name: Build main node
 
 on:
   workflow_run:
-    workflows: ["Python tox", "Terraform apply prod", "Golangci lint"]
+    workflows: ["Terraform apply prod"]
     types:
       - completed
 
