@@ -2,7 +2,7 @@ name: Build main node
 
 on:
   workflow_run:
-    workflows: ["Python tox", "Terraform apply prod", "Golangci lint"]
+    workflows: ["Terraform apply prod"]
     types:
       - completed
 
@@ -39,10 +39,10 @@ jobs:
       - name: Docker - Build the main node
         run: |
           docker build -t us.gcr.io/archy-f06ed/archy-prod \
-          --build-arg UQAM_FLAG=${{ secrets.UQAM_FLAG }} \
-          --build-arg UQAM_PASSPHRASE=${{ secrets.UQAM_PASSPHRASE }} \
-          --build-arg DISCORD_API_TOKEN_PROD=${{ secrets.DISCORD_API_TOKEN_PROD }} \
-          --build-arg GOOGLE_APPLICATION_CREDENTIALS=${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }} \
+          --build-arg UQAM_FLAG='${{ secrets.UQAM_FLAG }}' \
+          --build-arg UQAM_PASSPHRASE='${{ secrets.UQAM_PASSPHRASE }}' \
+          --build-arg DISCORD_API_TOKEN_PROD='${{ secrets.DISCORD_API_TOKEN_PROD }}' \
+          --build-arg GOOGLE_APPLICATION_CREDENTIALS='${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' \
           -f Dockerfile.prod .
 
       - name: Docker - Login to GCR
