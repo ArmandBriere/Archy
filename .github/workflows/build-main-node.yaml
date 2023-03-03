@@ -1,0 +1,51 @@
+name: Build main node
+
+on:
+  workflow_run:
+    workflows: ["Python tox", "Terraform apply prod", "Golangci lint"]
+    types:
+      - completed
+
+jobs:
+  build:
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    if: |
+      ${{ github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_branch == 'main' }}
+    defaults:
+      run:
+        working-directory: ./
+    steps:
+      - uses: "actions/checkout@v3"
+
+      - id: "auth"
+        name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0"
+        with:
+          token_format: "access_token"
+          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/github-actions-terraform-pool/providers/github-actions-provider"
+          service_account: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
+
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v1"
+        with:
+          version: ">= 363.0.0"
+
+      - name: Docker - Build the main node
+        env:
+          DISCORD_API_TOKEN_PROD: ${{ secrets.DISCORD_API_TOKEN_PROD }}
+          UQAM_PASSPHRASE: ${{ secrets.UQAM_PASSPHRASE }}
+          UQAM_FLAG: ${{ secrets.UQAM_FLAG }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        run: docker build -t us.gcr.io/archy-f06ed/archy-prod -f Dockerfile.prod .
+
+      - name: Docker - Login to GCR
+        run: gcloud auth configure-docker us.gcr.io -q
+
+      - name: Docker - Push to GCR
+        run: docker push us.gcr.io/archy-f06ed/archy-prod

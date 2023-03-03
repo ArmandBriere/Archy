@@ -8,7 +8,6 @@ from io import BytesIO
 from typing import Dict
 
 import firebase_admin
-import google.oauth2.id_token
 import requests
 from discord import DMChannel, Embed, File, Guild, Intents, Option, User
 from discord.abc import GuildChannel
@@ -16,24 +15,28 @@ from discord.ext.commands import Bot, Context
 from discord.member import Member as member_type
 from discord.message import Message as message_type
 from dotenv import load_dotenv
-from firebase_admin import credentials, firestore
+from firebase_admin import firestore
 from google.auth.transport.requests import Request
 from google.cloud.firestore import Increment
 from google.cloud.firestore_v1.base_document import DocumentSnapshot
 from google.cloud.firestore_v1.collection import CollectionReference
 from google.cloud.firestore_v1.document import DocumentReference
 from google.cloud.pubsub_v1 import PublisherClient
+from google.oauth2 import service_account
 from requests import Response
 
 load_dotenv()
 
+PROJECT_ID = "archy-f06ed"
 ENVIRONMENT = os.getenv("ENVIRONMENT")
+DISCORD_API_TOKEN = os.getenv(f"DISCORD_API_TOKEN_{ENVIRONMENT.upper()}")
+COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
+
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 FUNCTION_BASE_URL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
-DISCORD_API_TOKEN = os.getenv(f"DISCORD_API_TOKEN_{ENVIRONMENT.upper()}")
-COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
+
 
 # Discord bot settings
 intents = Intents.all()
@@ -44,13 +47,8 @@ bot: Bot = Bot(
     intents=intents,
 )
 
-# Firestore
-PROJECT_ID = "archy-f06ed"
-KEY_FILE = "./key.json"
-
-
 # Gcloud auth settings
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = KEY_FILE
+GOOGLE_APPLICATION_CREDENTIALS = ""
 request = Request()
 
 
@@ -239,7 +237,12 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
 
     function_path = get_function_path(command_name)
 
-    google_auth_token = google.oauth2.id_token.fetch_id_token(request, function_path)
+    # Generate the proper google_auth_token
+    credentials = service_account.IDTokenCredentials.from_service_account_info(
+        GOOGLE_APPLICATION_CREDENTIALS, target_audience=function_path
+    )
+    credentials.refresh(request)
+    google_auth_token = credentials.token
 
     response: Response = requests.post(
         function_path,
@@ -401,8 +404,12 @@ async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> 
 
 if __name__ == "__main__":
 
-    cred = credentials.Certificate(KEY_FILE)
-    firebase_admin.initialize_app(cred)
+    # Firebase env var instead of file
+    # https://stackoverflow.com/questions/73917887/firebase-credentials-as-python-environment-variables-could-not-deserialize-key
+    GOOGLE_APPLICATION_CREDENTIALS = json.loads(os.environ.get("GOOGLE_APPLICATION_CREDENTIALS"))
+    certificate = firebase_admin.credentials.Certificate(GOOGLE_APPLICATION_CREDENTIALS)
+    firebase_admin.initialize_app(certificate)
+
     db = firestore.client()
 
     bot.remove_command("help")
