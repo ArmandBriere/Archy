@@ -156,7 +156,7 @@ func updateStatus(newStmStatus StmStatus, lineIndex int, wg *sync.WaitGroup) {
 	for _, alert := range newStmStatus.Alerts {
 		if alert.InformedEntities[0].RouteShortName == strconv.Itoa(currentLine.Id) {
 
-			newStmStatusText += alert.DescriptionTexts[1].Text + "\n"
+			newStmStatusText += alert.DescriptionTexts[0].Text + "\n"
 		}
 	}
 
