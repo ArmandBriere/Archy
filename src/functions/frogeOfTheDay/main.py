@@ -210,7 +210,7 @@ def get_quote() -> dict:
         },
         {"quote": "Rien de mieux qu'une bonne mousse après un exam de 600C ?", "author": "Ousach#1702"},
         {"quote": "Screw gravity !", "author": "Ousach#1702"},
-        {"quote": "This is the quote of this "+datetime.datetime.now().strftime("%A")+".", "author": "Ousach#1702"},
+        {"quote": f"This is the quote of this {datetime.datetime.now().strftime('%A')}.", "author": "Ousach#1702"},
         {"quote": "This isn't a bug, it's a feature !", "author": "Ousach#1702"},
         {"quote": "Dans(l'e�pace une perturbation par une partIculE isoLë% dst vite arrivëe.", "author": "Ousach#1702"},
         {"quote": "Je suis le résultat de la procrastination de bons développeurs.", "author": "Ousach#1702"},
