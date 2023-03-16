@@ -4,6 +4,7 @@ import base64
 import json
 import os
 import random
+import datetime
 from email.generator import Generator
 from io import BytesIO
 from typing import Any, List, Tuple
@@ -207,6 +208,12 @@ def get_quote() -> dict:
             "quote": "On va toujours trop loin pour les gens qui ne vont nulle part.",
             "author": "BièreAuGibier Brigand#2022",
         },
+        {"quote": "Rien de mieux qu'une bonne mousse après un exam de 600C ?", "author": "Ousach#1702"},
+        {"quote": "Screw gravity", "author": "Ousach#1702"},
+        {"quote": "This is the quote of this "+datetime.datetime.now().strftime("%A"), "author": "Ousach#1702"},
+        {"quote": "This isn't a bug, it's a feature", "author": "Ousach#1702"},
+        {"quote": "Dans(l'e�pace une perturbation par une partIculE isoLë% dst vite arrivëe.", "author": "Ousach#1702"},
+        {"quote": "Je suis le résultat de la procrastination de bon développeurs", "author": "Ousach#1702"},
     ]
 
     return random.choice(quotes)
