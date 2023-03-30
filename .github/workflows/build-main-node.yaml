@@ -45,7 +45,6 @@ jobs:
           --build-arg GOOGLE_APPLICATION_CREDENTIALS='${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' \
           --build-arg FOB_SECRET_ENDPOINT='${{ secrets.FOB_SECRET_ENDPOINT }}' \
           --build-arg FOB_CHALLENGE_IP='${{ secrets.FOB_CHALLENGE_IP }}' \
-          --build-arg FOB_CHALLENGE_PASSWORD='${{ secrets.FOB_CHALLENGE_PASSWORD }}' \
           -f Dockerfile.prod .
 
       - name: Docker - Login to GCR

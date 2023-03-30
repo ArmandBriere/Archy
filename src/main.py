@@ -36,7 +36,6 @@ COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 
 FOB_SECRET_ENDPOINT = os.getenv("FOB_SECRET_ENDPOINT")
 FOB_CHALLENGE_IP = os.getenv("FOB_CHALLENGE_IP")
-FOB_CHALLENGE_PASSWORD = os.getenv("FOB_CHALLENGE_PASSWORD")
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 FUNCTION_BASE_URL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
@@ -191,7 +190,6 @@ def get_fob_challenge_instance(user: User) -> str:
 
     response: requests.Response = requests.get(
         f"http://{FOB_CHALLENGE_IP}/{FOB_SECRET_ENDPOINT}{instance_id}",
-        auth=HTTPBasicAuth("ageei", FOB_CHALLENGE_PASSWORD),
     )
     if response.status_code == 200 and response.json()["success"]:
         instance_id: str = response.json()["text"]
