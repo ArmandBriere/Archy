@@ -33,6 +33,8 @@ ENVIRONMENT = os.getenv("ENVIRONMENT")
 DISCORD_API_TOKEN = os.getenv(f"DISCORD_API_TOKEN_{ENVIRONMENT.upper()}")
 COMMAND_PREFIX = os.getenv("COMMAND_PREFIX")
 
+FOB_SECRET_ENDPOINT = os.getenv("FOB_SECRET_ENDPOINT")
+FOB_CHALLENGE_IP = os.getenv("FOB_CHALLENGE_IP")
 
 LOGGER: logging.Logger = logging.getLogger(__name__)
 FUNCTION_BASE_URL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
@@ -175,6 +177,26 @@ async def on_member_remove(member: member_type) -> None:
     db.collection("serverList").document(server_id).update({"member_count": Increment(-1)})
 
 
+def get_fob_challenge_instance(user: User) -> str:
+
+    data_collection: CollectionReference = db.collection("fobChallenge")
+    ref = data_collection.document(f"{user.id}")
+    doc = ref.get()
+
+    instance_id = "null"
+    if doc.exists:
+        instance_id = doc.get("id")
+
+    response: requests.Response = requests.get(
+        f"http://{FOB_CHALLENGE_IP}/{FOB_SECRET_ENDPOINT}{instance_id}",
+    )
+    if response.status_code == 200 and response.json()["success"]:
+        instance_id: str = response.json()["text"]
+        ref.set({"id": instance_id})
+        return f"http://{FOB_CHALLENGE_IP}/c/{instance_id}/"
+    return f"Sorry we can't help you, contact Hannibal119 for help (error: {response.json()['text']})"
+
+
 @bot.event
 async def on_message(message: message_type) -> None:
     if message.author.bot:
@@ -185,6 +207,8 @@ async def on_message(message: message_type) -> None:
     if isinstance(message.channel, DMChannel):
         if message.content == os.environ["UQAM_PASSPHRASE"]:
             await message.channel.send(f"`{os.environ['UQAM_FLAG']}`")
+        elif message.content == "nsec-qualif please":
+            await message.channel.send(f"Have fun: {get_fob_challenge_instance(message.author)}")
         return
 
     ctx: Context = await bot.get_context(message)
