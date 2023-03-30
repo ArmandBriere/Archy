@@ -193,11 +193,11 @@ def get_fob_challenge_instance(user: User) -> str:
         f"http://{FOB_CHALLENGE_IP}/{FOB_SECRET_ENDPOINT}{instance_id}",
         auth=HTTPBasicAuth("ageei", FOB_CHALLENGE_PASSWORD),
     )
-    if response.status_code != 404:
+    if response.status_code == 200 and response.json()["success"]:
         instance_id: str = response.json()["text"]
         ref.set({"id": instance_id})
         return f"http://{FOB_CHALLENGE_IP}/c/{instance_id}/"
-    return "Sorry we can't help you, contact Hannibal119 for help"
+    return f"Sorry we can't help you, contact Hannibal119 for help (error: {response.json()['text']})"
 
 
 @bot.event
