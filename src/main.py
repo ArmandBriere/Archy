@@ -185,18 +185,19 @@ def get_fob_challenge_instance(user: User) -> str:
     ref = data_collection.document(f"{user.id}")
     doc = ref.get()
 
-    id = "null"
+    instance_id = "null"
     if doc.exists:
-        id = doc.get("id")
+        instance_id = doc.get("id")
 
-    x: requests.Response = requests.get(
-        f"http://{FOB_CHALLENGE_IP}/{FOB_SECRET_ENDPOINT}{id}", auth=HTTPBasicAuth("ageei", FOB_CHALLENGE_PASSWORD)
+    response: requests.Response = requests.get(
+        f"http://{FOB_CHALLENGE_IP}/{FOB_SECRET_ENDPOINT}{instance_id}",
+        auth=HTTPBasicAuth("ageei", FOB_CHALLENGE_PASSWORD),
     )
-    if x.status_code != 404:
-        id = x.json()["text"]
-        ref.set({"id": id})
-        return f"http://{FOB_CHALLENGE_IP}/c/{id}/"
-    return f"Sorry we can't help you, contact Hannibal119 for help"
+    if response.status_code != 404:
+        instance_id: str = response.json()["text"]
+        ref.set({"id": instance_id})
+        return f"http://{FOB_CHALLENGE_IP}/c/{instance_id}/"
+    return "Sorry we can't help you, contact Hannibal119 for help"
 
 
 @bot.event
