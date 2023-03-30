@@ -25,7 +25,6 @@ from google.cloud.pubsub_v1 import PublisherClient
 from google.oauth2 import service_account
 from google.oauth2.service_account import Credentials
 from requests import Response
-from requests.auth import HTTPBasicAuth
 
 load_dotenv()
 
