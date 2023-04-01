@@ -6,6 +6,14 @@ import functions_framework
 import requests
 from bs4 import BeautifulSoup
 
+SEMESTER_ID = {
+    "not_found": "0",
+    "winter": "1",
+    "summer": "2",
+    "fall": "3",
+}
+DATE_TIME_FORMAT = "%m-%d-%Y"
+
 
 def examens_scraper(course: str, semester: str) -> list[str]:
     """Function that scrapes schedule website for exam dates"""
@@ -24,14 +32,6 @@ def examens_scraper(course: str, semester: str) -> list[str]:
     return name.replace("Examens: ", "").split("et")
 
 
-semester_id = {
-    "not_found": "0",
-    "winter": "1",
-    "summer": "2",
-    "fall": "3",
-}
-
-
 def get_semester() -> str:
     """Function that returns the current semester"""
 
@@ -42,13 +42,21 @@ def get_semester() -> str:
     date_today = date.today()
     current_date = datetime(date_today.year, date_today.month, date_today.day)
 
-    if datetime.strptime(winter_start, "%m-%d-%Y") <= current_date <= datetime.strptime(winter_end, "%m-%d-%Y"):
-        return semester_id["winter"]
-    if datetime.strptime(summer_start, "%m-%d-%Y") <= current_date <= datetime.strptime(summer_end, "%m-%d-%Y"):
-        return semester_id["summer"]
-    if datetime.strptime(fall_start, "%m-%d-%Y") <= current_date <= datetime.strptime(fall_end, "%m-%d-%Y"):
-        return semester_id["fall"]
-    return semester_id["not_found"]
+    if (
+        datetime.strptime(winter_start, DATE_TIME_FORMAT)
+        <= current_date
+        <= datetime.strptime(winter_end, DATE_TIME_FORMAT)
+    ):
+        return SEMESTER_ID["winter"]
+    if (
+        datetime.strptime(summer_start, DATE_TIME_FORMAT)
+        <= current_date
+        <= datetime.strptime(summer_end, DATE_TIME_FORMAT)
+    ):
+        return SEMESTER_ID["summer"]
+    if datetime.strptime(fall_start, DATE_TIME_FORMAT) <= current_date <= datetime.strptime(fall_end, DATE_TIME_FORMAT):
+        return SEMESTER_ID["fall"]
+    return SEMESTER_ID["not_found"]
 
 
 def get_channel_name(request_json: Optional[Any]) -> str:

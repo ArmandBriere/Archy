@@ -25,7 +25,7 @@ def http(request: flask.Request) -> Tuple[str, int]:
         response: requests.Response = requests.get(url_result)
         normal_code = [200, 304]
 
-        if not response.status_code in normal_code:
+        if response.status_code not in normal_code:
             return ERROR_URL, 200
 
         return url_result, 200

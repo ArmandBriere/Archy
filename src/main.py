@@ -40,6 +40,7 @@ LOGGER: logging.Logger = logging.getLogger(__name__)
 FUNCTION_BASE_URL = "https://us-central1-archy-f06ed.cloudfunctions.net/"
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+LOADING_MESSAGE = "Loading..."
 
 # Discord bot settings
 intents = Intents.all()
@@ -255,7 +256,7 @@ async def on_message(message: message_type) -> None:
         await ctx.send("> Who Dares Summon Me?")
 
 
-async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
+async def treat_command(_ctx: Context, command_name: str, data: Dict) -> str:
     data["environment"] = ENVIRONMENT
 
     if not is_active_command(data["server_id"], command_name):
@@ -282,6 +283,7 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> None:
 
     if response.status_code == 200 and response.content:
         return response.content.decode("utf-8")
+    return "oops..."
 
 
 def get_function_path(command_name: str) -> str:
@@ -300,7 +302,7 @@ async def go(ctx: Context) -> None:  # pylint: disable=invalid-name
         "server_id": server_id,
         "channel_id": "Slash_Command",
     }
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
@@ -314,7 +316,7 @@ async def hello(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
         "user_id": str(ctx.author.id),
     }
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
@@ -328,7 +330,7 @@ async def leaderboard(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
@@ -342,7 +344,7 @@ async def answer(ctx: Context, question: Option(str, "your question", required=T
         "server_id": str(ctx.guild.id),
     }
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     response = f"Question: {question}\nAnswer: {await treat_command(ctx, command_name, data)}"
 
     await interaction.edit_original_response(content=response)
@@ -358,7 +360,7 @@ async def gif(ctx: Context, query: Option(str, "query to search", required=True)
         "params": str(query.split(" ")),
     }
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
@@ -372,7 +374,7 @@ async def java(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
@@ -386,7 +388,7 @@ async def froge(ctx: Context) -> None:
         "server_id": str(ctx.guild.id),
     }
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
@@ -405,7 +407,7 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
     if mention:
         data["mentions"] = [str(mention.id)]
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     response = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(
         content=None,
@@ -423,7 +425,7 @@ async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> 
         "params": str(query.split(" ")),
     }
 
-    interaction = await ctx.respond("Loading...")
+    interaction = await ctx.respond(LOADING_MESSAGE)
     message = await treat_command(ctx, command_name, data)
     await interaction.edit_original_response(content=message)
 
