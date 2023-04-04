@@ -55,7 +55,10 @@ func UnmarshalPubsubMessage(ctx context.Context, m PubSubMessage) error {
 		panic(err)
 	}
 
-	return SendErrorLogToDiscordChannel(&payload)
+	if payload.ProtoPayload.AuthenticationInfo.PrincipalEmail != "" {
+		return SendErrorLogToDiscordChannel(&payload)
+	}
+	return nil
 }
 
 // Create a nice embed message and send it with selected data
