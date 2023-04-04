@@ -23,8 +23,8 @@ type AuthenticationInfo struct {
 }
 
 type ProtoPayload struct {
-	MethodName         string `json:"methodName"`
-	AuthenticationInfo AuthenticationInfo
+	MethodName         string             `json:"methodName"`
+	AuthenticationInfo AuthenticationInfo `json:"authenticationInfo"`
 }
 
 type Labels struct {
@@ -35,14 +35,14 @@ type Labels struct {
 
 type Resource struct {
 	Type   string `json:"type"`
-	Labels Labels
+	Labels Labels `json:"labels"`
 }
 
 type Payload struct {
-	Timestamp    string `json:"timestamp"`
-	Severity     string `json:"severity"`
-	ProtoPayload ProtoPayload
-	Resource     Resource
+	Timestamp    string       `json:"timestamp"`
+	Severity     string       `json:"severity"`
+	ProtoPayload ProtoPayload `json:"protoPayload"`
+	Resource     Resource     `json:"resource"`
 }
 
 // Unmarshal received context and call proper function that send message
