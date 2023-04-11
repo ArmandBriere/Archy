@@ -55,13 +55,13 @@ func SendPrivateMessage(payload *Payload) error {
 	channel, err := dg.UserChannelCreate(payload.UserId)
 
 	if err != nil {
-		error_message := []byte(err.Error())
-		error_400_regex, _ := regexp.Compile("400")
-		if len(error_400_regex.Find(error_message)) > 0 {
+		errorMessage := []byte(err.Error())
+		error400Regex, _ := regexp.Compile("400")
+		if len(error400Regex.Find(errorMessage)) > 0 {
 			panic("Can't create UserChannel - Bad UserId")
 		}
-		error_401_regex, _ := regexp.Compile("401")
-		if len(error_401_regex.Find(error_message)) > 0 {
+		error401Regex, _ := regexp.Compile("401")
+		if len(error401Regex.Find(errorMessage)) > 0 {
 			panic("Unauthorized to create the connection. Verify Discord Token")
 		}
 		return err
@@ -93,9 +93,9 @@ func SendPrivateMessage(payload *Payload) error {
 	_, err = dg.ChannelMessageSendComplex(channel.ID, &messageData)
 
 	if err != nil {
-		error_message := []byte(err.Error())
-		error_403_regex, _ := regexp.Compile("403")
-		if len(error_403_regex.Find(error_message)) > 0 {
+		errorMessage := []byte(err.Error())
+		error403Regex, _ := regexp.Compile("403")
+		if len(error403Regex.Find(errorMessage)) > 0 {
 			log.Printf("User " + payload.UserId + " is in private mode. We can't send a message to him.")
 			return nil
 		}

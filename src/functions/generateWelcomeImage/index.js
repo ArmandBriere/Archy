@@ -56,8 +56,6 @@ exports.generateWelcomeImage = async (event, context) => {
 
   const messageData = { "channel_id": channelId, "image": imageBuffer.toString('base64') }
 
-  await publishMessage(
-    payloadData = messageData
-  );
+  await publishMessage(messageData);
 
 };
