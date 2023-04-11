@@ -198,6 +198,16 @@ def get_fob_challenge_instance(user: User) -> str:
     return f"Sorry we can't help you, contact Hannibal119 for help (error: {response.json()['text']})"
 
 
+@bot.slash_command(description="Nsec stats")
+async def nsec_stat(ctx: Context) -> None:
+    if ctx.guild_id == 909917470507286568:
+        my_collection = db.collection("fobChallenge")
+        count_query = list(my_collection.get())
+        message = f"Number of user that asked Archy for an instance: {len(count_query)}\n"
+        message += "".join([f"- <@{doc.id}>\n" for doc in my_collection.get()])
+        await ctx.respond(message)
+
+
 @bot.event
 async def on_message(message: message_type) -> None:
     if message.author.bot:
