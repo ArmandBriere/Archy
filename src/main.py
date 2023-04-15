@@ -440,6 +440,25 @@ async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> 
     await interaction.edit_original_response(content=message)
 
 
+@bot.slash_command(description="enable or disable a command", guild_ids=[964701887540645908])
+async def enable_command(
+    ctx: Context,
+    command: Option(str, "command to enable or disable", required=True),
+    enable: Option(bool, "should the command be enabled?", required=True),
+) -> None:
+
+    command_name = "enable_command"
+
+    data = {"server_id": str(ctx.guild.id), "command": command, "enable": enable}
+
+    if not ctx.author.roles.find("name", "contributors"):
+        await ctx.respond("You are not a contributor")
+    else:
+        interaction = await ctx.respond(LOADING_MESSAGE)
+        response = await treat_command(ctx, command_name, data)
+        await interaction.edit_original_response(content=response)
+
+
 if __name__ == "__main__":
 
     # Firebase env var instead of file
