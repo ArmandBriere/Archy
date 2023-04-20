@@ -86,6 +86,8 @@ func WarnUser(w http.ResponseWriter, r *http.Request) {
 	sendWarnToUser(warnCount, newWarn)
 
 	takeAction(warnCount, newWarn)
+
+	fmt.Fprint(w, "Success! This user has "+strconv.Itoa(warnCount)+" warnings.")
 }
 
 func getAdminUsername(userId string) string {
