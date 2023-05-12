@@ -207,6 +207,10 @@ def get_quote() -> dict:
             "quote": "On va toujours trop loin pour les gens qui ne vont nulle part.",
             "author": "BièreAuGibier Brigand#2022",
         },
+        {"quote": "Tt les quartiers sont safe tant que c’est toi qui cours le plus vite tkt", "author": "zactrixo#8903"},
+        {"quote": "Je deteste PhP", "author": "zactrixo#8903"},
+        {"quote": "La tu reflechis en ptit crisse de sans-dessin", "author": "zactrixo#8903"},
+        {"quote": "Je suis aller acheter de la pabst et j'ai pris la bleu parce que c'est jour de fete", "author": "zactrixo#8903"}
     ]
 
     return random.choice(quotes)
