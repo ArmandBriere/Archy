@@ -76,7 +76,7 @@ func generateWarnList(serverId string) string {
 	}
 	defer client.Close()
 
-	warningIter := client.Collection("servers").Doc(serverId).Collection("warnings").OrderBy("user_id", firestore.Asc).Documents(ctx)
+	warningIter := client.Collection("servers").Doc(serverId).Collection("warnings").OrderBy("timestamp", firestore.Asc).Documents(ctx)
 
 	var data strings.Builder
 	for {

@@ -419,10 +419,13 @@ async def level(ctx: Context, mention: Option(User, "wanna check someone else's?
 
     interaction = await ctx.respond(LOADING_MESSAGE)
     response = await treat_command(ctx, command_name, data)
-    await interaction.edit_original_response(
-        content=None,
-        file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"),
-    )
+    if response.split(",")[0] == "data:image/png;base64":
+        await interaction.edit_original_response(
+            content=None,
+            file=File(BytesIO(base64.b64decode(response.split(",")[1])), "image.png"),
+        )
+    else:
+        await interaction.edit_original_response(content=response)
 
 
 @bot.slash_command(description="You give me a HTTP code, I give you something nice in return")
