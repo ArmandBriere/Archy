@@ -208,19 +208,19 @@ def get_quote() -> dict:
             "author": "BièreAuGibier Brigand#2022",
         },
         {
-            "quote": "Tt les quartiers sont safe tant que c’est toi qui cours le plus vite tkt", 
+            "quote": "Tt les quartiers sont safe tant que c’est toi qui cours le plus vite tkt",
             "author": "zactrixo#8903"
         },
         {
-            "quote": "Je deteste PhP", 
+            "quote": "Je deteste PhP",
             "author": "zactrixo#8903"
         },
         {
-            "quote": "La tu reflechis en ptit crisse de sans-dessin", 
+            "quote": "La tu reflechis en ptit crisse de sans-dessin",
             "author": "zactrixo#8903"
         },
         {
-            "quote": "Je suis aller acheter de la pabst et j'ai pris la bleu parce que c'est jour de fete", 
+            "quote": "Je suis aller acheter de la pabst et j'ai pris la bleu parce que c'est jour de fete",
             "author": "zactrixo#8903"
         },
     ]
