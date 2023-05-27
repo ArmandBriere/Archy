@@ -22,7 +22,7 @@ def http(request: flask.Request) -> Tuple[str, int]:
 
         url_result = f"{BASE_URL}{params[0]}"
 
-        response: requests.Response = requests.get(url_result)
+        response: requests.Response = requests.get(url_result, timeout=5)
         normal_code = [200, 304]
 
         if response.status_code not in normal_code:

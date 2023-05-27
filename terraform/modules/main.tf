@@ -180,6 +180,22 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
     },
+    flag : {
+      description = "Return a flag"
+      runtime     = "python39"
+      entry_point = "flag"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
+    src : {
+      description = "Return the github url of my source code"
+      runtime     = "python39"
+      entry_point = "sourcecode"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
   }
 }
 

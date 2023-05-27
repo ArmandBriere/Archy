@@ -253,6 +253,7 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> str:
             "Content-Type": "application/json",
         },
         data=json.dumps(data),
+        timeout=5,
     )
     increment_command_count(data["server_id"], command_name)
 
