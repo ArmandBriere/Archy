@@ -181,15 +181,15 @@ variable "http_functions" {
       secrets     = ["DISCORD_TOKEN"]
     },
     flag : {
-      description = "Return a flag emoji"
+      description = "Return a flag"
       runtime     = "python39"
       entry_point = "flag"
       timeout     = 15
       memory      = 256
       secrets     = []
     },
-    sourcecode : {
-      description = "Return the github url to my source code"
+    src : {
+      description = "Return the github url of my source code"
       runtime     = "python39"
       entry_point = "sourcecode"
       timeout     = 15
