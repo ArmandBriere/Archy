@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
 
-from functions.sourcecode.main import SOURCE_CODE_URL, sourcecode
+from functions.src.main import SOURCE_CODE_URL, sourcecode
 
 
 def test_sourcecode():
