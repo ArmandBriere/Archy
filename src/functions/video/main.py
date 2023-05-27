@@ -26,7 +26,8 @@ def video(request: flask.Request) -> Tuple[str, int]:
         api_key: str = os.environ["YOUTUBE_API_TOKEN"]
         response: requests.Response = requests.get(
             f"https://www.googleapis.com/youtube/v3/search?key={api_key}&q={query}&part=snippet"
-            + "&type=video&maxResults=1&safeSearch=strict"
+            + "&type=video&maxResults=1&safeSearch=strict",
+            timeout=5,
         )
 
         return extract_data_from_response(response.status_code, response.content), 200

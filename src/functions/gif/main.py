@@ -25,7 +25,7 @@ def gif(request: flask.Request) -> Tuple[str, int]:
 
         api_key: str = os.environ["TENOR_API_TOKEN"]
         response: requests.Response = requests.get(
-            f"https://tenor.googleapis.com/v2/search?q={query}&key={api_key}&client_key=Archy&limit=1"
+            f"https://tenor.googleapis.com/v2/search?q={query}&key={api_key}&client_key=Archy&limit=1", timeout=5
         )
 
         return extract_data_from_response(response.status_code, response.content), 200
