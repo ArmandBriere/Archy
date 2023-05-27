@@ -103,4 +103,3 @@ watchdog==1.0.2
 wcwidth==0.2.5
 Werkzeug==2.1.2
 wrapt==1.14.1
-yarl==1.7.2
