@@ -409,6 +409,34 @@ async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> 
     await interaction.edit_original_response(content=message)
 
 
+@bot.slash_command(description="Return a flag emoji")
+async def flag(ctx: Context) -> None:
+
+    command_name = "flag"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    interaction = await ctx.respond(LOADING_MESSAGE)
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
+
+
+@bot.slash_command(description="Return the github url to my source code")
+async def src(ctx: Context) -> None:
+
+    command_name = "src"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    interaction = await ctx.respond(LOADING_MESSAGE)
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
+
+
 if __name__ == "__main__":
 
     # Firebase env var instead of file
