@@ -409,7 +409,7 @@ async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> 
     await interaction.edit_original_response(content=message)
 
 
-@bot.slash_command(description="Return a flag emoji")
+@bot.slash_command(description="Return a flag")
 async def flag(ctx: Context) -> None:
 
     command_name = "flag"
@@ -423,7 +423,7 @@ async def flag(ctx: Context) -> None:
     await interaction.edit_original_response(content=message)
 
 
-@bot.slash_command(description="Return the github url to my source code")
+@bot.slash_command(description="Return the github url of my source code")
 async def src(ctx: Context) -> None:
 
     command_name = "src"
