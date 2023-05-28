@@ -130,6 +130,20 @@
                 "!http 404",
                 "!http 200"
             ]
+        },
+        {
+            "name": "src",
+            "description": "Return the github url of my source code.",
+            "examples": [
+                "!src"
+            ]
+        },
+        {
+            "name": "flag",
+            "description": "Return a flag.",
+            "examples": [
+                "!flag"
+            ]
         }
     ]
 }

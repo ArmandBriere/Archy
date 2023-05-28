@@ -14,7 +14,7 @@ function kFormatter(num: number): string {
     : Math.sign(num) * Math.abs(num) + "";
 }
 
-function getRandomFroge(): String {
+function getRandomFroge(): string {
   const froges = [
     "bonkfroge.png",
     "froge.png",
@@ -91,7 +91,7 @@ export default function handler(req: NextRequest) {
     }
 
     let percent = (+exp! / +expNeeded!) * 100;
-    let percentValue = +percent! > 6 ? percent : 6;
+    let percentValue = +percent > 6 ? percent : 6;
 
     const expFormatted = kFormatter(+exp!);
     const expNeededFormatted = kFormatter(+expNeeded!);

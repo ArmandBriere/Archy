@@ -38,7 +38,7 @@ def auto_scale_text_over_image(
 
     font_path: str = "./SourceHanSansSC-Regular.otf"
     font: ImageFont = ImageFont.truetype(font=font_path, size=25)
-    lines: int = text_wrap(text, font, resized_img.size[0] - x_max)
+    lines: list[str] = text_wrap(text, font, resized_img.size[0] - x_max)
     line_height: int = font.getsize("hg")[1]
 
     y_max: float = (resized_img.size[1] * 80) // 100 - len(lines) * line_height

@@ -180,6 +180,22 @@ variable "http_functions" {
       memory      = 256
       secrets     = ["DISCORD_TOKEN"]
     },
+    flag : {
+      description = "Return a flag"
+      runtime     = "python39"
+      entry_point = "flag"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
+    src : {
+      description = "Return the github url of my source code"
+      runtime     = "python39"
+      entry_point = "sourcecode"
+      timeout     = 15
+      memory      = 256
+      secrets     = []
+    },
   }
 }
 
@@ -187,6 +203,7 @@ variable "pubsub_topics" {
   type = list(string)
   default = [
     "channel_message_discord",
+    "cloud_function_crud_log",
     "cloud_function_error_log",
     "froge_of_the_day",
     "private_message_discord",
@@ -234,6 +251,15 @@ variable "pubsub_functions" {
       timeout       = 15
       memory        = 256
       trigger_event = "channel_message_discord"
+      secrets       = ["DISCORD_TOKEN"]
+    },
+    cloudDeploymentLog : {
+      description   = "Send the Google Cloud deployment log from pubsub to a specific channel"
+      runtime       = "go119"
+      entry_point   = "UnmarshalPubsubMessage"
+      timeout       = 15
+      memory        = 256
+      trigger_event = "cloud_function_crud_log"
       secrets       = ["DISCORD_TOKEN"]
     },
     cloudErrorLog : {

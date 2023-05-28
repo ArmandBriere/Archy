@@ -76,7 +76,7 @@ func generateWarnList(serverId string) string {
 	}
 	defer client.Close()
 
-	warningIter := client.Collection("servers").Doc(serverId).Collection("warnings").OrderBy("user_id", firestore.Asc).Documents(ctx)
+	warningIter := client.Collection("servers").Doc(serverId).Collection("warnings").OrderBy("timestamp", firestore.Asc).Documents(ctx)
 
 	var data strings.Builder
 	for {
@@ -123,13 +123,13 @@ func instanciateBot() *discordgo.Session {
 	dg, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 
 	if err != nil {
-		error_message := []byte(err.Error())
-		error_400_regex, _ := regexp.Compile("400")
-		if len(error_400_regex.Find(error_message)) > 0 {
+		errorMessage := []byte(err.Error())
+		error400Regex, _ := regexp.Compile("400")
+		if len(error400Regex.Find(errorMessage)) > 0 {
 			panic("Can't create bot instance - Bad ChannelId")
 		}
-		error_401_regex, _ := regexp.Compile("401")
-		if len(error_401_regex.Find(error_message)) > 0 {
+		error401Regex, _ := regexp.Compile("401")
+		if len(error401Regex.Find(errorMessage)) > 0 {
 			panic("Unauthorized to create the connection. Verify Discord Token")
 		}
 		panic(err)
