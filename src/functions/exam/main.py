@@ -21,7 +21,7 @@ def examens_scraper(course: str, semester: str) -> list[str]:
     current_year = str(date.today().year)
     url_link = f"https://etudier.uqam.ca/wshoraire/cours/{course}/{current_year}{semester}/7316"
     try:
-        result = requests.get(url_link).text
+        result = requests.get(url_link, timeout=5).text
         soup = BeautifulSoup(result, "html.parser")
         name_box = soup.find(lambda tag: tag.name == "li" and "Examens" in tag.text)
         name = name_box.text.strip()

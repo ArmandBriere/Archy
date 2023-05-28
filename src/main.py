@@ -253,6 +253,7 @@ async def treat_command(_ctx: Context, command_name: str, data: Dict) -> str:
             "Content-Type": "application/json",
         },
         data=json.dumps(data),
+        timeout=5,
     )
     increment_command_count(data["server_id"], command_name)
 
@@ -401,6 +402,34 @@ async def http(ctx: Context, query: Option(int, "HTTP code", required=True)) -> 
     data = {
         "server_id": str(ctx.guild.id),
         "params": str(query.split(" ")),
+    }
+
+    interaction = await ctx.respond(LOADING_MESSAGE)
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
+
+
+@bot.slash_command(description="Return a flag")
+async def flag(ctx: Context) -> None:
+
+    command_name = "flag"
+
+    data = {
+        "server_id": str(ctx.guild.id),
+    }
+
+    interaction = await ctx.respond(LOADING_MESSAGE)
+    message = await treat_command(ctx, command_name, data)
+    await interaction.edit_original_response(content=message)
+
+
+@bot.slash_command(description="Return the github url of my source code")
+async def src(ctx: Context) -> None:
+
+    command_name = "src"
+
+    data = {
+        "server_id": str(ctx.guild.id),
     }
 
     interaction = await ctx.respond(LOADING_MESSAGE)
