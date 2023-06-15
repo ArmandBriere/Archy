@@ -207,6 +207,10 @@ def get_quote() -> dict:
             "quote": "On va toujours trop loin pour les gens qui ne vont nulle part.",
             "author": "BièreAuGibier Brigand#2022",
         },
+        {
+            "quote": "There are 10 types of people in this world..., those who understand binary and those who don't",
+            "author": "sublime#4081",
+        }
     ]
 
     return random.choice(quotes)
