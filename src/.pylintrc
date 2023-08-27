@@ -1,4 +1,7 @@
 [MASTER]
+# Python code to execute, usually for sys.path manipulation such as
+# pygtk.require().
+init-hook='import sys; sys.path.append("functions/frogeOfTheDay")'
 
 # Disable pylint warnings
 disable=
@@ -45,10 +48,6 @@ ignore-paths=
 # matches against base names, not paths. The default value ignores emacs file
 # locks
 ignore-patterns=^\.#
-
-# Python code to execute, usually for sys.path manipulation such as
-# pygtk.require().
-#init-hook=
 
 # Use multiple processes to speed up Pylint. Specifying 0 will auto-detect the
 # number of processors available to use.

@@ -13,8 +13,7 @@ from google.cloud.firestore_v1.document import DocumentReference, DocumentSnapsh
 from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 from PIL import Image, ImageDraw, ImageFont
-
-from .quotes import QUOTES
+from quotes import QUOTES
 
 IMAGE_FOLDER = "img/"
 
