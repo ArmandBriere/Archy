@@ -4,8 +4,8 @@ on:
 permissions:
   contents: read
 jobs:
-  build:
-    name: Build
+  sonar:
+    name: Run sonarqube scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

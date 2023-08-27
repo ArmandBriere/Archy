@@ -1,0 +1,39 @@
+name: Terraform apply
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+    types: [closed]
+
+jobs:
+  deploy:
+    if: ${{ github.event.pull_request.merged }}
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: dev working directory
+        if: ${{ github.base_ref == 'dev' }}
+        run: |
+          echo "TF_WORKING_DIR=terraform/environments/dev" >> $GITHUB_ENV
+
+      - name: prod working directory
+        if: ${{ github.base_ref == 'main' }}
+        run: |
+          echo "TF_WORKING_DIR=terraform/environments/prod" >> $GITHUB_ENV
+
+      - name: Show TF_WORKING_DIR
+        run: echo "TF_WORKING_DIR is $TF_WORKING_DIR"
+
+      - name: Terraform apply with composite action
+        uses: ./.github/actions/terraform-apply
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          terraform_working_directory: ${{ env.TF_WORKING_DIR }}
