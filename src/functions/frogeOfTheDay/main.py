@@ -14,6 +14,8 @@ from google.cloud.pubsub_v1 import PublisherClient
 from google.cloud.pubsub_v1.publisher.futures import Future
 from PIL import Image, ImageDraw, ImageFont
 
+from .quotes import QUOTES
+
 IMAGE_FOLDER = "img/"
 
 
@@ -105,111 +107,8 @@ def get_all_channels() -> List[str]:
 
 def get_quote() -> dict:
     """Return a random quote."""
-    quotes = [
-        {"quote": "All my homies hate javascript", "author": "zactrixo#8903"},
-        {"quote": "Throw sh*t at the wall until it sticks", "author": "zactrixo#8903"},
-        {"quote": "BlueJ is actually NOT underrated! It's really not good...", "author": "Jay Cee#5430"},
-        {"quote": "Rust is love, Rust is life.", "author": "FireLexFtw#8683"},
-        {"quote": "C# is like java, but its better", "author": "zactrixo#8903"},
-        {"quote": "Fais ton TP", "author": "Hannibal119#3744"},
-        {"quote": "Code it", "author": "Hannibal119#3744"},
-        {"quote": "Git gud", "author": "Hannibal119#3744"},
-        {"quote": "damn archy is down again", "author": "FireLexFtw#8683"},
-        {"quote": "rakabicyk katredmi ?", "author": "moonscrub#5366"},
-        {"quote": "entRE Quote PleaSe sinON Je PreNDs pas LeS meSsagES", "author": "FireLexFtw#8683"},
-        {"quote": "My love for you is stronger than an infinite loop", "author": "coder4life#4678"},
-        {"quote": "je suis juste ici pour les bidoux", "author": "arth-e#0399"},
-        {"quote": "..... how did everything broke", "author": "Grisamah#2143"},
-        {"quote": "j'comprends pas les pointeurs", "author": "Grisamah#2143"},
-        {"quote": "why are we using javasript again?", "author": "Grisamah#2143"},
-        {
-            "quote": "À l'ÉTS ya assez de prises pour tout le monde dans les salles de cours !",
-            "author": "moonscrub#5366",
-        },
-        {
-            "quote": "Si vous avez besoin d'aide en INF3105, regardez les capsules d'Hannibal",
-            "author": "moonscrub#5366",
-        },
-        {"quote": "Froge Jesus will save us all! Amen!", "author": "moonscrub#5366"},
-        {"quote": "Alex a en fait un grand cœur !", "author": "moonscrub#5366"},
-        {"quote": "You all need Froge Jesus!", "author": "moonscrub#5366"},
-        {"quote": "Tokébakicitte", "author": "moonscrub#5366"},
-        {"quote": "Faites vos noeuds en 8 comme il faut avant de faire la voie !", "author": "moonscrub#5366"},
-        {"quote": "Oubliez pas de regarder si ya un tour de friction avant d'assurer !", "author": "moonscrub#5366"},
-        {
-            "quote": "Si j'peux faire une injection sql sur ton app, tu vas avoir un beau 0 !",
-            "author": "moonscrub#5366",
-        },
-        {"quote": "Haskell is actually underrated!", "author": "moonscrub#5366"},
-        {"quote": "Come contribute to my code and add some new features!", "author": "moonscrub#5366"},
-        {"quote": "Come check my source code on github", "author": "moonscrub#5366"},
-        {
-            "quote": "Il semble que les services informatiques de l'UQÀM ont besoin de financement supplémentaire",
-            "author": "moonscrub#5366",
-        },
-        {"quote": "Http/1.1 Service Unavailable - Portail UQÀM Janvier 2023", "author": "Yannick#5937"},
-        {"quote": "Shrodinger's portail étudiant", "author": "opdelta#1665"},
-        {"quote": "TikTok beurk, Logiciel espion pour le gouv chinois !", "author": "moonscrub#5366"},
-        {"quote": "Je vous conseille de ne pas utiliser TikTok.", "author": "moonscrub#5366"},
-        {
-            "quote": "With C it doesn't work and you don't know why. With python it works but you don't know why!"
-            + " So C is better.",
-            "author": "moonscrub#5366",
-        },
-        {
-            "quote": "Programming is like sex: One mistake and you have to support it for the rest of your life.",
-            "author": "arth-e#0399",
-        },
-        {"quote": "Fun fact: Archy is the greatest discord bot in the world", "author": "moonscrub#5366"},
-        {
-            "quote": "Ouais ben tsé, j'expérimentais la semaine passée sur un microprocesseur à cycle unique x86...",
-            "author": "moonscrub#5366",
-        },
-        {"quote": "Le serveur du bot serverless est down", "author": "Yannick#5937"},
-        {"quote": "?.... it works", "author": "Grisamah#2143"},
-        {
-            "quote": "There are two hard things in computer science: cache invalidation, naming things,"
-            + " and off-by-one errors.",
-            "author": "opdelta#1665",
-        },
-        {"quote": "Http/1.1 Service Unavailable", "author": "Yannick#5937"},
-        {"quote": "déppartement", "author": "Grisamah#2143"},
-        {"quote": "Plannet", "author": "Jay Cee#5430"},
-        {"quote": "Bon Fuck it, we need more quotes...", "author": "Hannibal119#3744"},
-        {"quote": "Exp", "author": "EDav1123#7479"},
-        {"quote": "And that's why we need a NSFW channel", "author": "opdelta#1665"},
-        {"quote": "JayCee got beaten by a 5yo kid", "author": "FireLexFtw#8683"},
-        {
-            "quote": "There is only 10 kinds of people in the world."
-            + " Those who understand binary, those who don't and those who expected this to be in binary",
-            "author": "osmiumpeach#1127",
-        },
-        {"quote": "It works on my machine.", "author": "Yannick#5937"},
-        {"quote": "Just type !merch to find some nice things", "author": "Hannibal119#3744"},
-        {
-            "quote": "TBH, c'est une meilleure tentative de phishing que les séminaires Excel de Patrice Roy.",
-            "author": "EDav1123#7479",
-        },
-        {
-            "quote": "Click the little star on https://github.com/ArmandBriere/archy (Top right)",
-            "author": "Hannibal119#3744",
-        },
-        {"quote": "If JS is the beta, than TS is the buggy release before the Day 1 Patch.", "author": "EDav1123#7479"},
-        {"quote": "Comment est votre blanquette ?", "author": "BièreAuGibier Brigand#2022"},
-        {"quote": "J'aime me beurrer la biscotte.", "author": "BièreAuGibier Brigand#2022"},
-        {"quote": "Où est Heinrich Von Zimmel ?", "author": "BièreAuGibier Brigand#2022"},
-        {
-            "quote": "Une dictature c'est quand les gens sont communistes, déjà. Ils ont froid, "
-            + "des chapeaux gris et des chaussures à fermeture éclair.",
-            "author": "BièreAuGibier Brigand#2022",
-        },
-        {
-            "quote": "On va toujours trop loin pour les gens qui ne vont nulle part.",
-            "author": "BièreAuGibier Brigand#2022",
-        },
-    ]
 
-    return random.choice(quotes)
+    return random.choice(QUOTES)
 
 
 def generate_froge_of_the_day() -> str:
