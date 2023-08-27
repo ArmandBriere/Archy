@@ -17,13 +17,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
+      - name: Debug GitHub context
+        run: |
+          echo "GitHub context:"
+          env | grep GITHUB
+          echo "${{ toJson(github) }}"
       - name: Set Terraform working directory based on branch
         run: |
-          echo github.ref
-          if [ github.ref = "refs/heads/dev" ]; then
+          if [ "$GITHUB_REF" = "refs/heads/dev" ]; then
             echo "TF_WORKING_DIR=terraform/environments/dev" >> $GITHUB_ENV
-          elif [ github.ref = "refs/heads/main" ]; then
+          elif [ "$GITHUB_REF" = "refs/heads/main" ]; then
             echo "TF_WORKING_DIR=terraform/environments/prod" >> $GITHUB_ENV
           fi
 
