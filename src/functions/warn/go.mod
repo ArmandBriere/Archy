@@ -2,7 +2,7 @@ module warn.com/cloudfunction
 
 go 1.19
 
-require github.com/bwmarrin/discordgo v0.25.0
+require github.com/bwmarrin/discordgo v0.27.1
 
 require (
 	cloud.google.com/go v0.110.7 // indirect
@@ -22,6 +22,7 @@ require (
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.11.0 // indirect
 	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230822172742-b8732ec3820d // indirect
@@ -36,7 +37,7 @@ require (
 	cloud.google.com/go/pubsub v1.33.0
 	cloud.google.com/go/storage v1.32.0 // indirect
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/gorilla/websocket v1.4.2 // indirect
+	github.com/gorilla/websocket v1.5.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect
 	golang.org/x/oauth2 v0.11.0 // indirect
 	google.golang.org/api v0.138.0 // indirect
