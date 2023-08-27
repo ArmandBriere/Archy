@@ -20,10 +20,10 @@ jobs:
 
       - name: Set Terraform working directory based on branch
         run: |
-          echo $GITHUB_REF
-          if [ "$GITHUB_REF" = "refs/heads/dev" ]; then
+          echo github.ref
+          if [ github.ref = "refs/heads/dev" ]; then
             echo "TF_WORKING_DIR=terraform/environments/dev" >> $GITHUB_ENV
-          elif [ "$GITHUB_REF" = "refs/heads/main" ]; then
+          elif [ github.ref = "refs/heads/main" ]; then
             echo "TF_WORKING_DIR=terraform/environments/prod" >> $GITHUB_ENV
           fi
 
