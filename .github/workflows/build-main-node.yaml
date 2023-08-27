@@ -1,10 +1,12 @@
 name: Build main node
 
 on:
-  workflow_run:
-    workflows: ["Terraform apply prod"]
-    types:
-      - completed
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
 
 jobs:
   build:
@@ -13,40 +15,14 @@ jobs:
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
-    if: |
-      ${{ github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request' &&
-      github.event.workflow_run.head_branch == 'main' }}
-    defaults:
-      run:
-        working-directory: ./
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v1
+      - name: Build main node with composite action
+        uses: ./.github/actions/build-main-node
         with:
-          token_format: access_token
-          workload_identity_provider: "projects/763564183085/locations/global/workloadIdentityPools/github-actions-terraform-pool/providers/github-actions-provider"
-          service_account: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          version: ">= 363.0.0"
-
-      - name: Docker - Build the main node
-        run: |
-          docker build -t us.gcr.io/archy-f06ed/archy-prod \
-          --build-arg UQAM_FLAG='${{ secrets.UQAM_FLAG }}' \
-          --build-arg UQAM_PASSPHRASE='${{ secrets.UQAM_PASSPHRASE }}' \
-          --build-arg DISCORD_API_TOKEN_PROD='${{ secrets.DISCORD_API_TOKEN_PROD }}' \
-          --build-arg GOOGLE_APPLICATION_CREDENTIALS='${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}' \
-          -f Dockerfile.prod .
-
-      - name: Docker - Login to GCR
-        run: gcloud auth configure-docker us.gcr.io -q
-
-      - name: Docker - Push to GCR
-        run: docker push us.gcr.io/archy-f06ed/archy-prod
+          UQAM_FLAG: ${{ secrets.UQAM_FLAG }}
+          UQAM_PASSPHRASE: ${{ secrets.UQAM_PASSPHRASE }}
+          DISCORD_API_TOKEN_PROD: ${{ secrets.DISCORD_API_TOKEN_PROD }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
