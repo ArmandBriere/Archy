@@ -5,7 +5,7 @@ on:
   pull_request:
     branches:
       - dev
-      - prod
+      - main
     types: [closed]
 
 jobs:
@@ -22,9 +22,9 @@ jobs:
 
       - name: Set Terraform working directory based on branch
         run: |
-          if [ "$GITHUB_REF" = "refs/heads/dev" ]; then
+          if [ github.base_ref = 'dev' ]; then
             echo "TF_WORKING_DIR=terraform/environments/dev" >> $GITHUB_ENV
-          elif [ "$GITHUB_REF" = "refs/heads/main" ]; then
+          elif [ github.base_ref = 'main' ]; then
             echo "TF_WORKING_DIR=terraform/environments/prod" >> $GITHUB_ENV
           fi
 
