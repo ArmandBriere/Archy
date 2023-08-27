@@ -1,0 +1,51 @@
+name: Terraform apply
+description: Run terraform lint, init, validate and apply
+inputs:
+  terraform_working_directory:
+    required: true
+    description: Terraform working directory
+  workload_identity_provider:
+    required: true
+    description: OIDC
+    default: "projects/763564183085/locations/global/workloadIdentityPools/github-actions-terraform-pool/providers/github-actions-provider"
+  service_account:
+    required: true
+    description: Service account principal
+    default: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
+
+runs:
+  using: composite
+  steps:
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@v1
+      with:
+        token_format: access_token
+        workload_identity_provider: ${{ inputs.workload_identity_provider }}
+        service_account: ${{ inputs.service_account }}
+
+    - uses: hashicorp/setup-terraform@v2
+
+    - name: Terraform lint
+      id: fmt
+      run: terraform fmt -check
+      working-directory: ${{ inputs.terraform_working_directory }}
+      shell: bash
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+      working-directory: ${{ inputs.terraform_working_directory }}
+      shell: bash
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate -no-color
+      working-directory: ${{ inputs.terraform_working_directory }}
+      shell: bash
+
+    - name: Terraform apply 
+      id: apply
+      run: terraform apply -auto-approve -no-color
+      working-directory: ${{ inputs.terraform_working_directory }}
+      shell: bash
