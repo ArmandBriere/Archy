@@ -2,9 +2,6 @@ name: Build main node
 description: Build the new docker image, push it to GCR and update the running container
 
 inputs:
-  terraform_working_directory:
-    required: true
-    description: Terraform working directory
   workload_identity_provider:
     required: true
     description: OIDC
@@ -13,6 +10,18 @@ inputs:
     required: true
     description: Service account principal
     default: "github-actions-terraform@archy-f06ed.iam.gserviceaccount.com"
+  UQAM_FLAG:
+    required: true
+    description: Inputs provided to the docker image
+  UQAM_PASSPHRASE:
+    required: true
+    description: Inputs provided to the docker image
+  DISCORD_API_TOKEN_PROD:
+    required: true
+    description: Inputs provided to the docker image
+  GOOGLE_APPLICATION_CREDENTIALS:
+    required: true
+    description: Inputs provided to the docker image
 
 runs:
   using: "composite"
