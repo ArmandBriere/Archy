@@ -35,5 +35,4 @@ jobs:
       - name: Terraform apply with composite action
         uses: ./.github/actions/terraform-apply
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           terraform_working_directory: ${{ env.TF_WORKING_DIR }}
