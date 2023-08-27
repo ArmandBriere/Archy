@@ -18,13 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set Terraform working directory based on branch
+      - name: dev working directory
+        if: ${{ github.base_ref == 'dev' }}
         run: |
-          if [ github.base_ref = 'dev' ]; then
-            echo "TF_WORKING_DIR=terraform/environments/dev" >> $GITHUB_ENV
-          elif [ github.base_ref = 'main' ]; then
-            echo "TF_WORKING_DIR=terraform/environments/prod" >> $GITHUB_ENV
-          fi
+          echo "TF_WORKING_DIR=terraform/environments/dev" >> $GITHUB_ENV
+
+      - name: prod working directory
+        if: ${{ github.base_ref == 'main' }}
+        run: |
+          echo "TF_WORKING_DIR=terraform/environments/prod" >> $GITHUB_ENV
 
       - name: Show TF_WORKING_DIR
         run: echo "TF_WORKING_DIR is $TF_WORKING_DIR"
