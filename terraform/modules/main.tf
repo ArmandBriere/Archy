@@ -166,19 +166,11 @@ variable "http_functions" {
     },
     answer : {
       description = "Return a random answer based on the game '8 Ball'"
-      runtime     = "python39"
-      entry_point = "answer"
+      runtime     = "go121"
+      entry_point = "Answer"
       timeout     = 15
       memory      = 256
       secrets     = []
-    },
-    merch : {
-      description = "Return the merch website"
-      runtime     = "go121"
-      entry_point = "Merch"
-      timeout     = 15
-      memory      = 256
-      secrets     = ["DISCORD_TOKEN"]
     },
     flag : {
       description = "Return a flag"
