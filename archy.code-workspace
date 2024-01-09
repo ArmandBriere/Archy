@@ -76,9 +76,6 @@
 			"path": "src/functions/listwarn"
 		},
 		{
-			"path": "src/functions/merch"
-		},
-		{
 			"path": "src/functions/og_vercel"
 		},
 		{
