@@ -172,14 +172,6 @@ variable "http_functions" {
       memory      = 256
       secrets     = []
     },
-    merch : {
-      description = "Return the merch website"
-      runtime     = "go121"
-      entry_point = "Merch"
-      timeout     = 15
-      memory      = 256
-      secrets     = ["DISCORD_TOKEN"]
-    },
     flag : {
       description = "Return a flag"
       runtime     = "python39"
