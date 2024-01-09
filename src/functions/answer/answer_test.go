@@ -8,6 +8,7 @@ import (
 )
 
 func TestAnswerFixSeed(t *testing.T) {
+	//nolint:all
 	rand.Seed(12)
 	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
 	// pass 'nil' as the third parameter.

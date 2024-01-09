@@ -37,5 +37,9 @@ func init() {
 
 func Answer(w http.ResponseWriter, _ *http.Request) {
 	index := rand.Intn(len(possibleAnswers))
-	w.Write([]byte(possibleAnswers[index]))
+
+	_, err := w.Write([]byte(possibleAnswers[index]))
+	if err != nil {
+		panic(err)
+	}
 }
