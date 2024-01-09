@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -45,7 +44,6 @@ func SendRandomFroge(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Select a random Froge
-	rand.Seed(time.Now().UnixNano())
 	randomFroge := frogeEmojis[rand.Intn(len(frogeEmojis))]
 
 	// Select extension to enable gif support

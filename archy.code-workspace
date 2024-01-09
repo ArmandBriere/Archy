@@ -1,0 +1,101 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "terraform"
+		},
+		{
+			"path": "nginx"
+		},
+		{
+			"path": "src/functions/answer"
+		},
+		{
+			"path": "src/functions/ban"
+		},
+		{
+			"path": "src/functions/channelMessage"
+		},
+		{
+			"path": "src/functions/cloudDeploymentLog"
+		},
+		{
+			"path": "src/functions/cloudErrorLog"
+		},
+		{
+			"path": "src/functions/describe"
+		},
+		{
+			"path": "src/functions/exam"
+		},
+		{
+			"path": "src/functions/exp"
+		},
+		{
+			"path": "src/functions/flag"
+		},
+		{
+			"path": "src/functions/froge"
+		},
+		{
+			"path": "src/functions/frogeOfTheDay"
+		},
+		{
+			"path": "src/functions/generateWelcomeImage"
+		},
+		{
+			"path": "src/functions/gif"
+		},
+		{
+			"path": "src/functions/go"
+		},
+		{
+			"path": "src/functions/hello"
+		},
+		{
+			"path": "src/functions/help"
+		},
+		{
+			"path": "src/functions/http"
+		},
+		{
+			"path": "src/functions/java"
+		},
+		{
+			"path": "src/functions/js"
+		},
+		{
+			"path": "src/functions/leaderboard"
+		},
+		{
+			"path": "src/functions/level"
+		},
+		{
+			"path": "src/functions/listwarn"
+		},
+		{
+			"path": "src/functions/og_vercel"
+		},
+		{
+			"path": "src/functions/privateMessage"
+		},
+		{
+			"path": "src/functions/src"
+		},
+		{
+			"path": "src/functions/stm"
+		},
+		{
+			"path": "src/functions/updateUserRole"
+		},
+		{
+			"path": "src/functions/video"
+		},
+		{
+			"path": "src/functions/warn"
+		},
+	],
+	"settings": {}
+}
