@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+  answer:
+    build:
+      context: ./src/functions/answer/
+      dockerfile: ../../../docker/Dockerfile.python.cloud-function
+    environment:
+      - FUNCTION_TARGET=answer
+    ports:
+      - "8081:8080"
+    restart: unless-stopped

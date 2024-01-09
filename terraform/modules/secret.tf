@@ -1,10 +1,11 @@
-resource "google_secret_manager_secret" "secret-basic" {
+
+resource "google_secret_manager_secret" "secret" {
   for_each = toset(var.secrets)
 
-  secret_id = each.value
   project   = var.project_id
+  secret_id = each.value
 
   replication {
-    automatic = true
+    auto {}
   }
 }

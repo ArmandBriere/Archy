@@ -196,8 +196,6 @@ func createUser(payload Payload) {
 
 // Add exp to user
 func addExpToUser(user FirestoreUser, payload Payload) FirestoreUser {
-	rand.Seed(time.Now().UnixNano())
-
 	addedExp := rand.Intn(75-45) + 45
 	fmt.Println("Added exp " + strconv.Itoa(addedExp))
 	ctx, client := getFirestoreClientCtx()
