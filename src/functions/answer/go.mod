@@ -1,4 +1,4 @@
-module answer
+module answer.com/cloudfunction
 
 go 1.21
 
