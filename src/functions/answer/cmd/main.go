@@ -5,8 +5,6 @@ import (
 	"os"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
-
-	_ "answer"
 )
 
 func main() {
