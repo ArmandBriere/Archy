@@ -38,11 +38,8 @@ resource "google_cloudfunctions_function" "pubsub_function" {
   # Must match the function name in the cloud function `main.py` source code
   entry_point = try(each.value.entry_point, each.key)
 
-  # Timeout
-  timeout = each.value.timeout
-
-  # Memory
-  available_memory_mb = each.value.memory
+  timeout             = coalesce(each.value.timeout, 15)
+  available_memory_mb = coalesce(each.value.memory, 256)
 
   # Trigger
   event_trigger {
@@ -56,7 +53,7 @@ resource "google_cloudfunctions_function" "pubsub_function" {
 
   # Secrets
   dynamic "secret_environment_variables" {
-    for_each = each.value.secrets
+    for_each = each.value.secrets != null ? each.value.secrets : []
     content {
       key     = secret_environment_variables.value
       secret  = secret_environment_variables.value
