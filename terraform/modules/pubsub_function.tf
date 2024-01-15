@@ -1,7 +1,7 @@
 
 # Generates an archive of the source code compressed as a .zip file.
 data "archive_file" "pubsub_function_source" {
-  for_each = var.pubsub_functions
+  for_each = { for pubsub_function in var.pubsub_functions : pubsub_function.name => pubsub_function }
 
   type        = "zip"
   source_dir  = "${var.src_dir}/functions/${each.key}"
@@ -11,7 +11,7 @@ data "archive_file" "pubsub_function_source" {
 
 # Add source code zip to the Cloud Function's bucket
 resource "google_storage_bucket_object" "pubsub_function_zip" {
-  for_each = var.pubsub_functions
+  for_each = { for pubsub_function in var.pubsub_functions : pubsub_function.name => pubsub_function }
 
   source       = "/tmp/${each.key}.zip"
   content_type = "application/zip"
@@ -24,7 +24,7 @@ resource "google_storage_bucket_object" "pubsub_function_zip" {
 
 # Create the Cloud function
 resource "google_cloudfunctions_function" "pubsub_function" {
-  for_each = var.pubsub_functions
+  for_each = { for pubsub_function in var.pubsub_functions : pubsub_function.name => pubsub_function }
 
   description = each.value.description
 

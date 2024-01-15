@@ -1,7 +1,7 @@
 
 # Generates an archive of the source code compressed as a .zip file.
 data "archive_file" "http_function_source" {
-  for_each = var.http_functions
+  for_each = { for http_function in var.http_functions : http_function.name => http_function }
 
   type        = "zip"
   source_dir  = "${var.src_dir}/functions/${each.key}"
@@ -11,7 +11,7 @@ data "archive_file" "http_function_source" {
 
 # Add source code zip to the Cloud Function's bucket
 resource "google_storage_bucket_object" "http_function_zip" {
-  for_each = var.http_functions
+  for_each = { for http_function in var.http_functions : http_function.name => http_function }
 
   source       = "/tmp/${each.key}.zip"
   content_type = "application/zip"
@@ -24,7 +24,7 @@ resource "google_storage_bucket_object" "http_function_zip" {
 
 # Create the Cloud function
 resource "google_cloudfunctions_function" "http_function" {
-  for_each = var.http_functions
+  for_each = { for http_function in var.http_functions : http_function.name => http_function }
 
   description = each.value.description
 
@@ -38,7 +38,7 @@ resource "google_cloudfunctions_function" "http_function" {
   # Must match the function name in the cloud function `main.py` source code
   entry_point = each.value.entry_point
 
-  timeout = coalesce(each.value.timeout, 15)
+  timeout             = coalesce(each.value.timeout, 15)
   available_memory_mb = coalesce(each.value.memory, 256)
 
   # Trigger
