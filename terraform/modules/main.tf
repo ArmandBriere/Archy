@@ -229,7 +229,6 @@ variable "pubsub_functions" {
       description   = "Generate the Welcome image of a user"
       runtime       = "nodejs18"
       entry_point   = "generateWelcomeImage"
-      timeout       = 15
       memory        = 1024
       trigger_event = "generate_welcome_image"
       }, {
