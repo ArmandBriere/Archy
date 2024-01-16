@@ -43,6 +43,7 @@ func Http(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, httpCatUrl+"/404")
 		return
 	}
+	defer resp.Body.Close()
 
 	fmt.Fprint(w, requestedUrl)
 }
