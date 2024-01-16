@@ -10,6 +10,10 @@ func init() {
 	functions.HTTP("Src", Src)
 }
 
+const (
+	srcUrl = "https://github.com/ArmandBriere/Archy"
+)
+
 func Src(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("https://github.com/ArmandBriere/Archy"))
+	w.Write([]byte(srcUrl))
 }
