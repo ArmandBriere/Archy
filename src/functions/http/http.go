@@ -39,12 +39,7 @@ func Http(w http.ResponseWriter, r *http.Request) {
 	requestedUrl := httpCatUrl + payload.Params[0]
 
 	resp, err := http.Get(requestedUrl)
-	if err != nil {
-		slog.Error(fmt.Sprintf("%s: %v", "Cannot get http cat url", err))
-		os.Exit(1)
-	}
-
-	if resp.StatusCode != 200 {
+	if err != nil || resp.StatusCode != 200 {
 		fmt.Fprint(w, httpCatUrl+"/404")
 		return
 	}
