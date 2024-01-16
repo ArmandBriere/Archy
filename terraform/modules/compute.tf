@@ -10,6 +10,7 @@ resource "google_compute_instance" "default" {
 
   metadata = {
     "google-logging-enabled"    = true
+    "google-monitoring-enabled" = true
     "gce-container-declaration" = <<-EOT
         # DISCLAIMER:
         # This container declaration format is not a public API and may change without

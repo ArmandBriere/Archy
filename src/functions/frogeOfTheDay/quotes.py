@@ -215,10 +215,6 @@ QUOTES = [
         "author": AUTHORS["yannick"],
     },
     {
-        "quote": "Just type !merch to find some nice things",
-        "author": AUTHORS["hannibal"],
-    },
-    {
         "quote": "TBH, c'est une meilleure tentative de phishing que les séminaires Excel de Patrice Roy.",
         "author": AUTHORS["eDavid"],
     },
