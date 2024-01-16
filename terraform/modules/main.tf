@@ -143,8 +143,8 @@ variable "http_functions" {
     }, {
     name        = "src"
     description = "Return the github url of my source code"
-    runtime     = "python39"
-    entry_point = "sourcecode"
+    runtime     = "go121"
+    entry_point = "Src"
     },
   ]
 }
