@@ -1,6 +1,7 @@
 package video
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
@@ -17,5 +18,12 @@ func init() {
 	functions.HTTP("Video", Video)
 }
 
-func Video(w http.ResponseWriter, _ *http.Request) {
+func Video(w http.ResponseWriter, r *http.Request) {
+	// parse http request
+	param := r.URL.Query().Get("params")
+	_, err := w.Write([]byte(param))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Fprintln(w, param)
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"log/slog"
 	"os"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
@@ -21,6 +22,7 @@ func main() {
 	if localOnly := os.Getenv("LOCAL_ONLY"); localOnly == "true" {
 		hostname = "127.0.0.1"
 	}
+	slog.Info("toto")
 	if err := funcframework.StartHostPort(hostname, port); err != nil {
 		log.Fatalf("funcframework.StartHostPort: %v\n", err)
 	}
