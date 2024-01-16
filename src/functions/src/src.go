@@ -1,7 +1,10 @@
 package src
 
 import (
+	"fmt"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 )
@@ -15,5 +18,9 @@ const (
 )
 
 func Src(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(srcUrl))
+	_, err := w.Write([]byte(srcUrl))
+	if err != nil {
+		slog.Error(fmt.Sprintf("%s: %v", "Can't write url to w", err))
+		os.Exit(1)
+	}
 }
