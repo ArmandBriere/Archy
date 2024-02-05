@@ -12,6 +12,7 @@ AUTHORS = {
     "biereAuGibier": "BièreAuGibier Brigand#2022",
     "eDavid": "EDav1123#7479",
     "osmiumpeach": "osmiumpeach#1127",
+    "Anomalie": "anomaliemajeure",
 }
 
 QUOTES = [
@@ -246,5 +247,48 @@ QUOTES = [
     {
         "quote": "On va toujours trop loin pour les gens qui ne vont nulle part.",
         "author": AUTHORS["biereAuGibier"],
+    },
+    {
+        "quote": "Tout n'est que bits.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "C'est du C que nous faisons, pas de la philosophie.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "Fais de ton mieux et au pire, tout ira mal.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "Tes efforts ne te trahiront pas.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "C++ pour l'effort",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "Une légende urbaine affirme que si l'on plonge une grenouille dans" 
+        + " l'eau bouillante, elle bondira instantanément pour fuir, mais que si l'eau"
+        + " est agréablement tiède au début et qu'on la fait chauffer graduellement," 
+        + " la grenouille y demeurera jusqu'à ce qu'elle soit ébouillantée et meure.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "C'est normal.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "As-tu déjà participé aux CS games ?!",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "Prog1 m'a appris que si mon TP prend feu, je suis responsable.",
+        "author": AUTHORS["Anomalie"],
+    },
+    {
+        "quote": "Demain dès l'ebua n'aurait jamais dû voir le jour.",
+        "author": AUTHORS["Anomalie"],
     },
 ]
