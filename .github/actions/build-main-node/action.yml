@@ -41,7 +41,7 @@ runs:
 
     - name: Docker - Build the main node
       run: |
-        docker build -t us-docker.pkg.dev/archy-f06ed/us.gcr.io/archy-prod \
+        docker build -t northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy \
         --build-arg UQAM_FLAG='${{ inputs.UQAM_FLAG }}' \
         --build-arg UQAM_PASSPHRASE='${{ inputs.UQAM_PASSPHRASE }}' \
         --build-arg DISCORD_API_TOKEN_PROD='${{ inputs.DISCORD_API_TOKEN_PROD }}' \
@@ -50,11 +50,11 @@ runs:
       shell: bash
 
     - name: Docker - Login to GCR
-      run: gcloud auth configure-docker us-docker.pkg.dev -q
+      run: gcloud auth configure-docker northamerica-northeast1-docker.pkg.dev -q
       shell: bash
 
     - name: Docker - Push to GCR
-      run: docker push us-docker.pkg.dev/archy-f06ed/us.gcr.io/archy-prod
+      run: docker push northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy
       shell: bash
 
     - name: Update running container
