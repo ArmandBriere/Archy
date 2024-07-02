@@ -1,5 +1,5 @@
 locals {
-  container_image = "cos-stable-97-16919-29-21"
+  container_image = "cos-113-18244-85-49"
   resource_name   = "e2-micro-archy"
 }
 
