@@ -41,7 +41,7 @@ runs:
 
     - name: Docker - Build the main node
       run: |
-        docker build -t northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy \
+        docker build -t northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy/archy-prod \
         --build-arg UQAM_FLAG='${{ inputs.UQAM_FLAG }}' \
         --build-arg UQAM_PASSPHRASE='${{ inputs.UQAM_PASSPHRASE }}' \
         --build-arg DISCORD_API_TOKEN_PROD='${{ inputs.DISCORD_API_TOKEN_PROD }}' \
@@ -54,7 +54,7 @@ runs:
       shell: bash
 
     - name: Docker - Push to GCR
-      run: docker push northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy
+      run: docker push northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy/archy-prod
       shell: bash
 
     - name: Update running container
