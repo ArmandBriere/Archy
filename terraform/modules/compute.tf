@@ -19,7 +19,7 @@ resource "google_compute_instance" "default" {
 
         spec:
           containers:
-          - image: us.gcr.io/archy-f06ed/archy-prod
+          - image: northamerica-northeast1-docker.pkg.dev/archy-f06ed/archy/archy-prod
             name: archy-prod
             stdin: false
             tty: false
