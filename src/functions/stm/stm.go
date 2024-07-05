@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -175,6 +176,8 @@ func updateStatus(newStmStatus StmStatus, lineIndex int, wg *sync.WaitGroup) {
 			panic(err)
 		}
 
+		// Temporarily remove stm status header about Lucien L'allier April 2024 until they fix their API
+		newStmStatusText = trimStatusHeader(newStmStatusText)
 		if newStmStatusText != oldStatusText {
 			_, err = stmStatusRef.Update(firestoreCtx, []firestore.Update{
 				{
@@ -262,4 +265,17 @@ func publishChannelMessage(channels []string, message string) {
 
 		log.Println("Message send to topic, messageId: " + messageId)
 	}
+}
+
+func trimStatusHeader(statusText string) string {
+	r, err := regexp.Compile("^(Station Lucien-L'Allier : À partir du 1er avril 2024).*</a>(\r\n|\r|\n)")
+	if err != nil {
+		panic(err)
+	}
+	match := r.MatchString(statusText)
+	if match {
+		// remove first line
+		statusText = statusText[strings.Index(statusText, "\n")+1:]
+	}
+	return statusText
 }
