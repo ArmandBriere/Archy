@@ -89,8 +89,8 @@ variable "http_functions" {
     }, {
     name        = "http"
     description = "Return an image describing the given http code"
-    runtime     = "python39"
-    entry_point = "http"
+    runtime     = "go121"
+    entry_point = "Http"
     }, {
     name        = "video"
     description = "Return the requested youtube video"
@@ -143,8 +143,8 @@ variable "http_functions" {
     }, {
     name        = "src"
     description = "Return the github url of my source code"
-    runtime     = "python39"
-    entry_point = "sourcecode"
+    runtime     = "go121"
+    entry_point = "Src"
     },
   ]
 }
